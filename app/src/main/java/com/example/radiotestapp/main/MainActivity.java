@@ -88,4 +88,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     public void onButtonClick(View view) {
         viewModel.start();
     }
+
+    public void onButton2Click(View view) { viewModel.stop();
+    }
 }

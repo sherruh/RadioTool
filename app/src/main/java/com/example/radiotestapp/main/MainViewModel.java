@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModel;
 
 import com.example.radiotestapp.main.radio.CustomPhoneStateListener;
+import com.example.radiotestapp.main.thread.LoggerRunnable;
 import com.example.radiotestapp.utils.Logger;
 import com.example.radiotestapp.utils.SingleLiveEvent;
 
@@ -27,9 +28,9 @@ public class MainViewModel extends ViewModel {
     private CellInfoLte cellInfoLte;
     private CustomPhoneStateListener customPhoneStateListener;
     private String signalLevel;
+    private LoggerRunnable logger;
+    private Thread threadForLog;
 
-
-    @SuppressLint("HardwareIds")
     public void onViewCreated(Context context, CustomPhoneStateListener.OnSignalStrengthChangedListener onSignalStrengthChangedListener) {
         telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
@@ -69,9 +70,21 @@ public class MainViewModel extends ViewModel {
     }
 
     public void start() {
+        logger = new LoggerRunnable(null);
+        threadForLog = new Thread(logger);
+        threadForLog.start();
     }
 
     public void signalStrengthChanged(String signalStrengthData) {
         Logger.d(signalStrengthData);
+    }
+
+    public void stop() {
+        logger.stopLog();
+        try {
+            threadForLog.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,16 +1,19 @@
 package com.example.radiotestapp.main.thread;
 
+import com.example.radiotestapp.model.Log;
 import com.example.radiotestapp.utils.Logger;
 
-public class ThreadForLog implements Runnable {
+import java.util.List;
+
+public class LoggerRunnable implements Runnable {
 
     private volatile boolean isRunning = true;
 
-    public void finishThread(){
+    public void stopLog(){
         isRunning = false;
     }
 
-    public ThreadForLog(String object){
+    public LoggerRunnable(List<Log> logs){
 
     }
 

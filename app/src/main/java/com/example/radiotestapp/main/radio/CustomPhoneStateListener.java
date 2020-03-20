@@ -6,7 +6,8 @@ import android.telephony.SignalStrength;
 
 public class CustomPhoneStateListener extends PhoneStateListener {
 
-    public static CustomPhoneStateListener start(OnSignalStrengthChangedListener onSignalStrengthChangedListener, CustomPhoneStateListener customPhoneStateListener){
+    public static CustomPhoneStateListener start(OnSignalStrengthChangedListener onSignalStrengthChangedListener,
+                                                 CustomPhoneStateListener customPhoneStateListener){
         return new CustomPhoneStateListener(onSignalStrengthChangedListener, customPhoneStateListener);
     }
 
@@ -15,7 +16,8 @@ public class CustomPhoneStateListener extends PhoneStateListener {
     private CustomPhoneStateListener() {
     }
 
-    /* synthetic */ CustomPhoneStateListener(OnSignalStrengthChangedListener onSignalStrengthChangedListener, CustomPhoneStateListener customPhoneStateListener) {
+    /* synthetic */ CustomPhoneStateListener(OnSignalStrengthChangedListener onSignalStrengthChangedListener,
+                                             CustomPhoneStateListener customPhoneStateListener) {
         this();
         mOnSignalStrengthChangedListener = onSignalStrengthChangedListener;
     }

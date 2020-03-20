@@ -8,6 +8,7 @@
 
     <Button
         android:id="@+id/button"
+        android:text="Start"
         android:layout_width="100dp"
         android:layout_height="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -15,6 +16,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:onClick="onButtonClick"
+        />
+    <Button
+        android:id="@+id/button2"
+        android:text="Stop"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:onClick="onButton2Click"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
