@@ -22,14 +22,13 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements CustomPhoneStateListener.OnSignalStrengthChangedListener {
 
     private MainViewModel viewModel;
+    private String mSignalStrength;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        mSignalStrength = "";
         checkPermissions();
-
-
     }
 
     private void initViewModel() {
@@ -82,11 +81,12 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
 
     @Override
     public void onChange(String signalStrengthData) {
+        mSignalStrength = signalStrengthData;
         viewModel.signalStrengthChanged(signalStrengthData);
     }
 
     public void onButtonClick(View view) {
-        viewModel.start();
+        viewModel.start(mSignalStrength);
     }
 
     public void onButton2Click(View view) { viewModel.stop();

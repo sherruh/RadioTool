@@ -14,7 +14,80 @@ public class Log {
     private String cqi;
     private String snr;
     private String ecNO;
-    private String Ber;
+
+    public void setLogId(String logId) {
+        this.logId = logId;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setMcc(String mcc) {
+        this.mcc = mcc;
+    }
+
+    public void setMnc(String mnc) {
+        this.mnc = mnc;
+    }
+
+    public void setTechnology(String technology) {
+        this.technology = technology;
+    }
+
+    public void setRsrp(String rsrp) {
+        this.rsrp = rsrp;
+    }
+
+    public void setRscp(String rscp) {
+        this.rscp = rscp;
+    }
+
+    public void setRxLevel(String rxLevel) {
+        this.rxLevel = rxLevel;
+    }
+
+    public void setCqi(String cqi) {
+        this.cqi = cqi;
+    }
+
+    public void setSnr(String snr) {
+        this.snr = snr;
+    }
+
+    public void setEcNO(String ecNO) {
+        this.ecNO = ecNO;
+    }
+
+    public void setBer(String ber) {
+        this.ber = ber;
+    }
+
+    public void setDlThrput(String dlThrput) {
+        this.dlThrput = dlThrput;
+    }
+
+    public void setUlThrput(String ulThrput) {
+        this.ulThrput = ulThrput;
+    }
+
+    public void setPing(String ping) {
+        this.ping = ping;
+    }
+
+    public void setEvent(String event) {
+        this.event = event;
+    }
+
+    private String ber;
     private String dlThrput;
     private String ulThrput;
     private String ping;
@@ -37,7 +110,7 @@ public class Log {
         this.cqi = cqi;
         this.snr = snr;
         this.ecNO = ecNO;
-        Ber = ber;
+        this.ber = ber;
         this.dlThrput = dlThrput;
         this.ulThrput = ulThrput;
         this.ping = ping;
@@ -97,7 +170,7 @@ public class Log {
     }
 
     public String getBer() {
-        return Ber;
+        return ber;
     }
 
     public String getDlThrput() {

@@ -14,8 +14,12 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.radiotestapp.main.radio.CustomPhoneStateListener;
 import com.example.radiotestapp.main.thread.LoggerRunnable;
+import com.example.radiotestapp.model.Log;
 import com.example.radiotestapp.utils.Logger;
 import com.example.radiotestapp.utils.SingleLiveEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 
@@ -30,6 +34,8 @@ public class MainViewModel extends ViewModel {
     private String signalLevel;
     private LoggerRunnable logger;
     private Thread threadForLog;
+    private List<Log> logs = new ArrayList<>();
+    private Log currentLog;
 
     public void onViewCreated(Context context, CustomPhoneStateListener.OnSignalStrengthChangedListener onSignalStrengthChangedListener) {
         telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -69,14 +75,20 @@ public class MainViewModel extends ViewModel {
 
     }
 
-    public void start() {
-        logger = new LoggerRunnable(null);
+    public void start(String mSignalStrength) {
+        currentLog = new Log();
+        currentLog.setRscp(mSignalStrength);
+        logs.clear();
+        logger = new LoggerRunnable(logs, currentLog);
         threadForLog = new Thread(logger);
         threadForLog.start();
     }
 
     public void signalStrengthChanged(String signalStrengthData) {
-        Logger.d(signalStrengthData);
+        currentLog = new Log();
+        currentLog.setRscp(signalStrengthData);
+        if(logger != null)
+            logger.setLog(currentLog);
     }
 
     public void stop() {

@@ -9,18 +9,27 @@ public class LoggerRunnable implements Runnable {
 
     private volatile boolean isRunning = true;
 
+    private List<Log> mLogs;
+    private Log mLog;
+
     public void stopLog(){
         isRunning = false;
     }
 
-    public LoggerRunnable(List<Log> logs){
+    public LoggerRunnable(List<Log> logs, Log log){
+        mLogs = logs;
+        mLogs.add(log);
+        mLog = log;
+    }
 
+    public void setLog(Log log){
+        mLog = log;
     }
 
     @Override
     public void run() {
         while (isRunning){
-            Logger.d("Loger Thread");
+            mLogs.add(mLog);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
