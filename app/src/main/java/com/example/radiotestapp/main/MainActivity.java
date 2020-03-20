@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.Manifest;
 import android.os.Bundle;
+import android.telephony.CellLocation;
 import android.view.View;
 
 import com.example.radiotestapp.R;
@@ -19,15 +20,18 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements CustomPhoneStateListener.OnSignalStrengthChangedListener {
+public class MainActivity extends AppCompatActivity implements CustomPhoneStateListener.OnSignalStrengthChangedListener,
+        CustomPhoneStateListener.OnCellLocationChangeListener {
 
     private MainViewModel viewModel;
     private String mSignalStrength;
+    private CellLocation mCellLocation;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mSignalStrength = "";
+        mCellLocation = null;
         checkPermissions();
     }
 
@@ -40,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
             }
         });
 
-        viewModel.onViewCreated(this, this);
+        viewModel.onViewCreated(this, this, this);
     }
 
     private void checkPermissions() {
@@ -80,9 +84,9 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     }
 
     @Override
-    public void onChange(String signalStrengthData) {
+    public void onSignalStrengthChanged(String signalStrengthData) {
         mSignalStrength = signalStrengthData;
-        viewModel.signalStrengthChanged(signalStrengthData);
+        viewModel.signalStrengthChanged(signalStrengthData, mCellLocation);
     }
 
     public void onButtonClick(View view) {
@@ -90,5 +94,12 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     }
 
     public void onButton2Click(View view) { viewModel.stop();
+    }
+
+
+    @Override
+    public void onCellLocationChanged(CellLocation cellLocation) {
+        mCellLocation = cellLocation;
+        viewModel.signalStrengthChanged(mSignalStrength, mCellLocation);
     }
 }

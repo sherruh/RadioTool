@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.telephony.CellInfoLte;
+import android.telephony.CellLocation;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.content.Context;
@@ -37,7 +38,8 @@ public class MainViewModel extends ViewModel {
     private List<Log> logs = new ArrayList<>();
     private Log currentLog;
 
-    public void onViewCreated(Context context, CustomPhoneStateListener.OnSignalStrengthChangedListener onSignalStrengthChangedListener) {
+    public void onViewCreated(Context context, CustomPhoneStateListener.OnSignalStrengthChangedListener onSignalStrengthChangedListener,
+                              CustomPhoneStateListener.OnCellLocationChangeListener onCellLocationChangeListener) {
         telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
         if (ContextCompat.checkSelfPermission(context,
@@ -56,6 +58,7 @@ public class MainViewModel extends ViewModel {
                         Logger.d(String.valueOf(telephonyManager.getDeviceSoftwareVersion()));
                         Logger.d(String.valueOf(telephonyManager.getSimCountryIso().toUpperCase()));
                         Logger.d(String.valueOf(telephonyManager.getSimOperatorName()));
+                        Logger.d(telephonyManager.getSimOperator());
                         Logger.d(String.valueOf(telephonyManager.getNetworkType()));
                     } catch (Exception e) {
                         Logger.d(e.getMessage());
@@ -68,8 +71,10 @@ public class MainViewModel extends ViewModel {
                 }
             }
 
-            customPhoneStateListener = CustomPhoneStateListener.start(onSignalStrengthChangedListener,null);
+            customPhoneStateListener = CustomPhoneStateListener.start(onSignalStrengthChangedListener,null,
+                    onCellLocationChangeListener);
             telephonyManager.listen(customPhoneStateListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
+            telephonyManager.listen(customPhoneStateListener, PhoneStateListener.LISTEN_CELL_LOCATION);
         }
 
 
@@ -84,9 +89,14 @@ public class MainViewModel extends ViewModel {
         threadForLog.start();
     }
 
-    public void signalStrengthChanged(String signalStrengthData) {
+    public void signalStrengthChanged(String signalStrengthData, CellLocation mCellLocation) {
         currentLog = new Log();
         currentLog.setRscp(signalStrengthData);
+        Logger.d(currentLog.getRscp());
+        gsmCellLocation = (GsmCellLocation)mCellLocation;
+        if(gsmCellLocation != null){
+            Logger.d("Cell " + gsmCellLocation.getCid());
+        }
         if(logger != null)
             logger.setLog(currentLog);
     }
