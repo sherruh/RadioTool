@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     @Override
     public void onSignalStrengthChanged(String signalStrengthData) {
         mSignalStrength = signalStrengthData;
-        viewModel.signalStrengthChanged(signalStrengthData, mCellLocation);
+        viewModel.stateChanged(signalStrengthData, mCellLocation);
     }
 
     public void onButtonClick(View view) {
@@ -100,6 +100,6 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     @Override
     public void onCellLocationChanged(CellLocation cellLocation) {
         mCellLocation = cellLocation;
-        viewModel.signalStrengthChanged(mSignalStrength, mCellLocation);
+        viewModel.stateChanged(mSignalStrength, mCellLocation);
     }
 }

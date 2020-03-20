@@ -28,10 +28,12 @@ public class MainViewModel extends ViewModel {
 
     public SingleLiveEvent<Void> isPermissionNotGranted = new SingleLiveEvent<>();
 
+    private Context mContext;
     private TelephonyManager telephonyManager;
     private GsmCellLocation gsmCellLocation;
     private CellInfoLte cellInfoLte;
-    private CustomPhoneStateListener customPhoneStateListener;
+    private CustomPhoneStateListener customPhoneStateListenerSignalStrength;
+    private CustomPhoneStateListener customPhoneStateListenerCellLocation;
     private String signalLevel;
     private LoggerRunnable logger;
     private Thread threadForLog;
@@ -40,44 +42,14 @@ public class MainViewModel extends ViewModel {
 
     public void onViewCreated(Context context, CustomPhoneStateListener.OnSignalStrengthChangedListener onSignalStrengthChangedListener,
                               CustomPhoneStateListener.OnCellLocationChangeListener onCellLocationChangeListener) {
+        mContext = context;
         telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-
-        if (ContextCompat.checkSelfPermission(context,
-                ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED)
-            isPermissionNotGranted.call();
-        else {
-            gsmCellLocation = (GsmCellLocation) telephonyManager.getCellLocation();
-            if (gsmCellLocation != null) {
-                Logger.d(String.valueOf(gsmCellLocation.getCid()));
-                Logger.d(String.valueOf(gsmCellLocation.getLac()));
-
-                if (this.telephonyManager != null) {
-                    try {
-                        Logger.d(String.valueOf(telephonyManager.getPhoneType()));
-                        Logger.d(String.valueOf(telephonyManager.getDeviceSoftwareVersion()));
-                        Logger.d(String.valueOf(telephonyManager.getSimCountryIso().toUpperCase()));
-                        Logger.d(String.valueOf(telephonyManager.getSimOperatorName()));
-                        Logger.d(telephonyManager.getSimOperator());
-                        Logger.d(String.valueOf(telephonyManager.getNetworkType()));
-                    } catch (Exception e) {
-                        Logger.d(e.getMessage());
-                    }
-                }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (telephonyManager.getPhoneCount() == 1) {
-                        //TODO
-                    }
-                }
-            }
-
-            customPhoneStateListener = CustomPhoneStateListener.start(onSignalStrengthChangedListener,null,
-                    onCellLocationChangeListener);
-            telephonyManager.listen(customPhoneStateListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
-            telephonyManager.listen(customPhoneStateListener, PhoneStateListener.LISTEN_CELL_LOCATION);
-        }
-
-
+        customPhoneStateListenerSignalStrength = CustomPhoneStateListener.start(onSignalStrengthChangedListener,null,
+                onCellLocationChangeListener);
+        customPhoneStateListenerCellLocation = CustomPhoneStateListener.start(onSignalStrengthChangedListener,null,
+                onCellLocationChangeListener);
+        telephonyManager.listen(customPhoneStateListenerSignalStrength, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
+        telephonyManager.listen(customPhoneStateListenerCellLocation, PhoneStateListener.LISTEN_CELL_LOCATION);
     }
 
     public void start(String mSignalStrength) {
@@ -89,17 +61,6 @@ public class MainViewModel extends ViewModel {
         threadForLog.start();
     }
 
-    public void signalStrengthChanged(String signalStrengthData, CellLocation mCellLocation) {
-        currentLog = new Log();
-        currentLog.setRscp(signalStrengthData);
-        Logger.d(currentLog.getRscp());
-        gsmCellLocation = (GsmCellLocation)mCellLocation;
-        if(gsmCellLocation != null){
-            Logger.d("Cell " + gsmCellLocation.getCid());
-        }
-        if(logger != null)
-            logger.setLog(currentLog);
-    }
 
     public void stop() {
         logger.stopLog();
@@ -109,4 +70,52 @@ public class MainViewModel extends ViewModel {
             e.printStackTrace();
         }
     }
+
+    public void stateChanged(String mSignalStrength, CellLocation mCellLocation) {
+        gsmCellLocation = (GsmCellLocation) getCellLocation();
+        if(gsmCellLocation != null){
+            Logger.d("Cell " + gsmCellLocation.getCid());
+        }else Logger.d("Cell is null");
+        currentLog = new Log();
+        currentLog.setRscp(getSignalStrength());
+        Logger.d(currentLog.getRscp());
+        if(logger != null)
+            logger.setLog(currentLog);
+    }
+
+    private String getSignalStrength(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            return telephonyManager.getSignalStrength().toString();
+        }else return "";
+    }
+
+    @SuppressLint({"NewApi"})
+    private CellLocation getCellLocation(){
+        CellLocation cellLocation;
+        if (ContextCompat.checkSelfPermission(mContext,
+                ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED)
+            isPermissionNotGranted.call();
+        else {
+            cellLocation = telephonyManager.getCellLocation();
+            if (cellLocation != null) {
+                /*Logger.d(String.valueOf(gsmCellLocation.getCid()));
+                Logger.d(String.valueOf(gsmCellLocation.getLac()));*/
+                if (this.telephonyManager != null) {
+                    /*try {
+                        Logger.d(String.valueOf(telephonyManager.getPhoneType()));
+                        Logger.d(String.valueOf(telephonyManager.getDeviceSoftwareVersion()));
+                        Logger.d(String.valueOf(telephonyManager.getSimCountryIso().toUpperCase()));
+                        Logger.d(String.valueOf(telephonyManager.getSimOperatorName()));
+                        Logger.d(telephonyManager.getSimOperator());
+                        Logger.d(String.valueOf(telephonyManager.getNetworkType()));
+                    } catch (Exception e) {
+                        Logger.d(e.getMessage());
+                    }*/
+                }
+                return cellLocation;
+            }
+        }return null;
+    }
+
 }
