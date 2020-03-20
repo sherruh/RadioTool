@@ -5,12 +5,14 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.Manifest;
+import android.os.Build;
 import android.os.Bundle;
 import android.telephony.CellLocation;
 import android.view.View;
 
 import com.example.radiotestapp.R;
 import com.example.radiotestapp.main.radio.CustomPhoneStateListener;
+import com.example.radiotestapp.utils.Logger;
 import com.example.radiotestapp.utils.Toaster;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
@@ -48,38 +50,85 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     }
 
     private void checkPermissions() {
-        Dexter.withActivity(this)
-                .withPermissions(
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.READ_PHONE_STATE,
-                        Manifest.permission.WAKE_LOCK,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.INTERNET,
-                        Manifest.permission.ACCESS_NETWORK_STATE,
-                        Manifest.permission.ACCESS_WIFI_STATE,
-                        Manifest.permission.CALL_PHONE,
-                        Manifest.permission.RECEIVE_BOOT_COMPLETED
-                        )
-                .withListener(new MultiplePermissionsListener() {
-                    @Override
-                    public void onPermissionsChecked(MultiplePermissionsReport report) {
-                        if (report.areAllPermissionsGranted()) {
-                            initViewModel();
-                        }
-                        else {
-                            Toaster.showLong(MainActivity.this,"Необходимы разрешения приложению");
-                            finish();
-                        }
-                    }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Dexter.withActivity(this)
+                    .withPermissions(
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.READ_PHONE_STATE,
+                            Manifest.permission.WAKE_LOCK,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.INTERNET,
+                            Manifest.permission.ACCESS_NETWORK_STATE,
+                            Manifest.permission.ACCESS_WIFI_STATE,
+                            Manifest.permission.CALL_PHONE,
+                            Manifest.permission.RECEIVE_BOOT_COMPLETED,
+                            Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                            )
+                    .withListener(new MultiplePermissionsListener() {
+                        @Override
+                        public void onPermissionsChecked(MultiplePermissionsReport report) {
+                            if (report.areAllPermissionsGranted()) {
+                                initViewModel();
+                            }
+                            else {
+                                if(report.getDeniedPermissionResponses().size() == 1
+                                    && report.getDeniedPermissionResponses().get(0).getPermissionName()
+                                        .equals("android.permission.ACCESS_BACKGROUND_LOCATION"))
+                                {
+                                    Toaster.showLong(MainActivity.this,"Необходимо разрешение на постоянный доступ к местоположению," +
+                                            " иначе вохможно неккоретное отображение сектора.");
+                                    initViewModel();
+                                } else {
+                                    Logger.d(String.valueOf(report.getDeniedPermissionResponses().get(0).getPermissionName()));
+                                    Toaster.showLong(MainActivity.this,"Необходимы разрешения приложению");
+                                    finish();
+                                }
 
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
-                        token.continuePermissionRequest();
-                    }
-                })
-                .onSameThread()
-                .check();
+                            }
+                        }
+
+                        @Override
+                        public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                            token.continuePermissionRequest();
+                        }
+                    })
+                    .onSameThread()
+                    .check();
+        } else{
+            Dexter.withActivity(this)
+                    .withPermissions(
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.READ_PHONE_STATE,
+                            Manifest.permission.WAKE_LOCK,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.INTERNET,
+                            Manifest.permission.ACCESS_NETWORK_STATE,
+                            Manifest.permission.ACCESS_WIFI_STATE,
+                            Manifest.permission.CALL_PHONE,
+                            Manifest.permission.RECEIVE_BOOT_COMPLETED
+                    )
+                    .withListener(new MultiplePermissionsListener() {
+                        @Override
+                        public void onPermissionsChecked(MultiplePermissionsReport report) {
+                            if (report.areAllPermissionsGranted()) {
+                                initViewModel();
+                            }
+                            else {
+                                Toaster.showLong(MainActivity.this,"Необходимы разрешения приложению");
+                                finish();
+                            }
+                        }
+
+                        @Override
+                        public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                            token.continuePermissionRequest();
+                        }
+                    })
+                    .onSameThread()
+                    .check();
+        }
 
     }
 
