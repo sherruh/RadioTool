@@ -40,6 +40,7 @@ public class MainViewModel extends ViewModel {
     private Thread threadForLog;
     private List<Log> logs = new ArrayList<>();
     private Log currentLog;
+    private String plmn;
 
     public void onViewCreated(Context context, CustomPhoneStateListener.OnSignalStrengthChangedListener onSignalStrengthChangedListener,
                               CustomPhoneStateListener.OnCellLocationChangeListener onCellLocationChangeListener) {
@@ -82,6 +83,8 @@ public class MainViewModel extends ViewModel {
         Logger.d(currentLog.getRscp());
         if(logger != null)
             logger.setLog(currentLog);
+        plmn = getPlmn();
+
     }
 
     private String getSignalStrength(){
@@ -117,6 +120,11 @@ public class MainViewModel extends ViewModel {
                 return cellLocation;
             }
         }return null;
+    }
+
+    private String getPlmn(){
+        if (telephonyManager == null) return "";
+        return telephonyManager.getSimOperator();
     }
 
 }

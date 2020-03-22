@@ -14,6 +14,8 @@ import com.example.radiotestapp.R;
 import com.example.radiotestapp.main.radio.CustomPhoneStateListener;
 import com.example.radiotestapp.utils.Logger;
 import com.example.radiotestapp.utils.Toaster;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -28,12 +30,14 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     private MainViewModel viewModel;
     private String mSignalStrength;
     private CellLocation mCellLocation;
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mSignalStrength = "";
         mCellLocation = null;
+        checkPlayServices();
         checkPermissions();
     }
 
@@ -47,6 +51,24 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         });
 
         viewModel.onViewCreated(this, this, this);
+    }
+
+    private boolean checkPlayServices() {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST);
+            } else {
+                Toaster.showLong(MainActivity.this,"Необходимо подключить Google Play");
+                finish();
+            }
+
+            return false;
+        }
+
+        return true;
     }
 
     private void checkPermissions() {

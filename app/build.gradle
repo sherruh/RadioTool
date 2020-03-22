@@ -40,4 +40,7 @@ dependencies {
     implementation 'com.karumi:dexter:6.0.2'
 
     compile 'com.kirianov.multisim:multisim:2.0@aar'
+
+    //GPS location
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
 }
