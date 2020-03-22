@@ -1,10 +1,18 @@
 package com.example.radiotestapp.main;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.CellLocation;
@@ -12,10 +20,15 @@ import android.view.View;
 
 import com.example.radiotestapp.R;
 import com.example.radiotestapp.main.radio.CustomPhoneStateListener;
+import com.example.radiotestapp.services.GettingLocationService;
 import com.example.radiotestapp.utils.Logger;
 import com.example.radiotestapp.utils.Toaster;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -25,12 +38,18 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements CustomPhoneStateListener.OnSignalStrengthChangedListener,
-        CustomPhoneStateListener.OnCellLocationChangeListener {
+        CustomPhoneStateListener.OnCellLocationChangeListener, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private MainViewModel viewModel;
     private String mSignalStrength;
     private CellLocation mCellLocation;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+
+    private Location geoLocation;
+    private GoogleApiClient googleApiClient;
+    private LocationRequest geoLocationRequest;
+    private static final long UPDATE_INTERVAL = 1000, FASTEST_INTERVAL = 500;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         checkPlayServices();
         checkPermissions();
     }
+
+
 
     private void initViewModel() {
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
@@ -53,7 +74,9 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         viewModel.onViewCreated(this, this, this);
     }
 
-    private boolean checkPlayServices() {
+
+    //region Permissions and Google Play
+    private void checkPlayServices() {
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
         int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
 
@@ -65,10 +88,9 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
                 finish();
             }
 
-            return false;
+            Toaster.showLong(MainActivity.this,"Необходимо подключить Google Play");
+            finish();
         }
-
-        return true;
     }
 
     private void checkPermissions() {
@@ -92,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
                         public void onPermissionsChecked(MultiplePermissionsReport report) {
                             if (report.areAllPermissionsGranted()) {
                                 initViewModel();
+                                startGettingLocation();
                             }
                             else {
                                 if(report.getDeniedPermissionResponses().size() == 1
@@ -101,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
                                     Toaster.showLong(MainActivity.this,"Необходимо разрешение на постоянный доступ к местоположению," +
                                             " иначе вохможно неккоретное отображение сектора.");
                                     initViewModel();
+                                    startGettingLocation();
                                 } else {
                                     Logger.d(String.valueOf(report.getDeniedPermissionResponses().get(0).getPermissionName()));
                                     Toaster.showLong(MainActivity.this,"Необходимы разрешения приложению");
@@ -136,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
                         public void onPermissionsChecked(MultiplePermissionsReport report) {
                             if (report.areAllPermissionsGranted()) {
                                 initViewModel();
+                                startGettingLocation();
                             }
                             else {
                                 Toaster.showLong(MainActivity.this,"Необходимы разрешения приложению");
@@ -151,6 +176,26 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
                     .onSameThread()
                     .check();
         }
+
+    }
+
+
+    //endregion
+
+    private void startGettingLocation() {
+        viewModel.startGettingLocation();
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                googleApiClient = new GoogleApiClient.Builder(getBaseContext()).
+                        addApi(LocationServices.API).
+                        addConnectionCallbacks(MainActivity.this).
+                        addOnConnectionFailedListener(MainActivity.this)
+                        .build();
+                googleApiClient.connect();
+            }
+        });
+        t.start();
 
     }
 
@@ -173,4 +218,45 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         mCellLocation = cellLocation;
         viewModel.stateChanged(mSignalStrength, mCellLocation);
     }
+
+    //region GPS Location
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        geoLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+        if (geoLocation != null) {
+            Logger.d("Start lon " + geoLocation.getLongitude() + " Start lat " + geoLocation.getLatitude());
+        }
+
+        startLocationUpdates();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        if (location != null)
+            Logger.d("Lon " + location.getLongitude() + " Lat " + location.getLatitude());
+
+    }
+
+    private void startLocationUpdates() {
+        geoLocationRequest = new LocationRequest();
+        geoLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        geoLocationRequest.setInterval(UPDATE_INTERVAL);
+        geoLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, geoLocationRequest, this);
+    }
+
+    //endregion
+
 }
