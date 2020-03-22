@@ -13,6 +13,7 @@ import android.telephony.gsm.GsmCellLocation;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModel;
 
+import com.example.radiotestapp.enums.ETechnology;
 import com.example.radiotestapp.main.radio.CustomPhoneStateListener;
 import com.example.radiotestapp.main.thread.LoggerRunnable;
 import com.example.radiotestapp.model.Log;
