@@ -29,6 +29,7 @@ public class GettingLocationService extends Service implements
     public static final String ACTION_LOCATION_BROADCAST = "LocationBroadcast";
     public static final String EXTRA_LATITUDE = "extra_latitude";
     public static final String EXTRA_LONGITUDE = "extra_longitude";
+    public static final String EXTRA_ALTITUDE = "extra_altitude";
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -61,11 +62,11 @@ public class GettingLocationService extends Service implements
 
 
 
-    private void sendMessageToUI(String lat, String lng) {
+    private void sendMessageToUI(String lat, String lng, String alt) {
         Intent intent = new Intent(ACTION_LOCATION_BROADCAST);
         intent.putExtra(EXTRA_LATITUDE, lat);
         intent.putExtra(EXTRA_LONGITUDE, lng);
-        Logger.d("here");
+        intent.putExtra(EXTRA_ALTITUDE, alt);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
@@ -89,7 +90,7 @@ public class GettingLocationService extends Service implements
     @Override
     public void onLocationChanged(Location location) {
         if (location != null) {
-            sendMessageToUI(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
+            sendMessageToUI(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()),String.valueOf(location.getAltitude()));
         }
     }
 }

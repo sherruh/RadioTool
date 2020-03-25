@@ -197,9 +197,9 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
                     public void onReceive(Context context, Intent intent) {
                         String latitude = intent.getStringExtra(GettingLocationService.EXTRA_LATITUDE);
                         String longitude = intent.getStringExtra(GettingLocationService.EXTRA_LONGITUDE);
-
+                        String altitude = intent.getStringExtra(GettingLocationService.EXTRA_ALTITUDE);
                         if (latitude != null && longitude != null) {
-                            Logger.d("Service lat " + latitude + " service lon " + longitude);
+                            Logger.d("Service lat " + latitude + " service lon " + longitude + " service altitude " + altitude);
                         }
                     }
                 }, new IntentFilter(GettingLocationService.ACTION_LOCATION_BROADCAST));
