@@ -91,6 +91,8 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        Logger.d("on stop logging size " + logger.getLogs().size());
+        Logger.d("on stop last log longitude " + logger.getLogs().get(logger.getLogs().size() - 1).getLongitude());
     }
 
     public void stateChanged(String mSignalStrength, CellLocation mCellLocation) {
@@ -102,9 +104,12 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         currentLog.setRscp(getSignalStrength());
         Logger.d(currentLog.getRscp());
         if(logger != null)
-            logger.setLog(currentLog);
+            updateCurrentLogInLoggerThread(currentLog);
         plmn = getPlmn();
+    }
 
+    private void updateCurrentLogInLoggerThread(Log currentLog) {
+        logger.setLog(currentLog);
     }
 
     private String getSignalStrength(){
@@ -168,7 +173,6 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
 
     @Override
     public void onConnectionSuspended(int i) {
-
     }
 
     @Override
@@ -200,6 +204,9 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
                         String altitude = intent.getStringExtra(GettingLocationService.EXTRA_ALTITUDE);
                         if (latitude != null && longitude != null) {
                             Logger.d("Service lat " + latitude + " service lon " + longitude + " service altitude " + altitude);
+                            currentLog.setLatitude(Double.parseDouble(latitude));
+                            currentLog.setLongitude(Double.parseDouble(longitude));
+                            updateCurrentLogInLoggerThread(currentLog);
                         }
                     }
                 }, new IntentFilter(GettingLocationService.ACTION_LOCATION_BROADCAST));

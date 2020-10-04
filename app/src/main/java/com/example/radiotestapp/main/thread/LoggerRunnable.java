@@ -37,4 +37,8 @@ public class LoggerRunnable implements Runnable {
             }
         }
     }
+
+    public List<Log> getLogs() {
+        return mLogs;
+    }
 }

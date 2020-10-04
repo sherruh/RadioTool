@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.telephony.CellLocation;
 import android.view.View;
+import android.widget.Button;
 
 import com.example.radiotestapp.R;
 import com.example.radiotestapp.main.radio.CustomPhoneStateListener;
@@ -51,9 +52,14 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     private LocationRequest geoLocationRequest;
     private static final long UPDATE_INTERVAL = 1000, FASTEST_INTERVAL = 500;
 
+    private Button buttonStart;
+    private Button buttonStop;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        buttonStart = findViewById(R.id.button_start_main_activity);
+        buttonStop = findViewById(R.id.button_stop_main_activity);
         mSignalStrength = "";
         mCellLocation = null;
         checkPlayServices();
@@ -205,11 +211,16 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         viewModel.stateChanged(signalStrengthData, mCellLocation);
     }
 
-    public void onButtonClick(View view) {
+    public void onButtonStartClick(View view) {
         viewModel.start(mSignalStrength);
+        buttonStop.setVisibility(View.VISIBLE);
+        buttonStart.setVisibility(View.GONE);
     }
 
-    public void onButton2Click(View view) { viewModel.stop();
+    public void onButtonStopClick(View view) {
+        viewModel.stop();
+        buttonStop.setVisibility(View.GONE);
+        buttonStart.setVisibility(View.VISIBLE);
     }
 
 
