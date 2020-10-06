@@ -109,7 +109,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     }
 
     private void updateCurrentLogInLoggerThread(Log currentLog) {
-        logger.setLog(currentLog);
+        if (logger != null) logger.setLog(currentLog);
     }
 
     private String getSignalStrength(){

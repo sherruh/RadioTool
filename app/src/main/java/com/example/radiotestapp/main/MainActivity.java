@@ -13,11 +13,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.CellLocation;
 import android.view.View;
 import android.widget.Button;
+import android.widget.MediaController;
 
 import com.example.radiotestapp.R;
 import com.example.radiotestapp.main.radio.CustomPhoneStateListener;
@@ -30,6 +32,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -38,6 +42,8 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.util.List;
 
+import kr.co.prnd.YouTubePlayerView;
+
 public class MainActivity extends AppCompatActivity implements CustomPhoneStateListener.OnSignalStrengthChangedListener,
         CustomPhoneStateListener.OnCellLocationChangeListener, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -45,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     private MainViewModel viewModel;
     private String mSignalStrength;
     private CellLocation mCellLocation;
+    private YouTubePlayerView youTubePlayerView;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     private Location geoLocation;
@@ -58,14 +65,19 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        buttonStart = findViewById(R.id.button_start_main_activity);
-        buttonStop = findViewById(R.id.button_stop_main_activity);
+        initViews();
         mSignalStrength = "";
         mCellLocation = null;
         checkPlayServices();
         checkPermissions();
     }
 
+    private void initViews() {
+        buttonStart = findViewById(R.id.button_start_main_activity);
+        buttonStop = findViewById(R.id.button_stop_main_activity);
+        youTubePlayerView = findViewById(R.id.youtube_player_main_activity);
+        playYoutube();
+    }
 
 
     private void initViewModel() {
@@ -269,5 +281,49 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     }
 
     //endregion
+
+    private void playYoutube(){
+        Logger.d("Youtube initializing");
+        youTubePlayerView.play("1uwvxTT5V5M", new YouTubePlayerView.OnInitializedListener() {
+            @Override
+            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+                youTubePlayer.setShowFullscreenButton(false);
+                youTubePlayer.setPlaybackEventListener(new YouTubePlayer.PlaybackEventListener() {
+                    @Override
+                    public void onPlaying() {
+                        Logger.d("Youtube Playing");
+                    }
+
+                    @Override
+                    public void onPaused() {
+
+                    }
+
+                    @Override
+                    public void onStopped() {
+
+                    }
+
+                    @Override
+                    public void onBuffering(boolean b) {
+                        if (b) Logger.d("Youtube Buffering");
+                        else Logger.d("Youtube NOT Buffering");
+                    }
+
+                    @Override
+                    public void onSeekTo(int i) {
+
+                    }
+                });
+                youTubePlayer.loadVideo("1uwvxTT5V5M");
+                youTubePlayer.play();
+            }
+
+            @Override
+            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+
+            }
+        });
+    }
 
 }

@@ -32,7 +32,6 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
-    implementation files('libs\\YouTubeAndroidPlayerApi.jar')
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -44,4 +43,7 @@ dependencies {
 
     //GPS location
     implementation 'com.google.android.gms:play-services-location:17.1.0'
+
+    //Custom YouTube
+    implementation 'kr.co.prnd:youtube-player-view:1.3.0'
 }
