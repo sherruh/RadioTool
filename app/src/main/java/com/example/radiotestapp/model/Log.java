@@ -1,5 +1,7 @@
 package com.example.radiotestapp.model;
 
+import com.example.radiotestapp.enums.EEvents;
+
 public class Log {
     private String logId;
     private long date;
@@ -8,12 +10,20 @@ public class Log {
     private String mcc;
     private String mnc;
     private String technology;
+    private String cellId;
     private String rsrp;
     private String rscp;
     private String rxLevel;
     private String cqi;
     private String snr;
     private String ecNO;
+    private String ber;
+    private String dlThrput;
+    private String ulThrput;
+    private String ping;
+    private EEvents eEvent;
+    private String eventParam;
+    private String eventDescription;
 
     public void setLogId(String logId) {
         this.logId = logId;
@@ -82,21 +92,26 @@ public class Log {
     public void setPing(String ping) {
         this.ping = ping;
     }
-
-    public void setEvent(String event) {
-        this.event = event;
-    }
-
-    private String ber;
-    private String dlThrput;
-    private String ulThrput;
-    private String ping;
-    private String event;
-
     public Log() {
     }
 
-    public Log(String logId, long date, double longitude, double latitude, String mcc, String mnc, String technology, String rsrp, String rscp, String rxLevel, String cqi, String snr, String ecNO, String ber, String dlThrput, String ulThrput, String ping, String event) {
+    public EEvents geteEvent() {
+        return eEvent;
+    }
+
+    public void seteEvent(EEvents eEvent) {
+        this.eEvent = eEvent;
+    }
+
+    public String getEventParam() {
+        return eventParam;
+    }
+
+    public void setEventParam(String eventParam) {
+        this.eventParam = eventParam;
+    }
+
+    public Log(String logId, long date, double longitude, double latitude, String mcc, String mnc, String technology, String rsrp, String rscp, String rxLevel, String cqi, String snr, String ecNO, String ber, String dlThrput, String ulThrput, String ping) {
         this.logId = logId;
         this.date = date;
         this.longitude = longitude;
@@ -114,7 +129,6 @@ public class Log {
         this.dlThrput = dlThrput;
         this.ulThrput = ulThrput;
         this.ping = ping;
-        this.event = event;
     }
 
     public String getLogId() {
@@ -185,7 +199,19 @@ public class Log {
         return ping;
     }
 
-    public String getEvent() {
-        return event;
+    public String getCellId() {
+        return cellId;
+    }
+
+    public void setCellId(String cellId) {
+        this.cellId = cellId;
+    }
+
+    public String getEventDescription() {
+        return eventDescription;
+    }
+
+    public void setEventDescription(String eventDescription) {
+        this.eventDescription = eventDescription;
     }
 }

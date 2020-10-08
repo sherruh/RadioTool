@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.MediaController;
 
+import com.example.radiotestapp.App;
 import com.example.radiotestapp.R;
 import com.example.radiotestapp.main.radio.CustomPhoneStateListener;
 import com.example.radiotestapp.services.GettingLocationService;
@@ -39,6 +40,9 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener;
 
 import java.util.List;
 
@@ -76,7 +80,73 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         buttonStart = findViewById(R.id.button_start_main_activity);
         buttonStop = findViewById(R.id.button_stop_main_activity);
         youTubePlayerView = findViewById(R.id.youtube_player_main_activity);
-        playYoutube();
+        initYoutube();
+    }
+
+    private void initYoutube() {
+        com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView youTubePlayerView1 = findViewById(R.id.youtube_player_advanced_main_activity);
+        getLifecycle().addObserver(youTubePlayerView1);
+
+        youTubePlayerView1.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+            @Override
+            public void onReady(com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer youTubePlayer) {
+                String videoId = "S0Q4gqBUs7c";
+                youTubePlayer.loadVideo(videoId, 0);
+
+            }
+        });
+
+        youTubePlayerView1.addYouTubePlayerListener(new YouTubePlayerListener() {
+            @Override
+            public void onReady(com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer youTubePlayer) {
+
+            }
+
+            @Override
+            public void onStateChange(com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer youTubePlayer, PlayerConstants.PlayerState playerState) {
+
+            }
+
+            @Override
+            public void onPlaybackQualityChange(com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer youTubePlayer, PlayerConstants.PlaybackQuality playbackQuality) {
+                Toaster.showLong(MainActivity.this, String.valueOf(playbackQuality.name()));
+            }
+
+            @Override
+            public void onPlaybackRateChange(com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer youTubePlayer, PlayerConstants.PlaybackRate playbackRate) {
+
+            }
+
+            @Override
+            public void onError(com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer youTubePlayer, PlayerConstants.PlayerError playerError) {
+
+            }
+
+            @Override
+            public void onCurrentSecond(com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer youTubePlayer, float v) {
+
+            }
+
+            @Override
+            public void onVideoDuration(com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer youTubePlayer, float v) {
+
+            }
+
+            @Override
+            public void onVideoLoadedFraction(com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer youTubePlayer, float v) {
+
+            }
+
+            @Override
+            public void onVideoId(com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer youTubePlayer, String s) {
+
+            }
+
+            @Override
+            public void onApiChange(com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer youTubePlayer) {
+
+            }
+        });
     }
 
 
@@ -227,6 +297,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         viewModel.start(mSignalStrength);
         buttonStop.setVisibility(View.VISIBLE);
         buttonStart.setVisibility(View.GONE);
+        playYoutube();
     }
 
     public void onButtonStopClick(View view) {
@@ -284,7 +355,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
 
     private void playYoutube(){
         Logger.d("Youtube initializing");
-        youTubePlayerView.play("1uwvxTT5V5M", new YouTubePlayerView.OnInitializedListener() {
+        youTubePlayerView.play("EzKImzjwGyM", new YouTubePlayerView.OnInitializedListener() {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                 youTubePlayer.setShowFullscreenButton(false);
@@ -292,11 +363,11 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
                     @Override
                     public void onPlaying() {
                         Logger.d("Youtube Playing");
+                        MainActivity.this.viewModel.startPlayingVideo();
                     }
 
                     @Override
                     public void onPaused() {
-
                     }
 
                     @Override
@@ -306,8 +377,14 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
 
                     @Override
                     public void onBuffering(boolean b) {
-                        if (b) Logger.d("Youtube Buffering");
-                        else Logger.d("Youtube NOT Buffering");
+                        if (b){
+                            Logger.d("Youtube Buffering");
+                            MainActivity.this.viewModel.startBuffering();
+                        }
+                        else{
+                            Logger.d("Youtube NOT Buffering");
+                            MainActivity.this.viewModel.finishBuffering();
+                        }
                     }
 
                     @Override
@@ -315,13 +392,14 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
 
                     }
                 });
-                youTubePlayer.loadVideo("1uwvxTT5V5M");
+                MainActivity.this.viewModel.youTubePlayerInitialized();
+                youTubePlayer.loadVideo("EzKImzjwGyM");
                 youTubePlayer.play();
             }
 
             @Override
             public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-
+                MainActivity.this.viewModel.youTubePlayerFailedInitialization(youTubeInitializationResult.toString());
             }
         });
     }

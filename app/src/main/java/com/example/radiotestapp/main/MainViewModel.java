@@ -22,6 +22,8 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModel;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.example.radiotestapp.App;
+import com.example.radiotestapp.enums.EEvents;
 import com.example.radiotestapp.enums.ETechnology;
 import com.example.radiotestapp.main.radio.CustomPhoneStateListener;
 import com.example.radiotestapp.main.thread.LoggerRunnable;
@@ -81,6 +83,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         logger = new LoggerRunnable(logs, currentLog);
         threadForLog = new Thread(logger);
         threadForLog.start();
+
     }
 
 
@@ -92,17 +95,20 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
             e.printStackTrace();
         }
         Logger.d("on stop logging size " + logger.getLogs().size());
-        Logger.d("on stop last log longitude " + logger.getLogs().get(logger.getLogs().size() - 1).getLongitude());
+        for (Log log : logger.getLogs()){
+            //Logger.d(log.getRscp() + " Cell " + log.getCellId() + " Event " + log.geteEvent());
+        }
     }
 
     public void stateChanged(String mSignalStrength, CellLocation mCellLocation) {
         gsmCellLocation = (GsmCellLocation) getCellLocation();
         if(gsmCellLocation != null){
-            Logger.d("Cell " + gsmCellLocation.getCid());
+            Logger.d("Cell " + gsmCellLocation.getLac());
+            App.logRepository.setCellId(String.valueOf(gsmCellLocation.getCid()));
         }else Logger.d("Cell is null");
         currentLog = new Log();
+        currentLog.setCellId(App.logRepository.getCellId());
         currentLog.setRscp(getSignalStrength());
-        Logger.d(currentLog.getRscp());
         if(logger != null)
             updateCurrentLogInLoggerThread(currentLog);
         plmn = getPlmn();
@@ -167,7 +173,6 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         if (geoLocation != null) {
             Logger.d("ViewModel Start lon " + geoLocation.getLongitude() + " Start lat " + geoLocation.getLatitude());
         }
-
         startLocationUpdates();
     }
 
@@ -215,5 +220,25 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         Intent intent = new Intent(mContext.getApplicationContext(), GettingLocationService.class);
         mContext.getApplicationContext().startService(intent);
 
+    }
+
+    public void youTubePlayerInitialized() {
+        App.logRepository.setEvent(EEvents.YIS, String.valueOf(System.currentTimeMillis()), "");
+    }
+
+    public void youTubePlayerFailedInitialization(String initializationResult) {
+        App.logRepository.setEvent(EEvents.YIF, String.valueOf(System.currentTimeMillis()),initializationResult);
+    }
+
+    public void startBuffering() {
+        App.logRepository.setEvent(EEvents.YBS, String.valueOf(System.currentTimeMillis()),"");
+    }
+
+    public void finishBuffering() {
+        App.logRepository.setEvent(EEvents.YBF, String.valueOf(System.currentTimeMillis()),"");
+    }
+
+    public void startPlayingVideo() {
+        App.logRepository.setEvent(EEvents.YSP, String.valueOf(System.currentTimeMillis()),"");
     }
 }

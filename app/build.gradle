@@ -46,4 +46,7 @@ dependencies {
 
     //Custom YouTube
     implementation 'kr.co.prnd:youtube-player-view:1.3.0'
+
+    //Custom Youtube advanced
+    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:10.0.5'
 }
