@@ -31,8 +31,6 @@ public class LoggerRunnable implements Runnable {
         while (isRunning){
             App.logRepository.setDate(System.currentTimeMillis());
             mLogs.add(App.logRepository.getLog());
-            Logger.d(" Thread Log " + App.logRepository.getLog().getRscp() + " CELLID " + App.logRepository.getLog().getCellId() + " Event " + App.logRepository.getLog().geteEvent());
-            App.logRepository.clearLastEvent();
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {

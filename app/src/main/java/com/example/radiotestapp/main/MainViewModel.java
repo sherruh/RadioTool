@@ -19,6 +19,7 @@ import android.telephony.gsm.GsmCellLocation;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -46,6 +47,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     public SingleLiveEvent<Void> isPermissionNotGranted = new SingleLiveEvent<>();
+    public MutableLiveData<Boolean> isLogging = new MutableLiveData<>();
 
     private Context mContext;
     private TelephonyManager telephonyManager;
@@ -83,7 +85,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         logger = new LoggerRunnable(logs, currentLog);
         threadForLog = new Thread(logger);
         threadForLog.start();
-
+        isLogging.setValue(true);
     }
 
 
@@ -94,10 +96,8 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        isLogging.setValue(false);
         Logger.d("on stop logging size " + logger.getLogs().size());
-        for (Log log : logger.getLogs()){
-            //Logger.d(log.getRscp() + " Cell " + log.getCellId() + " Event " + log.geteEvent());
-        }
     }
 
     public void stateChanged(String mSignalStrength, CellLocation mCellLocation) {
@@ -223,22 +223,18 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     }
 
     public void youTubePlayerInitialized() {
-        App.logRepository.setEvent(EEvents.YIS, String.valueOf(System.currentTimeMillis()), "");
     }
 
     public void youTubePlayerFailedInitialization(String initializationResult) {
-        App.logRepository.setEvent(EEvents.YIF, String.valueOf(System.currentTimeMillis()),initializationResult);
     }
 
     public void startBuffering() {
-        App.logRepository.setEvent(EEvents.YBS, String.valueOf(System.currentTimeMillis()),"");
     }
 
     public void finishBuffering() {
-        App.logRepository.setEvent(EEvents.YBF, String.valueOf(System.currentTimeMillis()),"");
     }
 
     public void startPlayingVideo() {
-        App.logRepository.setEvent(EEvents.YSP, String.valueOf(System.currentTimeMillis()),"");
+
     }
 }

@@ -5,26 +5,23 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.Manifest;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.location.Location;
-import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.CellLocation;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.MediaController;
 
-import com.example.radiotestapp.App;
+import com.example.radiotestapp.utils.YoutubePlayerListener;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerCallback;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
+
 import com.example.radiotestapp.R;
 import com.example.radiotestapp.main.radio.CustomPhoneStateListener;
-import com.example.radiotestapp.services.GettingLocationService;
 import com.example.radiotestapp.utils.Logger;
 import com.example.radiotestapp.utils.Toaster;
 import com.google.android.gms.common.ConnectionResult;
@@ -33,20 +30,14 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubePlayer;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener;
 
 import java.util.List;
-
-import kr.co.prnd.YouTubePlayerView;
 
 public class MainActivity extends AppCompatActivity implements CustomPhoneStateListener.OnSignalStrengthChangedListener,
         CustomPhoneStateListener.OnCellLocationChangeListener, GoogleApiClient.ConnectionCallbacks,
@@ -66,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     private Button buttonStart;
     private Button buttonStop;
 
+    private YoutubePlayerListener youtubePlayerListener;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -79,74 +72,17 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     private void initViews() {
         buttonStart = findViewById(R.id.button_start_main_activity);
         buttonStop = findViewById(R.id.button_stop_main_activity);
-        youTubePlayerView = findViewById(R.id.youtube_player_main_activity);
-        initYoutube();
+        initYoutubeListener();
     }
 
-    private void initYoutube() {
-        com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView youTubePlayerView1 = findViewById(R.id.youtube_player_advanced_main_activity);
-        getLifecycle().addObserver(youTubePlayerView1);
-
-        youTubePlayerView1.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+    private void initYoutubeListener() {
+        youtubePlayerListener = new YoutubePlayerListener(){
             @Override
-            public void onReady(com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer youTubePlayer) {
-                String videoId = "S0Q4gqBUs7c";
-                youTubePlayer.loadVideo(videoId, 0);
-
+            public void onStateChange(YouTubePlayer youTubePlayer, PlayerConstants.PlayerState playerState) {
+                if ( playerState == PlayerConstants.PlayerState.ENDED) {Toaster.showLong(MainActivity.this,"ENDED");
+                    MainActivity.this.playYoutube();}
             }
-        });
-
-        youTubePlayerView1.addYouTubePlayerListener(new YouTubePlayerListener() {
-            @Override
-            public void onReady(com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer youTubePlayer) {
-
-            }
-
-            @Override
-            public void onStateChange(com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer youTubePlayer, PlayerConstants.PlayerState playerState) {
-
-            }
-
-            @Override
-            public void onPlaybackQualityChange(com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer youTubePlayer, PlayerConstants.PlaybackQuality playbackQuality) {
-                Toaster.showLong(MainActivity.this, String.valueOf(playbackQuality.name()));
-            }
-
-            @Override
-            public void onPlaybackRateChange(com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer youTubePlayer, PlayerConstants.PlaybackRate playbackRate) {
-
-            }
-
-            @Override
-            public void onError(com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer youTubePlayer, PlayerConstants.PlayerError playerError) {
-
-            }
-
-            @Override
-            public void onCurrentSecond(com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer youTubePlayer, float v) {
-
-            }
-
-            @Override
-            public void onVideoDuration(com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer youTubePlayer, float v) {
-
-            }
-
-            @Override
-            public void onVideoLoadedFraction(com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer youTubePlayer, float v) {
-
-            }
-
-            @Override
-            public void onVideoId(com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer youTubePlayer, String s) {
-
-            }
-
-            @Override
-            public void onApiChange(com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer youTubePlayer) {
-
-            }
-        });
+        };
     }
 
 
@@ -304,6 +240,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         viewModel.stop();
         buttonStop.setVisibility(View.GONE);
         buttonStart.setVisibility(View.VISIBLE);
+        if(youTubePlayerView != null) youTubePlayerView.release();
     }
 
 
@@ -320,7 +257,6 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         if (geoLocation != null) {
             Logger.d("Start lon " + geoLocation.getLongitude() + " Start lat " + geoLocation.getLatitude());
         }
-
         startLocationUpdates();
     }
 
@@ -354,54 +290,26 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     //endregion
 
     private void playYoutube(){
-        Logger.d("Youtube initializing");
-        youTubePlayerView.play("EzKImzjwGyM", new YouTubePlayerView.OnInitializedListener() {
+        if (youTubePlayerView != null) {
+            youTubePlayerView.release();
+            ((ViewGroup)youTubePlayerView.getParent()).removeView(youTubePlayerView);
+            initYoutubeListener();
+        }
+        youTubePlayerView = findViewById(R.id.youtube_player_advanced_main_activity);
+        youTubePlayerView.initialize(youtubePlayerListener);
+        youTubePlayerView.getYouTubePlayerWhenReady(new YouTubePlayerCallback() {
             @Override
-            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-                youTubePlayer.setShowFullscreenButton(false);
-                youTubePlayer.setPlaybackEventListener(new YouTubePlayer.PlaybackEventListener() {
-                    @Override
-                    public void onPlaying() {
-                        Logger.d("Youtube Playing");
-                        MainActivity.this.viewModel.startPlayingVideo();
-                    }
-
-                    @Override
-                    public void onPaused() {
-                    }
-
-                    @Override
-                    public void onStopped() {
-
-                    }
-
-                    @Override
-                    public void onBuffering(boolean b) {
-                        if (b){
-                            Logger.d("Youtube Buffering");
-                            MainActivity.this.viewModel.startBuffering();
-                        }
-                        else{
-                            Logger.d("Youtube NOT Buffering");
-                            MainActivity.this.viewModel.finishBuffering();
-                        }
-                    }
-
-                    @Override
-                    public void onSeekTo(int i) {
-
-                    }
-                });
-                MainActivity.this.viewModel.youTubePlayerInitialized();
-                youTubePlayer.loadVideo("EzKImzjwGyM");
+            public void onYouTubePlayer(YouTubePlayer youTubePlayer) {
+                Toaster.showLong(MainActivity.this, "READY!");
+                youTubePlayer.cueVideo("uaVxC4syxPY",0);
                 youTubePlayer.play();
-            }
-
-            @Override
-            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-                MainActivity.this.viewModel.youTubePlayerFailedInitialization(youTubeInitializationResult.toString());
             }
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        youTubePlayerView.release();
+        super.onDestroy();
+    }
 }
