@@ -5,6 +5,10 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener;
 
 public class YoutubePlayerListener implements YouTubePlayerListener {
+
+
+
+
     @Override
     public void onApiChange(YouTubePlayer youTubePlayer) {
 
@@ -47,7 +51,6 @@ public class YoutubePlayerListener implements YouTubePlayerListener {
 
     @Override
     public void onVideoId(YouTubePlayer youTubePlayer, String s) {
-
     }
 
     @Override

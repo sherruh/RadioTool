@@ -3,6 +3,7 @@ package com.example.radiotestapp.main;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -12,13 +13,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.telephony.CellLocation;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.example.radiotestapp.utils.YoutubePlayerListener;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerCallback;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
+import com.bumptech.glide.Glide;
+import com.example.radiotestapp.main.framnet_youtube_player.YoutubePlayerFragment;
 
 import com.example.radiotestapp.R;
 import com.example.radiotestapp.main.radio.CustomPhoneStateListener;
@@ -35,7 +35,6 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
 
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     private MainViewModel viewModel;
     private String mSignalStrength;
     private CellLocation mCellLocation;
-    private YouTubePlayerView youTubePlayerView;
+    private YoutubePlayerFragment youtubePlayerFragment;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     private Location geoLocation;
@@ -56,8 +55,9 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
 
     private Button buttonStart;
     private Button buttonStop;
+    private ImageView imageViewYoutube;
+    private TextView textThroughput;
 
-    private YoutubePlayerListener youtubePlayerListener;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,18 +72,12 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     private void initViews() {
         buttonStart = findViewById(R.id.button_start_main_activity);
         buttonStop = findViewById(R.id.button_stop_main_activity);
-        initYoutubeListener();
+        imageViewYoutube = findViewById(R.id.image_youtube_main_activity);
+        Glide.with(imageViewYoutube).load(R.drawable.youtube_logo).into(imageViewYoutube);
+        textThroughput = findViewById(R.id.text_throughput_main_activity);
     }
 
-    private void initYoutubeListener() {
-        youtubePlayerListener = new YoutubePlayerListener(){
-            @Override
-            public void onStateChange(YouTubePlayer youTubePlayer, PlayerConstants.PlayerState playerState) {
-                if ( playerState == PlayerConstants.PlayerState.ENDED) {Toaster.showLong(MainActivity.this,"ENDED");
-                    MainActivity.this.playYoutube();}
-            }
-        };
-    }
+
 
 
     private void initViewModel() {
@@ -94,8 +88,31 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
                 checkPermissions();
             }
         });
-
         viewModel.onViewCreated(this, this, this);
+        viewModel.onStartYoutubeClickedEvent.observe(this, aVoid -> {
+            initYoutubePlayerFragment();
+            imageViewYoutube.setVisibility(View.GONE);
+        });
+        viewModel.thrp.observe(this, along ->{
+            textThroughput.setText(String.valueOf( along));
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+
+    }
+
+    private void initYoutubePlayerFragment() {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if (youtubePlayerFragment != null) {
+            transaction.remove(youtubePlayerFragment).commit();
+            transaction = getSupportFragmentManager().beginTransaction();
+        }
+        youtubePlayerFragment = YoutubePlayerFragment.newInstance(viewModel);
+        transaction.replace(R.id.frame_main_activity, youtubePlayerFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
 
@@ -233,14 +250,12 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         viewModel.start(mSignalStrength);
         buttonStop.setVisibility(View.VISIBLE);
         buttonStart.setVisibility(View.GONE);
-        playYoutube();
     }
 
     public void onButtonStopClick(View view) {
         viewModel.stop();
         buttonStop.setVisibility(View.GONE);
         buttonStart.setVisibility(View.VISIBLE);
-        if(youTubePlayerView != null) youTubePlayerView.release();
     }
 
 
@@ -289,27 +304,5 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
 
     //endregion
 
-    private void playYoutube(){
-        if (youTubePlayerView != null) {
-            youTubePlayerView.release();
-            ((ViewGroup)youTubePlayerView.getParent()).removeView(youTubePlayerView);
-            initYoutubeListener();
-        }
-        youTubePlayerView = findViewById(R.id.youtube_player_advanced_main_activity);
-        youTubePlayerView.initialize(youtubePlayerListener);
-        youTubePlayerView.getYouTubePlayerWhenReady(new YouTubePlayerCallback() {
-            @Override
-            public void onYouTubePlayer(YouTubePlayer youTubePlayer) {
-                Toaster.showLong(MainActivity.this, "READY!");
-                youTubePlayer.cueVideo("uaVxC4syxPY",0);
-                youTubePlayer.play();
-            }
-        });
-    }
 
-    @Override
-    protected void onDestroy() {
-        youTubePlayerView.release();
-        super.onDestroy();
-    }
 }

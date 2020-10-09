@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.CellInfoLte;
@@ -25,6 +26,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.radiotestapp.App;
 import com.example.radiotestapp.enums.EEvents;
+import com.example.radiotestapp.enums.ESTATE;
 import com.example.radiotestapp.enums.ETechnology;
 import com.example.radiotestapp.main.radio.CustomPhoneStateListener;
 import com.example.radiotestapp.main.thread.LoggerRunnable;
@@ -47,7 +49,10 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     public SingleLiveEvent<Void> isPermissionNotGranted = new SingleLiveEvent<>();
+    public SingleLiveEvent<Void> youtubePlaybackEndedEvent = new SingleLiveEvent<>();
+    public SingleLiveEvent<Void> onStartYoutubeClickedEvent = new SingleLiveEvent<>();
     public MutableLiveData<Boolean> isLogging = new MutableLiveData<>();
+    public MutableLiveData<Long> thrp = App.logRepository.thrp;
 
     private Context mContext;
     private TelephonyManager telephonyManager;
@@ -64,6 +69,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     private GoogleApiClient googleApiClient;
     private LocationRequest geoLocationRequest;
     private Location geoLocation;
+    private int countOfRepeats = 9999;
 
     public void onViewCreated(Context context, CustomPhoneStateListener.OnSignalStrengthChangedListener onSignalStrengthChangedListener,
                               CustomPhoneStateListener.OnCellLocationChangeListener onCellLocationChangeListener) {
@@ -82,10 +88,11 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         currentLog = new Log();
         currentLog.setRscp(mSignalStrength);
         logs.clear();
-        logger = new LoggerRunnable(logs, currentLog);
+        logger = new LoggerRunnable(logs, currentLog, mContext);
         threadForLog = new Thread(logger);
         threadForLog.start();
         isLogging.setValue(true);
+        checkWhetherToStartYoutubePlayback();
     }
 
 
@@ -222,19 +229,37 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
 
     }
 
-    public void youTubePlayerInitialized() {
-    }
-
-    public void youTubePlayerFailedInitialization(String initializationResult) {
+    public void youTubePlayerInitializing() {
+        App.logRepository.setLogState(ESTATE.YOUTUBE_TEST);
     }
 
     public void startBuffering() {
+
     }
 
     public void finishBuffering() {
     }
 
     public void startPlayingVideo() {
+    }
+
+    public void playbackEnded(){
+        App.logRepository.setLogState(ESTATE.IDLE);
+        checkWhetherToStartYoutubePlayback();
 
     }
+
+    private void checkWhetherToStartYoutubePlayback() {
+        if (countOfRepeats > 0 && isLogging.getValue()){
+            countOfRepeats--;
+            onStartYoutubeClickedEvent.call();
+        }
+
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+    }
+
 }

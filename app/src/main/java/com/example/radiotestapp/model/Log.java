@@ -1,6 +1,7 @@
 package com.example.radiotestapp.model;
 
 import com.example.radiotestapp.enums.EEvents;
+import com.example.radiotestapp.enums.ESTATE;
 
 public class Log {
     private String logId;
@@ -18,12 +19,13 @@ public class Log {
     private String snr;
     private String ecNO;
     private String ber;
-    private String dlThrput;
-    private String ulThrput;
-    private String ping;
+    private long dlThrput;
+    private long ulThrput;
+    private int ping;
     private EEvents eEvent;
     private String eventParam;
     private String eventDescription;
+    private ESTATE logState;
 
     public void setLogId(String logId) {
         this.logId = logId;
@@ -81,20 +83,20 @@ public class Log {
         this.ber = ber;
     }
 
-    public void setDlThrput(String dlThrput) {
+    public void setDlThrput(long dlThrput) {
         this.dlThrput = dlThrput;
     }
 
-    public void setUlThrput(String ulThrput) {
+    public void setUlThrput(long ulThrput) {
         this.ulThrput = ulThrput;
     }
 
-    public void setPing(String ping) {
+    public void setPing(int ping) {
         this.ping = ping;
     }
+
     public Log() {
     }
-
     public EEvents geteEvent() {
         return eEvent;
     }
@@ -111,7 +113,9 @@ public class Log {
         this.eventParam = eventParam;
     }
 
-    public Log(String logId, long date, double longitude, double latitude, String mcc, String mnc, String technology, String rsrp, String rscp, String rxLevel, String cqi, String snr, String ecNO, String ber, String dlThrput, String ulThrput, String ping) {
+    public Log(String logId, long date, double longitude, double latitude, String mcc, String mnc,
+               String technology, String rsrp, String rscp, String rxLevel, String cqi, String snr,
+               String ecNO, String ber, long dlThrput, long ulThrput, int ping) {
         this.logId = logId;
         this.date = date;
         this.longitude = longitude;
@@ -187,15 +191,15 @@ public class Log {
         return ber;
     }
 
-    public String getDlThrput() {
+    public long getDlThrput() {
         return dlThrput;
     }
 
-    public String getUlThrput() {
+    public long getUlThrput() {
         return ulThrput;
     }
 
-    public String getPing() {
+    public int getPing() {
         return ping;
     }
 
@@ -213,5 +217,13 @@ public class Log {
 
     public void setEventDescription(String eventDescription) {
         this.eventDescription = eventDescription;
+    }
+
+    public ESTATE getLogState() {
+        return logState;
+    }
+
+    public void setLogState(ESTATE logState) {
+        this.logState = logState;
     }
 }
