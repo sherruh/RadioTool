@@ -1,7 +1,6 @@
 package com.example.radiotestapp.main;
 
 import android.annotation.SuppressLint;
-import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -10,15 +9,25 @@ import android.location.Location;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.telephony.CellIdentityGsm;
+import android.telephony.CellIdentityLte;
+import android.telephony.CellIdentityWcdma;
+import android.telephony.CellInfo;
+import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;
+import android.telephony.CellInfoWcdma;
 import android.telephony.CellLocation;
 import android.telephony.PhoneStateListener;
+import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.content.Context;
 import android.telephony.gsm.GsmCellLocation;
+import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -26,12 +35,13 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.radiotestapp.App;
 import com.example.radiotestapp.enums.EEvents;
-import com.example.radiotestapp.enums.ESTATE;
-import com.example.radiotestapp.enums.ETechnology;
+import com.example.radiotestapp.enums.EState;
 import com.example.radiotestapp.main.radio.CustomPhoneStateListener;
 import com.example.radiotestapp.main.thread.LoggerRunnable;
+import com.example.radiotestapp.model.Event;
 import com.example.radiotestapp.model.Log;
 import com.example.radiotestapp.services.GettingLocationService;
+import com.example.radiotestapp.utils.DateConverter;
 import com.example.radiotestapp.utils.Logger;
 import com.example.radiotestapp.utils.SingleLiveEvent;
 import com.google.android.gms.common.ConnectionResult;
@@ -40,10 +50,15 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.READ_PHONE_STATE;
+import static androidx.core.content.ContextCompat.getSystemService;
 
 public class MainViewModel extends ViewModel implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -51,8 +66,23 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     public SingleLiveEvent<Void> isPermissionNotGranted = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> youtubePlaybackEndedEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> onStartYoutubeClickedEvent = new SingleLiveEvent<>();
+    public SingleLiveEvent<Void> loggingStoppedEvent = new SingleLiveEvent<>();
     public MutableLiveData<Boolean> isLogging = new MutableLiveData<>();
-    public MutableLiveData<Long> thrp = App.logRepository.thrp;
+    public MutableLiveData<Long> youtubeThroughputLiveData = App.logRepository.youtubeThroughputLiveData;
+    public MutableLiveData<String> mccLiveData = App.logRepository.mccLiveData;
+    public MutableLiveData<String> mncLiveData = App.logRepository.mncLiveData;
+    public MutableLiveData<String> techLiveData = App.logRepository.techLiveData;
+    public MutableLiveData<String> tacLiveData = App.logRepository.tacLiveData;
+    public MutableLiveData<String> eNodeBLiveData = App.logRepository.eNodeBLiveData;
+    public MutableLiveData<String> cidLiveData = App.logRepository.cidLiveData;
+    public MutableLiveData<String> channelLiveData = App.logRepository.channelLiveData;
+    public MutableLiveData<String> pciPscBsicLiveData = App.logRepository.pciPscBsicLiveData;
+    public MutableLiveData<String> levelLiveData = App.logRepository.levelLiveData;
+    public MutableLiveData<String> rsrqEcNoLiveData = App.logRepository.rsrqEcNoLiveData;
+    public MutableLiveData<String> snrLiveData = App.logRepository.snrLiveData;
+    public MutableLiveData<String> cqiLiveData = App.logRepository.cqiLiveData;
+    public MutableLiveData<Long> initTimeLiveData = new MutableLiveData<>();
+    public MutableLiveData<Long> bufferingTimeLiveData = new MutableLiveData<>();
 
     private Context mContext;
     private TelephonyManager telephonyManager;
@@ -61,23 +91,29 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     private CustomPhoneStateListener customPhoneStateListenerSignalStrength;
     private CustomPhoneStateListener customPhoneStateListenerCellLocation;
     private String signalLevel;
+    private String logId;
     private LoggerRunnable logger;
     private Thread threadForLog;
     private List<Log> logs = new ArrayList<>();
+    private List<Event> eventLogs = new ArrayList<>();
     private Log currentLog;
     private String plmn;
     private GoogleApiClient googleApiClient;
     private LocationRequest geoLocationRequest;
     private Location geoLocation;
+    private long startInitYoutubeTime;
+    private long finishInitYoutubeTime;
+    private long startBufferingTime;
+    private long finishBufferingTime;
     private int countOfRepeats = 9999;
 
     public void onViewCreated(Context context, CustomPhoneStateListener.OnSignalStrengthChangedListener onSignalStrengthChangedListener,
                               CustomPhoneStateListener.OnCellLocationChangeListener onCellLocationChangeListener) {
         mContext = context;
         telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        customPhoneStateListenerSignalStrength = CustomPhoneStateListener.start(onSignalStrengthChangedListener,null,
+        customPhoneStateListenerSignalStrength = CustomPhoneStateListener.start(onSignalStrengthChangedListener, null,
                 onCellLocationChangeListener);
-        customPhoneStateListenerCellLocation = CustomPhoneStateListener.start(onSignalStrengthChangedListener,null,
+        customPhoneStateListenerCellLocation = CustomPhoneStateListener.start(onSignalStrengthChangedListener, null,
                 onCellLocationChangeListener);
         telephonyManager.listen(customPhoneStateListenerSignalStrength, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
         telephonyManager.listen(customPhoneStateListenerCellLocation, PhoneStateListener.LISTEN_CELL_LOCATION);
@@ -86,7 +122,10 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
 
     public void start(String mSignalStrength) {
         currentLog = new Log();
-        currentLog.setRscp(mSignalStrength);
+        Date date = new Date(System.currentTimeMillis());
+        logId = DateConverter.shortDate(date);
+        currentLog.setLogId(logId);
+        eventLogs.clear();
         logs.clear();
         logger = new LoggerRunnable(logs, currentLog, mContext);
         threadForLog = new Thread(logger);
@@ -94,7 +133,6 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         isLogging.setValue(true);
         checkWhetherToStartYoutubePlayback();
     }
-
 
     public void stop() {
         logger.stopLog();
@@ -105,24 +143,138 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         }
         isLogging.setValue(false);
         Logger.d("on stop logging size " + logger.getLogs().size());
+        loggingStoppedEvent.call();
     }
 
-    public void stateChanged(String mSignalStrength, CellLocation mCellLocation) {
+    public void radioStateChanged(String mSignalStrength, CellLocation mCellLocation) {
         gsmCellLocation = (GsmCellLocation) getCellLocation();
-        if(gsmCellLocation != null){
-            Logger.d("Cell " + gsmCellLocation.getLac());
-            App.logRepository.setCellId(String.valueOf(gsmCellLocation.getCid()));
-        }else Logger.d("Cell is null");
-        currentLog = new Log();
-        currentLog.setCellId(App.logRepository.getCellId());
-        currentLog.setRscp(getSignalStrength());
-        if(logger != null)
-            updateCurrentLogInLoggerThread(currentLog);
+        updateSignalData(getSignalStrength());
         plmn = getPlmn();
+        App.logRepository.setPlmn(plmn);
+        if (ActivityCompat.checkSelfPermission(mContext, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        if (telephonyManager.getAllCellInfo().size() > 0) updateCellIdentityParams();
     }
 
-    private void updateCurrentLogInLoggerThread(Log currentLog) {
-        if (logger != null) logger.setLog(currentLog);
+    private void updateCellIdentityParams() {
+        if (ActivityCompat.checkSelfPermission(mContext, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        CellInfo ci = telephonyManager.getAllCellInfo().get(0);
+        if (ci instanceof CellInfoGsm)
+        {
+            CellIdentityGsm cellIdentityGsm = ((CellInfoGsm)ci).getCellIdentity();
+            App.logRepository.setCellId(String.valueOf(cellIdentityGsm.getCid()));
+            App.logRepository.setGsmCellInfo(cellIdentityGsm);
+        }
+        else if (ci instanceof CellInfoWcdma)
+        {
+            CellIdentityWcdma cellIdentityWcdma =( (CellInfoWcdma)ci).getCellIdentity();
+            App.logRepository.setCellId(String.valueOf((cellIdentityWcdma.getCid() - 786432)));
+            App.logRepository.setWcdmaCellInfo(cellIdentityWcdma);
+        }
+        else if (ci instanceof CellInfoLte)
+        {
+            CellIdentityLte cellIdentityLte = ((CellInfoLte)ci).getCellIdentity();
+            String eNodeB = "";
+            String cellId = "";
+            try{
+                int longCid = cellIdentityLte.getCi();
+                String cellidHex = Integer.toHexString(longCid);
+                String eNBHex = cellidHex.substring(0, cellidHex.length() - 2);
+                String cellHex = cellidHex.substring(cellidHex.length() - 2);
+                eNodeB = String.valueOf(Integer.parseInt(eNBHex, 16));
+                cellId = String.valueOf(Integer.parseInt(cellHex, 16));
+            }catch (Exception ignored){}
+            App.logRepository.setEnodeB(eNodeB);
+            App.logRepository.setCellId(cellId);
+            App.logRepository.setLteCellInfo(cellIdentityLte);
+        }
+    }
+
+
+    private void updateSignalData(String signalStrength) {
+        Logger.d(signalStrength);
+        App.logRepository.clearSignalData();
+        if (signalStrength.equals("")) return;
+        int networkType = telephonyManager.getNetworkType();
+        switch (networkType) {
+            case TelephonyManager.NETWORK_TYPE_GPRS:
+            case TelephonyManager.NETWORK_TYPE_EDGE:
+            case TelephonyManager.NETWORK_TYPE_CDMA:
+            case TelephonyManager.NETWORK_TYPE_1xRTT:
+            case TelephonyManager.NETWORK_TYPE_IDEN:{
+                updateGsmSignalData(signalStrength);
+                break;
+            }
+            case TelephonyManager.NETWORK_TYPE_UMTS:
+            case TelephonyManager.NETWORK_TYPE_EVDO_0:
+            case TelephonyManager.NETWORK_TYPE_EVDO_A:
+            case TelephonyManager.NETWORK_TYPE_HSDPA:
+            case TelephonyManager.NETWORK_TYPE_HSUPA:
+            case TelephonyManager.NETWORK_TYPE_HSPA:
+            case TelephonyManager.NETWORK_TYPE_EVDO_B:
+            case TelephonyManager.NETWORK_TYPE_EHRPD:
+            case TelephonyManager.NETWORK_TYPE_HSPAP:{
+                updateWcdmaSignalData(signalStrength);
+                break;
+            }
+            case TelephonyManager.NETWORK_TYPE_LTE:{
+                updateLteSignalData(signalStrength);
+                break;
+            }
+            case TelephonyManager.NETWORK_TYPE_NR:
+                break;
+            default:
+                break;
+        }
+        /*if (signalStrength.contains("CellSignalStrengthLte")) updateLteSignalData(signalStrength);
+        if (signalStrength.contains("CellSignalStrengthWcdma")) updateWcdmaSignalData(signalStrength);*/
+    }
+
+    private void updateGsmSignalData(String signalData) {
+        int rxIndex = signalData.indexOf("ss=");
+        App.logRepository.setTech("GSM");
+        App.logRepository.setRxLevel(getValueOfParameter(signalData,rxIndex));
+    }
+
+    private void updateWcdmaSignalData(String signalData) {
+        int berIndex = signalData.indexOf("ber=");
+        int rscpIndex = signalData.indexOf("rscp=");
+        int ecnoIndex = signalData.indexOf("ecno=");
+        App.logRepository.setTech("WCDMA");
+        App.logRepository.setBer(getValueOfParameter(signalData,berIndex));
+        App.logRepository.setRscp(getValueOfParameter(signalData,rscpIndex));
+        App.logRepository.setEcno(getValueOfParameter(signalData,ecnoIndex));
+    }
+
+    private void updateLteSignalData(String signalData) {
+        int rsrpIndex = signalData.indexOf("rsrp=");
+        int rsrqIndex = signalData.indexOf("rsrq=");
+        int rssnrIndex = signalData.indexOf("rssnr=");
+        int cqiIndex = signalData.indexOf("cqi=");
+        App.logRepository.setTech("LTE");
+        App.logRepository.setRsrp(getValueOfParameter(signalData,rsrpIndex));
+        App.logRepository.setRsrq(getValueOfParameter(signalData,rsrqIndex));
+        String snr = "";
+        try{
+           Double snrDouble = Double.parseDouble(getValueOfParameter(signalData,rssnrIndex)) / 10.0;
+           snr = String.valueOf(snrDouble);
+        }catch (Exception ignored){}
+        App.logRepository.setRsSnr(snr);
+        App.logRepository.setCqi(getValueOfParameter(signalData,cqiIndex));
+    }
+
+    private String getValueOfParameter(String s, int startIndex){
+        try{
+            String s1 = s.substring(startIndex);
+            startIndex = s1.indexOf("=") + 1;
+            int endIndex = s1.indexOf(" ");
+            return s1.substring(startIndex,endIndex);
+        } catch (Exception e){
+            return "";
+        }
     }
 
     private String getSignalStrength(){
@@ -141,19 +293,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         else {
             cellLocation = telephonyManager.getCellLocation();
             if (cellLocation != null) {
-                /*Logger.d(String.valueOf(gsmCellLocation.getCid()));
-                Logger.d(String.valueOf(gsmCellLocation.getLac()));*/
                 if (this.telephonyManager != null) {
-                    /*try {
-                        Logger.d(String.valueOf(telephonyManager.getPhoneType()));
-                        Logger.d(String.valueOf(telephonyManager.getDeviceSoftwareVersion()));
-                        Logger.d(String.valueOf(telephonyManager.getSimCountryIso().toUpperCase()));
-                        Logger.d(String.valueOf(telephonyManager.getSimOperatorName()));
-                        Logger.d(telephonyManager.getSimOperator());
-                        Logger.d(String.valueOf(telephonyManager.getNetworkType()));
-                    } catch (Exception e) {
-                        Logger.d(e.getMessage());
-                    }*/
                 }
                 return cellLocation;
             }
@@ -177,9 +317,6 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         geoLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-        if (geoLocation != null) {
-            Logger.d("ViewModel Start lon " + geoLocation.getLongitude() + " Start lat " + geoLocation.getLatitude());
-        }
         startLocationUpdates();
     }
 
@@ -190,12 +327,6 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        if (location != null)
-            Logger.d("ViewModel Lon " + location.getLongitude() + " Lat " + location.getLatitude());
     }
 
     private void startLocationUpdates() {
@@ -214,11 +345,9 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
                         String latitude = intent.getStringExtra(GettingLocationService.EXTRA_LATITUDE);
                         String longitude = intent.getStringExtra(GettingLocationService.EXTRA_LONGITUDE);
                         String altitude = intent.getStringExtra(GettingLocationService.EXTRA_ALTITUDE);
+                        if (altitude == null || altitude.equals("")) altitude = "0";
                         if (latitude != null && longitude != null) {
-                            Logger.d("Service lat " + latitude + " service lon " + longitude + " service altitude " + altitude);
-                            currentLog.setLatitude(Double.parseDouble(latitude));
-                            currentLog.setLongitude(Double.parseDouble(longitude));
-                            updateCurrentLogInLoggerThread(currentLog);
+                            App.logRepository.setLocation(Double.parseDouble(latitude),Double.parseDouble(longitude),(int)Double.parseDouble(altitude));
                         }
                     }
                 }, new IntentFilter(GettingLocationService.ACTION_LOCATION_BROADCAST));
@@ -230,31 +359,47 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     }
 
     public void youTubePlayerInitializing() {
-        App.logRepository.setLogState(ESTATE.YOUTUBE_TEST);
+        App.logRepository.setLogState(EState.YOUTUBE_TEST);
+        startInitYoutubeTime = System.currentTimeMillis();
+        eventLogs.add(new Event( logId,EEvents.YSI,startInitYoutubeTime,""));
     }
 
-    public void startBuffering() {
+    public void startBuffering(boolean initialBuffering) {
+        if (initialBuffering) {
+            startBufferingTime = System.currentTimeMillis();
+            eventLogs.add(new Event( logId,EEvents.YSB,startBufferingTime,""));
+        }
+    }
+
+    public void videoCued() {
+        finishInitYoutubeTime = System.currentTimeMillis();
+        eventLogs.add(new Event( logId,EEvents.YSB,finishInitYoutubeTime,
+                String.valueOf(finishInitYoutubeTime - startInitYoutubeTime)));
+        initTimeLiveData.setValue(finishInitYoutubeTime - startInitYoutubeTime);
+    }
+
+    public void startPlayingVideo(boolean initialBuffering) {
+        if (initialBuffering) {
+            finishBufferingTime = System.currentTimeMillis();
+            eventLogs.add(new Event( logId,EEvents.YSB,finishBufferingTime,
+                    String.valueOf(finishBufferingTime - startBufferingTime)));
+            bufferingTimeLiveData.setValue(finishBufferingTime - startBufferingTime);
+        }
 
     }
 
-    public void finishBuffering() {
-    }
-
-    public void startPlayingVideo() {
-    }
-
-    public void playbackEnded(){
-        App.logRepository.setLogState(ESTATE.IDLE);
+    public void youtubePlaybackEnded(){
+        App.logRepository.setLogState(EState.IDLE);
         checkWhetherToStartYoutubePlayback();
-
     }
 
     private void checkWhetherToStartYoutubePlayback() {
         if (countOfRepeats > 0 && isLogging.getValue()){
             countOfRepeats--;
             onStartYoutubeClickedEvent.call();
+            return;
         }
-
+        stop();
     }
 
     private boolean isNetworkConnected() {
@@ -262,4 +407,8 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
 }

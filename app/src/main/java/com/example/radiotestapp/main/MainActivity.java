@@ -56,7 +56,21 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     private Button buttonStart;
     private Button buttonStop;
     private ImageView imageViewYoutube;
-    private TextView textThroughput;
+    private TextView textYoutubeThroughput;
+    private TextView textMcc;
+    private TextView textMnc;
+    private TextView textTech;
+    private TextView textTacLac;
+    private TextView textEnodeB;
+    private TextView textCid;
+    private TextView textChannel;
+    private TextView textPciPscBsic;
+    private TextView textLevel;
+    private TextView textRsrqEcNo;
+    private TextView textSnr;
+    private TextView textCqi;
+    private TextView textInitializationTime;
+    private TextView textBufferingTime;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +88,21 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         buttonStop = findViewById(R.id.button_stop_main_activity);
         imageViewYoutube = findViewById(R.id.image_youtube_main_activity);
         Glide.with(imageViewYoutube).load(R.drawable.youtube_logo).into(imageViewYoutube);
-        textThroughput = findViewById(R.id.text_throughput_main_activity);
+        textYoutubeThroughput = findViewById(R.id.text_youtube_throughput_value_main_activity);
+        textMcc = findViewById(R.id.text_mcc_value_main_activity);
+        textMnc = findViewById(R.id.text_mnc_value_main_activity);
+        textTech = findViewById(R.id.text_tech_value_main_activity);
+        textTacLac = findViewById(R.id.text_tac_value_main_activity);
+        textEnodeB = findViewById(R.id.text_enodeb_value_main_activity);
+        textCid = findViewById(R.id.text_cid_value_main_activity);
+        textChannel = findViewById(R.id.text_channel_value_main_activity);
+        textPciPscBsic = findViewById(R.id.text_psc_value_main_activity);
+        textLevel = findViewById(R.id.text_level_value_main_activity);
+        textRsrqEcNo = findViewById(R.id.text_rsrq_value_main_activity);
+        textSnr = findViewById(R.id.text_snr_value_main_activity);
+        textCqi = findViewById(R.id.text_cqi_value_main_activity);
+        textInitializationTime = findViewById(R.id.text_youtube_init_value_main_activity);
+        textBufferingTime = findViewById(R.id.text_youtube_buffering_value_main_activity);
     }
 
 
@@ -92,9 +120,37 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         viewModel.onStartYoutubeClickedEvent.observe(this, aVoid -> {
             initYoutubePlayerFragment();
             imageViewYoutube.setVisibility(View.GONE);
+            textBufferingTime.setText("");
+            textInitializationTime.setText("");
         });
-        viewModel.thrp.observe(this, along ->{
-            textThroughput.setText(String.valueOf( along));
+        viewModel.youtubeThroughputLiveData.observe(this, along ->{
+            textYoutubeThroughput.setText(String.valueOf( along / 1000.0));
+        });
+        viewModel.mccLiveData.observe(this, s ->{ textMcc.setText(s);});
+        viewModel.mncLiveData.observe(this, s ->{ textMnc.setText(s);});
+        viewModel.techLiveData.observe(this, s ->{ textTech.setText(s);});
+        viewModel.tacLiveData.observe(this, s ->{ textTacLac.setText(s);});
+        viewModel.eNodeBLiveData.observe(this, s ->{ textEnodeB.setText(s);});
+        viewModel.cidLiveData.observe(this, s ->{ textCid.setText(s);});
+        viewModel.channelLiveData.observe(this, s ->{ textChannel.setText(s);});
+        viewModel.pciPscBsicLiveData.observe(this, s ->{ textPciPscBsic.setText(s);});
+        viewModel.levelLiveData.observe(this, s ->{ textLevel.setText(s);});
+        viewModel.rsrqEcNoLiveData.observe(this, s ->{ textRsrqEcNo.setText(s);});
+        viewModel.snrLiveData.observe(this, s ->{ textSnr.setText(s);});
+        viewModel.cqiLiveData.observe(this, s ->{ textCqi.setText(s);});
+        viewModel.initTimeLiveData.observe(this, s ->{ textInitializationTime
+                .setText(String.valueOf(s / 1000.0));});
+        viewModel.bufferingTimeLiveData.observe(this, s ->{textBufferingTime
+                .setText(String.valueOf(s / 1000.0));});
+        viewModel.loggingStoppedEvent.observe(this,aVoid ->{
+            if (youtubePlayerFragment != null){
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.remove(youtubePlayerFragment).commit();
+                textBufferingTime.setText("");
+                textInitializationTime.setText("");
+                imageViewYoutube.setVisibility(View.VISIBLE);
+                textYoutubeThroughput.setText("");
+            }
         });
     }
 
@@ -128,7 +184,6 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
                 Toaster.showLong(MainActivity.this,"Необходимо подключить Google Play");
                 finish();
             }
-
             Toaster.showLong(MainActivity.this,"Необходимо подключить Google Play");
             finish();
         }
@@ -148,7 +203,9 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
                             Manifest.permission.ACCESS_WIFI_STATE,
                             Manifest.permission.CALL_PHONE,
                             Manifest.permission.RECEIVE_BOOT_COMPLETED,
-                            Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                            Manifest.permission.READ_PHONE_NUMBERS,
+                            Manifest.permission.READ_SMS
                             )
                     .withListener(new MultiplePermissionsListener() {
                         @Override
@@ -194,7 +251,9 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
                             Manifest.permission.ACCESS_NETWORK_STATE,
                             Manifest.permission.ACCESS_WIFI_STATE,
                             Manifest.permission.CALL_PHONE,
-                            Manifest.permission.RECEIVE_BOOT_COMPLETED
+                            Manifest.permission.RECEIVE_BOOT_COMPLETED,
+                            Manifest.permission.READ_PHONE_NUMBERS,
+                            Manifest.permission.READ_SMS
                     )
                     .withListener(new MultiplePermissionsListener() {
                         @Override
@@ -243,7 +302,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     @Override
     public void onSignalStrengthChanged(String signalStrengthData) {
         mSignalStrength = signalStrengthData;
-        viewModel.stateChanged(signalStrengthData, mCellLocation);
+        viewModel.radioStateChanged(signalStrengthData, mCellLocation);
     }
 
     public void onButtonStartClick(View view) {
@@ -262,7 +321,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     @Override
     public void onCellLocationChanged(CellLocation cellLocation) {
         mCellLocation = cellLocation;
-        viewModel.stateChanged(mSignalStrength, mCellLocation);
+        viewModel.radioStateChanged(mSignalStrength, mCellLocation);
     }
 
     //region GPS Location

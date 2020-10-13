@@ -7,7 +7,19 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.You
 public class YoutubePlayerListener implements YouTubePlayerListener {
 
 
+    private boolean isInitialBuffering;
 
+    public boolean isInitialBuffering() {
+        return isInitialBuffering;
+    }
+
+    public void setInitialBuffering(boolean initialBuffering) {
+        isInitialBuffering = initialBuffering;
+    }
+
+    public YoutubePlayerListener() {
+        isInitialBuffering = true;
+    }
 
     @Override
     public void onApiChange(YouTubePlayer youTubePlayer) {

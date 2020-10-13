@@ -1,18 +1,14 @@
 package com.example.radiotestapp.main.thread;
 
-import android.net.ConnectivityManager;
-
 import com.example.radiotestapp.App;
-import com.example.radiotestapp.enums.ESTATE;
+import com.example.radiotestapp.enums.EState;
 import com.example.radiotestapp.model.Log;
 import com.example.radiotestapp.utils.Logger;
-import com.facebook.network.connectionclass.ConnectionClassManager;
-import com.facebook.network.connectionclass.ConnectionQuality;
+
+import android.net.ConnectivityManager;
 import android.net.TrafficStats;
 
 import android.content.Context;
-import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
 
 import java.util.List;
 
@@ -35,15 +31,12 @@ public class LoggerRunnable implements Runnable {
         App.logRepository.setLog(log);
     }
 
-    public void setLog(Log log){
-        App.logRepository.setLog(log);
-    }
-
     @Override
     public void run() {
         while (isRunning){
-            if (App.logRepository.getLogState() == ESTATE.YOUTUBE_TEST) App.logRepository.setDlThroughput(getYouTubeThroughput());
+            if (App.logRepository.getLogState() == EState.YOUTUBE_TEST) App.logRepository.setDlThroughput(getYouTubeThroughput());
             App.logRepository.setDate(System.currentTimeMillis());
+            Logger.d("Logging " + App.logRepository.getLog());
             mLogs.add(App.logRepository.getLog());
             try {
                 Thread.sleep(500);
@@ -59,8 +52,7 @@ public class LoggerRunnable implements Runnable {
             prevTime = System.currentTimeMillis();
             return 0;
         }
-        long downSpeed = ((TrafficStats.getTotalRxBytes() - prevousRecievedBytes) / 1000 * 8) * 2;
-        Logger.d("YoutubeThroughput " + downSpeed  + " BYTES " + TrafficStats.getTotalRxBytes()  + " PREV " + prevousRecievedBytes);
+        long downSpeed = ((TrafficStats.getTotalRxBytes() - prevousRecievedBytes) / 1024 * 8) * 2;
         prevousRecievedBytes = TrafficStats.getTotalRxBytes();
         prevTime = System.currentTimeMillis();
         return downSpeed;

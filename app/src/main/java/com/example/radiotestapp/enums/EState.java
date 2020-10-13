@@ -1,6 +1,6 @@
 package com.example.radiotestapp.enums;
 
-public enum ESTATE {
+public enum EState {
     YOUTUBE_TEST,
     UPLOAD_TEST,
     DOWNLOAD_TEST,
