@@ -3,22 +3,41 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="ParamName">
-        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:textColor">@color/colorWhiteGrey</item>
         <item name="android:layout_marginTop">10dp</item>
+        <item name="android:textSize">8sp</item>
         <item name="android:layout_marginStart">10dp</item>
+        <item name="fontFamily">@font/roboto_bold</item>
     </style>
 
     <style name="ParamValue">
-        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:textColor">@color/colorWhite</item>
         <item name="android:layout_marginTop">10dp</item>
         <item name="android:layout_marginStart">10dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+    </style>
+
+    <style name="NumberPickerText">
+        <item name="android:textSize">15sp</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorBlack</item>
+    </style>
+
+    <style name="SettingsButton">
+        <item name="android:layout_width">25dp</item>
+        <item name="android:layout_height">24dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:src">@drawable/ic_settings_toggle</item>
     </style>
 
 </resources>

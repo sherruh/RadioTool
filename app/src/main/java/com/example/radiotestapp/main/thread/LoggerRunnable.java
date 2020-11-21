@@ -38,6 +38,7 @@ public class LoggerRunnable implements Runnable {
             App.logRepository.setDate(System.currentTimeMillis());
             Logger.d("Logging " + App.logRepository.getLog());
             mLogs.add(App.logRepository.getLog());
+            App.logRepository.saveLog(App.logRepository.getLog());
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {

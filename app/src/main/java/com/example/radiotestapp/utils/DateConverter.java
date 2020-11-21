@@ -10,4 +10,12 @@ public class DateConverter {
         String dateStr = simpleDateFormat.format(date);
         return dateStr;
     }
+
+    public static String dateWithMillis(long date){
+        String pattern = "dd-MM-yyyy_HH:mm:ss.SSS";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        String dateStr = simpleDateFormat.format(new Date(date));
+        return dateStr;
+    }
+
 }

@@ -22,6 +22,6 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
 
   @MainThread
   public void call() {
-    setValue(null);
+    postValue(null);
   }
 }

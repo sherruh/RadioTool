@@ -8,10 +8,16 @@ import android.telephony.CellIdentityWcdma;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.radiotestapp.enums.EState;
+import com.example.radiotestapp.model.Event;
 import com.example.radiotestapp.model.Log;
+import com.example.radiotestapp.repository.local.ILocalLogRepository;
+import com.example.radiotestapp.repository.local.LogFileWriter;
 
 
 public class LogRepository {
+
+    private ILocalLogRepository localLogRepository = new LogFileWriter();
+
     public MutableLiveData<Long> youtubeThroughputLiveData = new MutableLiveData<>();
     public MutableLiveData<String> mccLiveData = new MutableLiveData<>("--");
     public MutableLiveData<String> mncLiveData = new MutableLiveData<>("--");
@@ -25,6 +31,7 @@ public class LogRepository {
     public MutableLiveData<String> rsrqEcNoLiveData = new MutableLiveData<>("--");
     public MutableLiveData<String> snrLiveData = new MutableLiveData<>("--");
     public MutableLiveData<String> cqiLiveData = new MutableLiveData<>("--");
+    public MutableLiveData<String> youtubeResolutionLiveData = new MutableLiveData<>();
 
     private Log mLog = new Log();
     private String mCellId;
@@ -124,8 +131,13 @@ public class LogRepository {
 
     public void setCqi(String cqi) {
         synchronized (this){
-            mLog.setCqi(cqi);
-            cqiLiveData.setValue(cqi);
+            if (cqi.length() > 2){
+                mLog.setCqi("null");
+                cqiLiveData.setValue("--");
+            }else {
+                mLog.setCqi(cqi);
+                cqiLiveData.setValue(cqi);
+            }
         }
     }
 
@@ -152,9 +164,15 @@ public class LogRepository {
 
     public void setEcno(String ecno) {
         synchronized (this){
-            mLog.setEcNO(ecno);
-            if (ecno.equals("0")) rsrqEcNoLiveData.setValue("--");
-            else rsrqEcNoLiveData.setValue(ecno);
+
+            if (ecno.equals("0")) {
+                rsrqEcNoLiveData.setValue("--");
+                mLog.setEcNO("null");
+            }
+            else {
+                rsrqEcNoLiveData.setValue(ecno);
+                mLog.setEcNO(ecno);
+            }
         }
     }
 
@@ -230,5 +248,32 @@ public class LogRepository {
             mLog.seteNodeB(eNodeB);
             eNodeBLiveData.setValue(eNodeB);
         }
+    }
+
+    public void setYoutubeResolution(String youtubeResolution) {
+        synchronized (this){
+            mLog.setYoutubeResolution(youtubeResolution);
+            youtubeResolutionLiveData.setValue(youtubeResolution);
+        }
+    }
+
+    public void saveEvent(Event event){
+        synchronized (this){
+            localLogRepository.saveEvent(event);
+        }
+    }
+
+    public void saveLog(Log log){
+        synchronized (this){
+            localLogRepository.saveLog(log);
+        }
+    }
+
+    public void createLogFile(String logId){
+        localLogRepository.createLogFile(logId);
+    }
+
+    public void closeLogFile(){
+        localLogRepository.closeLogFile();
     }
 }

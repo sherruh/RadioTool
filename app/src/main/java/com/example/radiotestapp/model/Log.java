@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.example.radiotestapp.enums.EEvents;
 import com.example.radiotestapp.enums.EState;
+import com.example.radiotestapp.utils.DateConverter;
 
 public class Log {
     private String logId;
@@ -32,6 +33,7 @@ public class Log {
     private long dlThrput;
     private long ulThrput;
     private int ping;
+    private String youtubeResolution;
     private EEvents eEvent;
     private String eventParam;
     private String eventDescription;
@@ -115,38 +117,21 @@ public class Log {
 
     @Override
     public String toString() {
-        return "Log{" +
-                "logId='" + logId + '\'' +
-                ", date=" + date +
-                ", longitude=" + longitude +
-                ", latitude=" + latitude +
-                ", altitude=" + altitude +
-                ", mcc='" + mcc + '\'' +
-                ", mnc='" + mnc + '\'' +
-                ", technology='" + technology + '\'' +
-                ", tacLac='" + tacLac + '\'' +
-                ", eNodeB='" + eNodeB + '\'' +
-                ", cellId='" + cellId + '\'' +
-                ", bsic='" + bsic + '\'' +
-                ", psc='" + psc + '\'' +
-                ", pci='" + pci + '\'' +
-                ", rsrp='" + rsrp + '\'' +
-                ", rsrq='" + rsrq + '\'' +
-                ", rscp='" + rscp + '\'' +
-                ", rxLevel='" + rxLevel + '\'' +
-                ", cqi='" + cqi + '\'' +
-                ", snr='" + snr + '\'' +
-                ", ecNO='" + ecNO + '\'' +
-                ", ber='" + ber + '\'' +
-                ", channel='" + channel + '\'' +
-                ", dlThrput=" + dlThrput +
-                ", ulThrput=" + ulThrput +
-                ", ping=" + ping +
-                ", eEvent=" + eEvent +
-                ", eventParam='" + eventParam + '\'' +
-                ", eventDescription='" + eventDescription + '\'' +
-                ", logState=" + logState +
-                '}';
+        return logId + '\t' + DateConverter.dateWithMillis(date) + '\t' + longitude + '\t' + latitude + '\t' + altitude + '\t'
+                + mcc + '\t' + mnc + '\t' + technology + '\t' + tacLac + '\t' + eNodeB + '\t'
+                + cellId + '\t' + bsic + '\t' + psc + '\t' + pci + '\t' + rsrp + '\t'
+                + rsrq + '\t' + rscp + '\t' + rxLevel + '\t' + cqi + '\t' + snr + '\t'
+                + ecNO + '\t' + ber + '\t' + channel + '\t' + dlThrput + '\t' +  ulThrput + '\t'
+                + ping +'\t' + youtubeResolution + '\t' + eEvent + '\t' + eventParam + '\t'
+                + eventDescription + '\t' +  logState;
+    }
+
+    public String getYoutubeResolution() {
+        return youtubeResolution;
+    }
+
+    public void setYoutubeResolution(String youtubeResolution) {
+        this.youtubeResolution = youtubeResolution;
     }
 
     public String geteNodeB() {

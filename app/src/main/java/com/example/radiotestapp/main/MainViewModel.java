@@ -9,7 +9,6 @@ import android.location.Location;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.telephony.CellIdentityGsm;
 import android.telephony.CellIdentityLte;
 import android.telephony.CellIdentityWcdma;
@@ -19,14 +18,13 @@ import android.telephony.CellInfoLte;
 import android.telephony.CellInfoWcdma;
 import android.telephony.CellLocation;
 import android.telephony.PhoneStateListener;
-import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.content.Context;
 import android.telephony.gsm.GsmCellLocation;
-import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
@@ -36,6 +34,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.example.radiotestapp.App;
 import com.example.radiotestapp.enums.EEvents;
 import com.example.radiotestapp.enums.EState;
+import com.example.radiotestapp.enums.EYoutubeState;
 import com.example.radiotestapp.main.radio.CustomPhoneStateListener;
 import com.example.radiotestapp.main.thread.LoggerRunnable;
 import com.example.radiotestapp.model.Event;
@@ -44,27 +43,28 @@ import com.example.radiotestapp.services.GettingLocationService;
 import com.example.radiotestapp.utils.DateConverter;
 import com.example.radiotestapp.utils.Logger;
 import com.example.radiotestapp.utils.SingleLiveEvent;
+import com.example.radiotestapp.utils.Toaster;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
-import static android.Manifest.permission.READ_PHONE_STATE;
-import static androidx.core.content.ContextCompat.getSystemService;
 
 public class MainViewModel extends ViewModel implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     public SingleLiveEvent<Void> isPermissionNotGranted = new SingleLiveEvent<>();
-    public SingleLiveEvent<Void> youtubePlaybackEndedEvent = new SingleLiveEvent<>();
+    public SingleLiveEvent<Void> youtubeErrorEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> onStartYoutubeClickedEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> loggingStoppedEvent = new SingleLiveEvent<>();
     public MutableLiveData<Boolean> isLogging = new MutableLiveData<>();
@@ -83,6 +83,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     public MutableLiveData<String> cqiLiveData = App.logRepository.cqiLiveData;
     public MutableLiveData<Long> initTimeLiveData = new MutableLiveData<>();
     public MutableLiveData<Long> bufferingTimeLiveData = new MutableLiveData<>();
+    public MutableLiveData<String> youtubeResolutionLiveData = App.logRepository.youtubeResolutionLiveData;
 
     private Context mContext;
     private TelephonyManager telephonyManager;
@@ -105,7 +106,9 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     private long finishInitYoutubeTime;
     private long startBufferingTime;
     private long finishBufferingTime;
-    private int countOfRepeats = 9999;
+    private final long TIMEOUT_DELAY = 60000L;
+    private int countOfRepeats = 1;
+    private EYoutubeState youtubeState;
 
     public void onViewCreated(Context context, CustomPhoneStateListener.OnSignalStrengthChangedListener onSignalStrengthChangedListener,
                               CustomPhoneStateListener.OnCellLocationChangeListener onCellLocationChangeListener) {
@@ -120,10 +123,12 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         initService();
     }
 
-    public void start(String mSignalStrength) {
+    public void start(String mSignalStrength, int value) {
+        countOfRepeats = value;
         currentLog = new Log();
         Date date = new Date(System.currentTimeMillis());
         logId = DateConverter.shortDate(date);
+        App.logRepository.createLogFile(logId);
         currentLog.setLogId(logId);
         eventLogs.clear();
         logs.clear();
@@ -142,10 +147,12 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
             e.printStackTrace();
         }
         isLogging.setValue(false);
-        Logger.d("on stop logging size " + logger.getLogs().size());
+        App.logRepository.setYoutubeResolution("");
+        App.logRepository.closeLogFile();
         loggingStoppedEvent.call();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     public void radioStateChanged(String mSignalStrength, CellLocation mCellLocation) {
         gsmCellLocation = (GsmCellLocation) getCellLocation();
         updateSignalData(getSignalStrength());
@@ -157,6 +164,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         if (telephonyManager.getAllCellInfo().size() > 0) updateCellIdentityParams();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     private void updateCellIdentityParams() {
         if (ActivityCompat.checkSelfPermission(mContext, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -224,13 +232,11 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
                 updateLteSignalData(signalStrength);
                 break;
             }
-            case TelephonyManager.NETWORK_TYPE_NR:
-                break;
+            /*case TelephonyManager.NETWORK_TYPE_NR:
+                break;*/
             default:
                 break;
         }
-        /*if (signalStrength.contains("CellSignalStrengthLte")) updateLteSignalData(signalStrength);
-        if (signalStrength.contains("CellSignalStrengthWcdma")) updateWcdmaSignalData(signalStrength);*/
     }
 
     private void updateGsmSignalData(String signalData) {
@@ -358,38 +364,70 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
 
     }
 
+    Timer timer = new Timer();
+
     public void youTubePlayerInitializing() {
         App.logRepository.setLogState(EState.YOUTUBE_TEST);
         startInitYoutubeTime = System.currentTimeMillis();
-        eventLogs.add(new Event( logId,EEvents.YSI,startInitYoutubeTime,""));
+        eventLogs.add(new Event( logId,EEvents.YSI,startInitYoutubeTime,"",EState.YOUTUBE_TEST));
+        App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
+        timer = new Timer();
+        final long start = System.currentTimeMillis();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run () {
+                eventLogs.add(new Event(logId,EEvents.YEI,System.currentTimeMillis(),"",EState.YOUTUBE_TEST));
+                App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
+                youtubeErrorEvent.call();
+                timer.cancel();
+            }
+        }, TIMEOUT_DELAY);
     }
 
     public void startBuffering(boolean initialBuffering) {
+        timer = new Timer();
+        final long start = System.currentTimeMillis();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run () {
+                eventLogs.add(new Event(logId,EEvents.YEB,System.currentTimeMillis(),"",EState.YOUTUBE_TEST));
+                App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
+                youtubeErrorEvent.call();
+                timer.cancel();
+            }
+        }, TIMEOUT_DELAY);
         if (initialBuffering) {
             startBufferingTime = System.currentTimeMillis();
-            eventLogs.add(new Event( logId,EEvents.YSB,startBufferingTime,""));
+            eventLogs.add(new Event( logId,EEvents.YSB,startBufferingTime,"",EState.YOUTUBE_TEST));
+            App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
         }
     }
 
     public void videoCued() {
         finishInitYoutubeTime = System.currentTimeMillis();
-        eventLogs.add(new Event( logId,EEvents.YSB,finishInitYoutubeTime,
-                String.valueOf(finishInitYoutubeTime - startInitYoutubeTime)));
+        eventLogs.add(new Event( logId,EEvents.YFI,finishInitYoutubeTime,
+                String.valueOf(finishInitYoutubeTime - startInitYoutubeTime),EState.YOUTUBE_TEST));
+        App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
         initTimeLiveData.setValue(finishInitYoutubeTime - startInitYoutubeTime);
+        timer.cancel();
     }
 
     public void startPlayingVideo(boolean initialBuffering) {
         if (initialBuffering) {
             finishBufferingTime = System.currentTimeMillis();
-            eventLogs.add(new Event( logId,EEvents.YSB,finishBufferingTime,
-                    String.valueOf(finishBufferingTime - startBufferingTime)));
+            eventLogs.add(new Event( logId,EEvents.YFB,finishBufferingTime,
+                    String.valueOf(finishBufferingTime - startBufferingTime),EState.YOUTUBE_TEST));
+            App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
             bufferingTimeLiveData.setValue(finishBufferingTime - startBufferingTime);
         }
-
+        youtubeState = EYoutubeState.PLAYING;
+        timer.cancel();
     }
 
     public void youtubePlaybackEnded(){
         App.logRepository.setLogState(EState.IDLE);
+        App.logRepository.setYoutubeResolution("");
+        youtubeState = EYoutubeState.FINISHED;
         checkWhetherToStartYoutubePlayback();
     }
 
@@ -410,5 +448,37 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     @Override
     public void onLocationChanged(Location location) {
 
+    }
+
+    public void youtubeQualityChanged(PlayerConstants.PlaybackQuality playbackQuality) {
+        String s = "";
+        switch (playbackQuality){
+            case UNKNOWN:
+                s = "144p";
+                break;
+            case SMALL:
+                s = "240p";
+                break;
+            case MEDIUM:
+                s = "360p";
+                break;
+            case LARGE:
+                s = "480p";
+                break;
+            case HD720:
+                s = "720p";
+                break;
+            case HD1080:
+                s = "1080p";
+                break;
+            case HIGH_RES:
+                s = ">1080p";
+                break;
+            default:
+                Toaster.showShort(mContext,"QUALITY NONE");
+        }
+        if (youtubeState != null){
+            App.logRepository.setYoutubeResolution(s);
+        }
     }
 }

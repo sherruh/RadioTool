@@ -59,10 +59,9 @@ public class YoutubePlayerFragment extends Fragment {
             @Override
             public void onYouTubePlayer(YouTubePlayer youTubePlayer) {
                 mYouTubePlayer = youTubePlayer;
-                youTubePlayer.cueVideo("QuV9iPaZTBU",0);
+                youTubePlayer.cueVideo("fimmQNc6_uI",0);//VBKNoLcj8jA
                 youTubePlayer.play();
             }
-
         });
     }
 
@@ -71,6 +70,7 @@ public class YoutubePlayerFragment extends Fragment {
             @Override
             public void onError(YouTubePlayer youTubePlayer, PlayerConstants.PlayerError playerError) {
                 Toaster.showShort(getContext(),playerError.toString());
+                onStateChange(youTubePlayer, PlayerConstants.PlayerState.ENDED);
             }
 
             @Override
@@ -80,7 +80,7 @@ public class YoutubePlayerFragment extends Fragment {
 
             @Override
             public void onPlaybackQualityChange(YouTubePlayer youTubePlayer, PlayerConstants.PlaybackQuality playbackQuality) {
-                Toaster.showShort(getContext(), playbackQuality.name());
+                mViewModel.youtubeQualityChanged(playbackQuality);
             }
 
             @Override

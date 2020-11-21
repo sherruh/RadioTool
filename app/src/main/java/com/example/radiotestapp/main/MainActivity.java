@@ -3,18 +3,24 @@ package com.example.radiotestapp.main;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
+import androidx.core.os.EnvironmentCompat;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.Manifest;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.telephony.CellLocation;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -36,6 +42,9 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements CustomPhoneStateListener.OnSignalStrengthChangedListener,
@@ -71,7 +80,8 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     private TextView textCqi;
     private TextView textInitializationTime;
     private TextView textBufferingTime;
-
+    private TextView textYoutubeResolution;
+    private NumberPicker numberPickerCountOfRepeats;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         buttonStart = findViewById(R.id.button_start_main_activity);
         buttonStop = findViewById(R.id.button_stop_main_activity);
         imageViewYoutube = findViewById(R.id.image_youtube_main_activity);
-        Glide.with(imageViewYoutube).load(R.drawable.youtube_logo).into(imageViewYoutube);
+        Glide.with(imageViewYoutube).load(R.drawable.youtube_logo).centerCrop().into(imageViewYoutube);
         textYoutubeThroughput = findViewById(R.id.text_youtube_throughput_value_main_activity);
         textMcc = findViewById(R.id.text_mcc_value_main_activity);
         textMnc = findViewById(R.id.text_mnc_value_main_activity);
@@ -103,10 +113,11 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         textCqi = findViewById(R.id.text_cqi_value_main_activity);
         textInitializationTime = findViewById(R.id.text_youtube_init_value_main_activity);
         textBufferingTime = findViewById(R.id.text_youtube_buffering_value_main_activity);
+        textYoutubeResolution = findViewById(R.id.text_youtube_resolution_value_value_main_activity);
+        numberPickerCountOfRepeats = findViewById(R.id.number_picker_count_of_repeats_main_activity);
+        numberPickerCountOfRepeats.setMaxValue(9999);
+        numberPickerCountOfRepeats.setMinValue(1);
     }
-
-
-
 
     private void initViewModel() {
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
@@ -142,6 +153,11 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
                 .setText(String.valueOf(s / 1000.0));});
         viewModel.bufferingTimeLiveData.observe(this, s ->{textBufferingTime
                 .setText(String.valueOf(s / 1000.0));});
+        viewModel.youtubeResolutionLiveData.observe(this, s -> {textYoutubeResolution.setText(s);});
+        viewModel.youtubeErrorEvent.observe(this, v ->{
+            viewModel.youtubePlaybackEnded();
+            Toaster.showShort(getBaseContext(),"Youtube timeout");
+        });
         viewModel.loggingStoppedEvent.observe(this,aVoid ->{
             if (youtubePlayerFragment != null){
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -150,6 +166,8 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
                 textInitializationTime.setText("");
                 imageViewYoutube.setVisibility(View.VISIBLE);
                 textYoutubeThroughput.setText("");
+                buttonStop.setVisibility(View.GONE);
+                buttonStart.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -190,7 +208,6 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     }
 
     private void checkPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             Dexter.withActivity(this)
                     .withPermissions(
                             Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -198,13 +215,12 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
                             Manifest.permission.READ_PHONE_STATE,
                             Manifest.permission.WAKE_LOCK,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
                             Manifest.permission.INTERNET,
                             Manifest.permission.ACCESS_NETWORK_STATE,
                             Manifest.permission.ACCESS_WIFI_STATE,
                             Manifest.permission.CALL_PHONE,
                             Manifest.permission.RECEIVE_BOOT_COMPLETED,
-                            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-                            Manifest.permission.READ_PHONE_NUMBERS,
                             Manifest.permission.READ_SMS
                             )
                     .withListener(new MultiplePermissionsListener() {
@@ -220,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
                                         .equals("android.permission.ACCESS_BACKGROUND_LOCATION"))
                                 {
                                     Toaster.showLong(MainActivity.this,"Необходимо разрешение на постоянный доступ к местоположению," +
-                                            " иначе вохможно неккоретное отображение сектора.");
+                                            " иначе возможно неккоретное отображение сектора.");
                                     initViewModel();
                                     startGettingLocation();
                                 } else {
@@ -239,43 +255,6 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
                     })
                     .onSameThread()
                     .check();
-        } else{
-            Dexter.withActivity(this)
-                    .withPermissions(
-                            Manifest.permission.ACCESS_COARSE_LOCATION,
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.READ_PHONE_STATE,
-                            Manifest.permission.WAKE_LOCK,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.INTERNET,
-                            Manifest.permission.ACCESS_NETWORK_STATE,
-                            Manifest.permission.ACCESS_WIFI_STATE,
-                            Manifest.permission.CALL_PHONE,
-                            Manifest.permission.RECEIVE_BOOT_COMPLETED,
-                            Manifest.permission.READ_PHONE_NUMBERS,
-                            Manifest.permission.READ_SMS
-                    )
-                    .withListener(new MultiplePermissionsListener() {
-                        @Override
-                        public void onPermissionsChecked(MultiplePermissionsReport report) {
-                            if (report.areAllPermissionsGranted()) {
-                                initViewModel();
-                                startGettingLocation();
-                            }
-                            else {
-                                Toaster.showLong(MainActivity.this,"Необходимы разрешения приложению");
-                                finish();
-                            }
-                        }
-
-                        @Override
-                        public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
-                            token.continuePermissionRequest();
-                        }
-                    })
-                    .onSameThread()
-                    .check();
-        }
 
     }
 
@@ -306,7 +285,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     }
 
     public void onButtonStartClick(View view) {
-        viewModel.start(mSignalStrength);
+        viewModel.start(mSignalStrength,numberPickerCountOfRepeats.getValue());
         buttonStop.setVisibility(View.VISIBLE);
         buttonStart.setVisibility(View.GONE);
     }
@@ -348,10 +327,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
 
     @Override
     public void onLocationChanged(Location location) {
-        if (location != null)
-            Logger.d("Lon " + location.getLongitude() + " Lat " + location.getLatitude());
-
-    }
+        }
 
     private void startLocationUpdates() {
         geoLocationRequest = new LocationRequest();
