@@ -40,4 +40,12 @@
         <item name="android:src">@drawable/ic_settings_toggle</item>
     </style>
 
+    <style name="ParametersFrameStyle">
+        <item name="android:layout_width">375dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="layout_constraintStart_toStartOf">parent</item>
+        <item name="layout_constraintEnd_toEndOf">parent</item>
+        <item name="background">@drawable/bg_parameters_frame</item>
+    </style>
+
 </resources>

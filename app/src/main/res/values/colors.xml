@@ -8,4 +8,5 @@
     <color name="colorBlack">#000000</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorWhiteGrey">#C7D3F0</color>
+    <color name="colorParametersFrame">#546285</color>
 </resources>
