@@ -1,19 +1,43 @@
 package com.example.radiotestapp.model;
 
+import androidx.annotation.NonNull;
+
+import com.example.radiotestapp.enums.EEvents;
+import com.example.radiotestapp.enums.EState;
+import com.example.radiotestapp.utils.DateConverter;
+
 public class Log {
     private String logId;
     private long date;
     private double longitude;
     private double latitude;
+    private int altitude;
     private String mcc;
     private String mnc;
     private String technology;
+    private String tacLac;
+    private String eNodeB;
+    private String cellId;
+    private String bsic;
+    private String psc;
+    private String pci;
     private String rsrp;
+    private String rsrq;
     private String rscp;
     private String rxLevel;
     private String cqi;
     private String snr;
     private String ecNO;
+    private String ber;
+    private String channel;
+    private long dlThrput;
+    private long ulThrput;
+    private int ping;
+    private String youtubeResolution;
+    private EEvents eEvent;
+    private String eventParam;
+    private String eventDescription;
+    private EState logState;
 
     public void setLogId(String logId) {
         this.logId = logId;
@@ -47,6 +71,14 @@ public class Log {
         this.rsrp = rsrp;
     }
 
+    public String getTacLac() {
+        return tacLac;
+    }
+
+    public void setTacLac(String tacLac) {
+        this.tacLac = tacLac;
+    }
+
     public void setRscp(String rscp) {
         this.rscp = rscp;
     }
@@ -67,36 +99,94 @@ public class Log {
         this.ecNO = ecNO;
     }
 
+    public String getPsc() {
+        return psc;
+    }
+
+    public void setPsc(String psc) {
+        this.psc = psc;
+    }
+
+    public String getPci() {
+        return pci;
+    }
+
+    public void setPci(String pci) {
+        this.pci = pci;
+    }
+
+    @Override
+    public String toString() {
+        return logId + '\t' + DateConverter.dateWithMillis(date) + '\t' + longitude + '\t' + latitude + '\t' + altitude + '\t'
+                + mcc + '\t' + mnc + '\t' + technology + '\t' + tacLac + '\t' + eNodeB + '\t'
+                + cellId + '\t' + bsic + '\t' + psc + '\t' + pci + '\t' + rsrp + '\t'
+                + rsrq + '\t' + rscp + '\t' + rxLevel + '\t' + cqi + '\t' + snr + '\t'
+                + ecNO + '\t' + ber + '\t' + channel + '\t' + dlThrput + '\t' +  ulThrput + '\t'
+                + ping +'\t' + youtubeResolution + '\t' + eEvent + '\t' + eventParam + '\t'
+                + eventDescription + '\t' +  logState;
+    }
+
+    public String getYoutubeResolution() {
+        return youtubeResolution;
+    }
+
+    public void setYoutubeResolution(String youtubeResolution) {
+        this.youtubeResolution = youtubeResolution;
+    }
+
+    public String geteNodeB() {
+        return eNodeB;
+    }
+
+    public void seteNodeB(String eNodeB) {
+        this.eNodeB = eNodeB;
+    }
+
     public void setBer(String ber) {
         this.ber = ber;
     }
 
-    public void setDlThrput(String dlThrput) {
+    public void setDlThrput(long dlThrput) {
         this.dlThrput = dlThrput;
     }
 
-    public void setUlThrput(String ulThrput) {
+    public void setUlThrput(long ulThrput) {
         this.ulThrput = ulThrput;
     }
 
-    public void setPing(String ping) {
+    public void setPing(int ping) {
         this.ping = ping;
     }
 
-    public void setEvent(String event) {
-        this.event = event;
-    }
-
-    private String ber;
-    private String dlThrput;
-    private String ulThrput;
-    private String ping;
-    private String event;
-
     public Log() {
     }
+    public EEvents geteEvent() {
+        return eEvent;
+    }
 
-    public Log(String logId, long date, double longitude, double latitude, String mcc, String mnc, String technology, String rsrp, String rscp, String rxLevel, String cqi, String snr, String ecNO, String ber, String dlThrput, String ulThrput, String ping, String event) {
+    public void seteEvent(EEvents eEvent) {
+        this.eEvent = eEvent;
+    }
+
+    public String getEventParam() {
+        return eventParam;
+    }
+
+    public void setEventParam(String eventParam) {
+        this.eventParam = eventParam;
+    }
+
+    public String getRsrq() {
+        return rsrq;
+    }
+
+    public void setRsrq(String rsrq) {
+        this.rsrq = rsrq;
+    }
+
+    public Log(String logId, long date, double longitude, double latitude, String mcc, String mnc,
+               String technology, String rsrp, String rscp, String rxLevel, String cqi, String snr,
+               String ecNO, String ber, long dlThrput, long ulThrput, int ping) {
         this.logId = logId;
         this.date = date;
         this.longitude = longitude;
@@ -114,7 +204,6 @@ public class Log {
         this.dlThrput = dlThrput;
         this.ulThrput = ulThrput;
         this.ping = ping;
-        this.event = event;
     }
 
     public String getLogId() {
@@ -173,19 +262,63 @@ public class Log {
         return ber;
     }
 
-    public String getDlThrput() {
+    public long getDlThrput() {
         return dlThrput;
     }
 
-    public String getUlThrput() {
+    public long getUlThrput() {
         return ulThrput;
     }
 
-    public String getPing() {
+    public int getPing() {
         return ping;
     }
 
-    public String getEvent() {
-        return event;
+    public String getCellId() {
+        return cellId;
+    }
+
+    public void setCellId(String cellId) {
+        this.cellId = cellId;
+    }
+
+    public String getEventDescription() {
+        return eventDescription;
+    }
+
+    public void setEventDescription(String eventDescription) {
+        this.eventDescription = eventDescription;
+    }
+
+    public EState getLogState() {
+        return logState;
+    }
+
+    public void setLogState(EState logState) {
+        this.logState = logState;
+    }
+
+    public int getAltitude() {
+        return altitude;
+    }
+
+    public void setAltitude(int altitude) {
+        this.altitude = altitude;
+    }
+
+    public String getBsic() {
+        return bsic;
+    }
+
+    public void setBsic(String bsic) {
+        this.bsic = bsic;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
     }
 }

@@ -12,16 +12,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SingleLiveEvent<T> extends MutableLiveData<T> {
 
-    @MainThread
-    public void observe(LifecycleOwner owner, final Observer<? super T> observer) {
+  @MainThread
+  public void observe(LifecycleOwner owner, final Observer<? super T> observer) {
 
-        super.observe(owner, t -> {
-            observer.onChanged(t);
-        });
-    }
+    super.observe(owner, t -> {
+      observer.onChanged(t);
+    });
+  }
 
-    @MainThread
-    public void call() {
-        setValue(null);
-    }
+  @MainThread
+  public void call() {
+    postValue(null);
+  }
 }
