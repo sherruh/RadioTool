@@ -75,7 +75,9 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     private TextView textChannel;
     private TextView textPciPscBsic;
     private TextView textLevel;
+    private TextView textLevelTitle;
     private TextView textRsrqEcNo;
+    private TextView textRsrqEcNoTitle;
     private TextView textSnr;
     private TextView textCqi;
     private TextView textInitializationTime;
@@ -108,7 +110,9 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         textChannel = findViewById(R.id.text_channel_value_main_activity);
         textPciPscBsic = findViewById(R.id.text_psc_value_main_activity);
         textLevel = findViewById(R.id.text_level_value_main_activity);
+        textLevelTitle = findViewById(R.id.text_level_main_activity);
         textRsrqEcNo = findViewById(R.id.text_rsrq_value_main_activity);
+        textRsrqEcNoTitle = findViewById(R.id.text_rsrq_main_activity);
         textSnr = findViewById(R.id.text_snr_value_main_activity);
         textCqi = findViewById(R.id.text_cqi_value_main_activity);
         textInitializationTime = findViewById(R.id.text_youtube_init_value_main_activity);
@@ -139,7 +143,21 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         });
         viewModel.mccLiveData.observe(this, s ->{ textMcc.setText(s);});
         viewModel.mncLiveData.observe(this, s ->{ textMnc.setText(s);});
-        viewModel.techLiveData.observe(this, s ->{ textTech.setText(s);});
+        viewModel.techLiveData.observe(this, s ->{
+            textTech.setText(s);
+            if (s.equals("GSM")) {
+                textLevelTitle.setText("RxLvl(dBm):");
+                textRsrqEcNoTitle.setText("C/I (dB):");
+            }
+            if (s.equals("WCDMA")) {
+                textLevelTitle.setText("RSCP(dBm):");
+                textRsrqEcNoTitle.setText("Ec/N0 (dB):");
+            }
+            if (s.equals("LTE")) {
+                textLevelTitle.setText("RSRP(dBm):");
+                textRsrqEcNoTitle.setText("RSRQ (dB):");
+            }
+        });
         viewModel.tacLiveData.observe(this, s ->{ textTacLac.setText(s);});
         viewModel.eNodeBLiveData.observe(this, s ->{ textEnodeB.setText(s);});
         viewModel.cidLiveData.observe(this, s ->{ textCid.setText(s);});
