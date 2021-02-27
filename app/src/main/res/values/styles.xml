@@ -40,7 +40,7 @@
         <item name="android:layout_width">25dp</item>
         <item name="android:layout_height">24dp</item>
         <item name="android:layout_marginEnd">16dp</item>
-        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginTop">12dp</item>
         <item name="android:src">@drawable/ic_settings_toggle</item>
     </style>
 
