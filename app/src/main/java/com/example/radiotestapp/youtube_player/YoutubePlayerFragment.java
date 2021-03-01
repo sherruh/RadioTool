@@ -1,4 +1,4 @@
-package com.example.radiotestapp.main.framnet_youtube_player;
+package com.example.radiotestapp.youtube_player;
 
 import android.os.Bundle;
 
@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 
 import com.example.radiotestapp.R;
 import com.example.radiotestapp.main.MainViewModel;
-import com.example.radiotestapp.utils.Logger;
 import com.example.radiotestapp.utils.Toaster;
 import com.example.radiotestapp.utils.YoutubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
