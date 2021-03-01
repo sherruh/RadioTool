@@ -3,19 +3,13 @@ package com.example.radiotestapp.main;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.FileProvider;
-import androidx.core.os.EnvironmentCompat;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.Manifest;
 import android.location.Location;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.telephony.CellLocation;
 import android.view.View;
 import android.widget.Button;
@@ -24,7 +18,7 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.radiotestapp.main.framnet_youtube_player.YoutubePlayerFragment;
+import com.example.radiotestapp.youtube_player.YoutubePlayerFragment;
 
 import com.example.radiotestapp.R;
 import com.example.radiotestapp.main.radio.CustomPhoneStateListener;
@@ -42,9 +36,6 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements CustomPhoneStateListener.OnSignalStrengthChangedListener,
