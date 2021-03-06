@@ -3,6 +3,7 @@ package com.example.radiotestapp.main;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -18,6 +19,7 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.radiotestapp.youtube_params.YoutubeParamsFragment;
 import com.example.radiotestapp.youtube_player.YoutubePlayerFragment;
 
 import com.example.radiotestapp.R;
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     private String mSignalStrength;
     private CellLocation mCellLocation;
     private YoutubePlayerFragment youtubePlayerFragment;
+    private YoutubeParamsFragment youtubeParamsFragment;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     private Location geoLocation;
@@ -124,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         });
         viewModel.onViewCreated(this, this, this);
         viewModel.onStartYoutubeClickedEvent.observe(this, aVoid -> {
-            initYoutubePlayerFragment();
+            initYoutube();
             imageViewYoutube.setVisibility(View.GONE);
             textBufferingTime.setText("");
             textInitializationTime.setText("");
@@ -178,6 +181,10 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
                 buttonStop.setVisibility(View.GONE);
                 buttonStart.setVisibility(View.VISIBLE);
             }
+            if (youtubeParamsFragment != null){
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.remove(youtubeParamsFragment).commit();
+            }
         });
     }
 
@@ -186,16 +193,26 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
 
     }
 
-    private void initYoutubePlayerFragment() {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+    private void initYoutube() {
+        FragmentTransaction transactionPlayer = getSupportFragmentManager().beginTransaction();
         if (youtubePlayerFragment != null) {
-            transaction.remove(youtubePlayerFragment).commit();
-            transaction = getSupportFragmentManager().beginTransaction();
+            transactionPlayer.remove(youtubePlayerFragment).commit();
+            transactionPlayer = getSupportFragmentManager().beginTransaction();
         }
         youtubePlayerFragment = YoutubePlayerFragment.newInstance(viewModel);
-        transaction.replace(R.id.frame_main_activity, youtubePlayerFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        transactionPlayer.replace(R.id.frame_main_activity, youtubePlayerFragment);
+        transactionPlayer.addToBackStack(null);
+        transactionPlayer.commit();
+
+        FragmentTransaction transactionParams = getSupportFragmentManager().beginTransaction();
+        if (youtubeParamsFragment != null) {
+            transactionParams.remove(youtubeParamsFragment).commit();
+            transactionParams = getSupportFragmentManager().beginTransaction();
+        }
+        youtubeParamsFragment = YoutubeParamsFragment.newInstance(viewModel);
+        transactionParams.replace(R.id.frame_additional_params_main_activity, youtubeParamsFragment);
+        transactionParams.addToBackStack(null);
+        transactionParams.commit();
     }
 
 
