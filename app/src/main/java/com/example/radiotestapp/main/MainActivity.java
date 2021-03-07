@@ -74,8 +74,6 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     private TextView textRsrqEcNoTitle;
     private TextView textSnr;
     private TextView textCqi;
-    private TextView textInitializationTime;
-    private TextView textBufferingTime;
     private TextView textYoutubeResolution;
     private NumberPicker numberPickerCountOfRepeats;
 
@@ -109,8 +107,6 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         textRsrqEcNoTitle = findViewById(R.id.text_rsrq_main_activity);
         textSnr = findViewById(R.id.text_snr_value_main_activity);
         textCqi = findViewById(R.id.text_cqi_value_main_activity);
-        textInitializationTime = findViewById(R.id.text_youtube_init_value_main_activity);
-        textBufferingTime = findViewById(R.id.text_youtube_buffering_value_main_activity);
         textYoutubeResolution = findViewById(R.id.text_youtube_resolution_value_value_main_activity);
         numberPickerCountOfRepeats = findViewById(R.id.number_picker_count_of_repeats_main_activity);
         numberPickerCountOfRepeats.setMaxValue(9999);
@@ -129,8 +125,6 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         viewModel.onStartYoutubeClickedEvent.observe(this, aVoid -> {
             initYoutube();
             imageViewYoutube.setVisibility(View.GONE);
-            textBufferingTime.setText("");
-            textInitializationTime.setText("");
         });
         viewModel.youtubeThroughputLiveData.observe(this, along ->{
             textYoutubeThroughput.setText(String.valueOf( along / 1000.0));
@@ -161,10 +155,6 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         viewModel.rsrqEcNoLiveData.observe(this, s ->{ textRsrqEcNo.setText(s);});
         viewModel.snrLiveData.observe(this, s ->{ textSnr.setText(s);});
         viewModel.cqiLiveData.observe(this, s ->{ textCqi.setText(s);});
-        viewModel.initTimeLiveData.observe(this, s ->{ textInitializationTime
-                .setText(String.valueOf(s / 1000.0));});
-        viewModel.bufferingTimeLiveData.observe(this, s ->{textBufferingTime
-                .setText(String.valueOf(s / 1000.0));});
         viewModel.youtubeResolutionLiveData.observe(this, s -> {textYoutubeResolution.setText(s);});
         viewModel.youtubeErrorEvent.observe(this, v ->{
             viewModel.youtubePlaybackEnded();
@@ -174,8 +164,6 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
             if (youtubePlayerFragment != null){
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.remove(youtubePlayerFragment).commit();
-                textBufferingTime.setText("");
-                textInitializationTime.setText("");
                 imageViewYoutube.setVisibility(View.VISIBLE);
                 textYoutubeThroughput.setText("");
                 buttonStop.setVisibility(View.GONE);
