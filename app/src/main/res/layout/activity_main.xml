@@ -501,43 +501,6 @@
         />
 
     <TextView
-        android:id="@+id/text_youtube_init_main_activity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Youtube initialization time (s):"
-        style="@style/ParamName"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_youtube_throughput_main_activity"
-        />
-
-    <TextView
-        android:id="@+id/text_youtube_init_value_main_activity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/ParamValue"
-        app:layout_constraintStart_toEndOf="@id/text_youtube_init_main_activity"
-        app:layout_constraintTop_toBottomOf="@id/text_youtube_throughput_value_main_activity"
-        />
-
-    <TextView
-        android:id="@+id/text_youtube_buffering_main_activity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Youtube buffering time (s):"
-        style="@style/ParamName"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_youtube_init_main_activity"
-        />
-
-    <TextView
-        android:id="@+id/text_youtube_buffering_value_main_activity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/ParamValue"
-        app:layout_constraintStart_toEndOf="@id/text_youtube_buffering_main_activity"
-        app:layout_constraintTop_toBottomOf="@id/text_youtube_init_value_main_activity"
-        />
-    <TextView
         android:id="@+id/text_youtube_resolution_main_activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
