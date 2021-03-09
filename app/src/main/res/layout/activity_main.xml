@@ -480,49 +480,11 @@
         android:layout_height="210dp"
         android:background="@drawable/bg_rect_rounded"
         />
-
-    <TextView
-        android:id="@+id/text_youtube_throughput_main_activity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Youtube throughput (Mb/s):"
-        style="@style/ParamName"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/frame_main_activity"
-        />
-
-    <TextView
-        android:id="@+id/text_youtube_throughput_value_main_activity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/ParamValue"
-        app:layout_constraintStart_toEndOf="@id/text_youtube_throughput_main_activity"
-        app:layout_constraintTop_toBottomOf="@id/frame_main_activity"
-        />
-
-    <TextView
-        android:id="@+id/text_youtube_resolution_main_activity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Youtube resolution:"
-        style="@style/ParamName"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view_main_parameters_frame_main_activity"
-        />
-
-    <TextView
-        android:id="@+id/text_youtube_resolution_value_value_main_activity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/ParamValue"
-        app:layout_constraintStart_toEndOf="@id/text_youtube_resolution_main_activity"
-        app:layout_constraintTop_toBottomOf="@id/view_main_parameters_frame_main_activity"
-        />
     
     <androidx.cardview.widget.CardView
         android:id="@+id/card_additional_params_main_activity"
         android:layout_width="375dp"
-        android:layout_height="100dp"
+        android:layout_height="140dp"
         app:layout_constraintTop_toBottomOf="@id/frame_main_activity"
         app:layout_constraintStart_toStartOf="@id/frame_main_activity"
         android:layout_marginTop="14dp"

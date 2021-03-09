@@ -21,6 +21,8 @@ public class YoutubeParamsFragment extends Fragment {
     private MainViewModel mViewModel;
     private TextView textInitializationTime;
     private TextView textBufferingTime;
+    private TextView textThroughput;
+    private TextView textResolution;
 
     public YoutubeParamsFragment(MainViewModel mainViewModel) {
         mViewModel = mainViewModel;
@@ -54,6 +56,10 @@ public class YoutubeParamsFragment extends Fragment {
                 .setText(String.valueOf(s / 1000.0));});
         mViewModel.bufferingTimeLiveData.observe(getViewLifecycleOwner(), s ->{textBufferingTime
                 .setText(String.valueOf(s / 1000.0));});
+        mViewModel.youtubeThroughputLiveData.observe(getViewLifecycleOwner(), along ->{
+            textThroughput.setText(String.valueOf( along / 1000.0));
+        });
+        mViewModel.youtubeResolutionLiveData.observe(getViewLifecycleOwner(), s -> {textResolution.setText(s);});
         mViewModel.onStartYoutubeClickedEvent.observe(getViewLifecycleOwner(), aVoid -> {
             textInitializationTime.setText("--");
             textBufferingTime.setText("--");
@@ -67,8 +73,11 @@ public class YoutubeParamsFragment extends Fragment {
     private void initViews(View view) {
         textInitializationTime = view.findViewById(R.id.text_youtube_init_value_youtube_params_fragment);
         textBufferingTime = view.findViewById(R.id.text_youtube_buffering_value_youtube_params_fragment);
+        textThroughput = view.findViewById(R.id.text_youtube_throughput_value_youtube_params_fragment);
+        textResolution = view.findViewById(R.id.text_youtube_resolution_value_youtube_params_fragment);
         textInitializationTime.setText("--");
         textBufferingTime.setText("--");
-        Toaster.showShort(getContext(),"Here");
+        textThroughput.setText("--");
+        textResolution.setText("--");
     }
 }

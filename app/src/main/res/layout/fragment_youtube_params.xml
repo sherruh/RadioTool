@@ -14,68 +14,119 @@
             android:id="@+id/image_youtube_init_youtube_params_fragment"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="7dp"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="7dp"
             android:src="@drawable/ic_init"
-            />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/text_youtube_init_youtube_params_fragment"
+            style="@style/ParamName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Youtube initialization time (s):"
-            style="@style/ParamName"
-            app:layout_constraintTop_toTopOf="@id/image_youtube_init_youtube_params_fragment"
-            app:layout_constraintStart_toEndOf="@id/image_youtube_init_youtube_params_fragment"
             android:layout_marginStart="16dp"
             android:layout_marginTop="6dp"
-            />
+            android:text="Youtube initialization time (s):"
+            app:layout_constraintStart_toEndOf="@id/image_youtube_init_youtube_params_fragment"
+            app:layout_constraintTop_toTopOf="@id/image_youtube_init_youtube_params_fragment" />
 
         <TextView
             android:id="@+id/text_youtube_init_value_youtube_params_fragment"
+            style="@style/ParamValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@id/text_youtube_init_youtube_params_fragment"
+            android:layout_marginStart="20dp"
+            android:text=""
             app:layout_constraintStart_toEndOf="@id/text_youtube_init_youtube_params_fragment"
-            android:layout_marginStart="61dp"
-            android:text="--"
-            style="@style/ParamValue"
-            />
+            app:layout_constraintTop_toTopOf="@id/image_youtube_init_youtube_params_fragment" />
 
         <ImageView
             android:id="@+id/image_youtube_buffering_youtube_params_fragment"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            app:layout_constraintStart_toStartOf="@id/image_youtube_init_youtube_params_fragment"
-            app:layout_constraintTop_toBottomOf="@id/image_youtube_init_youtube_params_fragment"
             android:layout_marginTop="10dp"
             android:src="@drawable/ic_buffer"
-            />
+            app:layout_constraintStart_toStartOf="@id/image_youtube_init_youtube_params_fragment"
+            app:layout_constraintTop_toBottomOf="@id/image_youtube_init_youtube_params_fragment" />
 
         <TextView
             android:id="@+id/text_youtube_buffering_youtube_params_fragment"
+            style="@style/ParamName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Youtube buffering time (s):"
-            style="@style/ParamName"
-            app:layout_constraintStart_toEndOf="@id/image_youtube_buffering_youtube_params_fragment"
-            app:layout_constraintTop_toTopOf="@id/image_youtube_buffering_youtube_params_fragment"
             android:layout_marginStart="16dp"
             android:layout_marginTop="6dp"
-            />
+            android:text="Youtube buffering time (s):"
+            app:layout_constraintStart_toEndOf="@id/image_youtube_buffering_youtube_params_fragment"
+            app:layout_constraintTop_toTopOf="@id/image_youtube_buffering_youtube_params_fragment" />
 
         <TextView
             android:id="@+id/text_youtube_buffering_value_youtube_params_fragment"
+            style="@style/ParamValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/ParamValue"
             app:layout_constraintStart_toStartOf="@id/text_youtube_init_value_youtube_params_fragment"
-            app:layout_constraintTop_toTopOf="@id/text_youtube_buffering_youtube_params_fragment"/>
+            app:layout_constraintTop_toTopOf="@id/image_youtube_buffering_youtube_params_fragment" />
+
+        <ImageView
+            android:id="@+id/image_youtube_thrput_youtube_params_fragment"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/ic_you_thrput"
+            app:layout_constraintStart_toStartOf="@id/image_youtube_buffering_youtube_params_fragment"
+            app:layout_constraintTop_toBottomOf="@id/image_youtube_buffering_youtube_params_fragment" />
+
+        <TextView
+            android:id="@+id/text_youtube_throughput_youtube_params_fragment"
+            style="@style/ParamName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="6dp"
+            android:text="Youtube throughput (Mb/s):"
+            app:layout_constraintStart_toEndOf="@id/image_youtube_thrput_youtube_params_fragment"
+            app:layout_constraintTop_toTopOf="@id/image_youtube_thrput_youtube_params_fragment" />
+
+        <TextView
+            android:id="@+id/text_youtube_throughput_value_youtube_params_fragment"
+            style="@style/ParamValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/text_youtube_init_value_youtube_params_fragment"
+            app:layout_constraintTop_toTopOf="@id/image_youtube_thrput_youtube_params_fragment" />
+
+        <ImageView
+            android:id="@+id/image_youtube_resolution_youtube_params_fragment"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/ic_you_resolution"
+            app:layout_constraintStart_toStartOf="@id/image_youtube_init_youtube_params_fragment"
+            app:layout_constraintTop_toBottomOf="@id/image_youtube_thrput_youtube_params_fragment" />
+
+        <TextView
+            android:id="@+id/text_youtube_resolution_youtube_params_fragment"
+            style="@style/ParamName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="6dp"
+            android:text="Youtube resolution:"
+            app:layout_constraintStart_toEndOf="@id/image_youtube_resolution_youtube_params_fragment"
+            app:layout_constraintTop_toTopOf="@id/image_youtube_resolution_youtube_params_fragment" />
+
+        <TextView
+            android:id="@+id/text_youtube_resolution_value_youtube_params_fragment"
+            style="@style/ParamValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/text_youtube_init_value_youtube_params_fragment"
+            app:layout_constraintTop_toTopOf="@id/image_youtube_resolution_youtube_params_fragment" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
 </FrameLayout>

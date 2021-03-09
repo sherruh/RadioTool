@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     private Button buttonStart;
     private Button buttonStop;
     private ImageView imageViewYoutube;
-    private TextView textYoutubeThroughput;
     private TextView textMcc;
     private TextView textMnc;
     private TextView textTech;
@@ -74,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     private TextView textRsrqEcNoTitle;
     private TextView textSnr;
     private TextView textCqi;
-    private TextView textYoutubeResolution;
     private NumberPicker numberPickerCountOfRepeats;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         buttonStop = findViewById(R.id.button_stop_main_activity);
         imageViewYoutube = findViewById(R.id.image_youtube_main_activity);
         Glide.with(imageViewYoutube).load(R.drawable.youtube_logo).centerCrop().into(imageViewYoutube);
-        textYoutubeThroughput = findViewById(R.id.text_youtube_throughput_value_main_activity);
         textMcc = findViewById(R.id.text_mcc_value_main_activity);
         textMnc = findViewById(R.id.text_mnc_value_main_activity);
         textTech = findViewById(R.id.text_tech_value_main_activity);
@@ -107,7 +104,6 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         textRsrqEcNoTitle = findViewById(R.id.text_rsrq_main_activity);
         textSnr = findViewById(R.id.text_snr_value_main_activity);
         textCqi = findViewById(R.id.text_cqi_value_main_activity);
-        textYoutubeResolution = findViewById(R.id.text_youtube_resolution_value_value_main_activity);
         numberPickerCountOfRepeats = findViewById(R.id.number_picker_count_of_repeats_main_activity);
         numberPickerCountOfRepeats.setMaxValue(9999);
         numberPickerCountOfRepeats.setMinValue(1);
@@ -126,9 +122,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
             initYoutube();
             imageViewYoutube.setVisibility(View.GONE);
         });
-        viewModel.youtubeThroughputLiveData.observe(this, along ->{
-            textYoutubeThroughput.setText(String.valueOf( along / 1000.0));
-        });
+
         viewModel.mccLiveData.observe(this, s ->{ textMcc.setText(s);});
         viewModel.mncLiveData.observe(this, s ->{ textMnc.setText(s);});
         viewModel.techLiveData.observe(this, s ->{
@@ -155,7 +149,6 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         viewModel.rsrqEcNoLiveData.observe(this, s ->{ textRsrqEcNo.setText(s);});
         viewModel.snrLiveData.observe(this, s ->{ textSnr.setText(s);});
         viewModel.cqiLiveData.observe(this, s ->{ textCqi.setText(s);});
-        viewModel.youtubeResolutionLiveData.observe(this, s -> {textYoutubeResolution.setText(s);});
         viewModel.youtubeErrorEvent.observe(this, v ->{
             viewModel.youtubePlaybackEnded();
             Toaster.showShort(getBaseContext(),"Youtube timeout");
@@ -165,7 +158,6 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.remove(youtubePlayerFragment).commit();
                 imageViewYoutube.setVisibility(View.VISIBLE);
-                textYoutubeThroughput.setText("");
                 buttonStop.setVisibility(View.GONE);
                 buttonStart.setVisibility(View.VISIBLE);
             }
