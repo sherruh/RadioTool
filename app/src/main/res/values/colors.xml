@@ -9,4 +9,5 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorWhiteGrey">#C7D3F0</color>
     <color name="colorParametersFrame">#80546285</color>
+    <color name="colorMenuBackground">#7C8AAE</color>
 </resources>
