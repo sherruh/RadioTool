@@ -1,31 +1,34 @@
 package com.example.radiotestapp.main;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.Manifest;
+import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.telephony.CellLocation;
+import android.view.ContextThemeWrapper;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
-import com.example.radiotestapp.youtube_params.YoutubeParamsFragment;
-import com.example.radiotestapp.youtube_player.YoutubePlayerFragment;
-
 import com.example.radiotestapp.R;
 import com.example.radiotestapp.main.radio.CustomPhoneStateListener;
 import com.example.radiotestapp.utils.Logger;
 import com.example.radiotestapp.utils.Toaster;
+import com.example.radiotestapp.youtube_params.YoutubeParamsFragment;
+import com.example.radiotestapp.youtube_player.YoutubePlayerFragment;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -59,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     private Button buttonStart;
     private Button buttonStop;
     private ImageView imageViewYoutube;
+    private ImageView imageSettings;
     private TextView textMcc;
     private TextView textMnc;
     private TextView textTech;
@@ -104,9 +108,38 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         textRsrqEcNoTitle = findViewById(R.id.text_rsrq_main_activity);
         textSnr = findViewById(R.id.text_snr_value_main_activity);
         textCqi = findViewById(R.id.text_cqi_value_main_activity);
+        initIamgeSettings();
         numberPickerCountOfRepeats = findViewById(R.id.number_picker_count_of_repeats_main_activity);
         numberPickerCountOfRepeats.setMaxValue(9999);
         numberPickerCountOfRepeats.setMinValue(1);
+
+    }
+
+    private void initIamgeSettings() {
+        imageSettings = findViewById(R.id.image_settings_main_activity);
+        imageSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context wrapper = new ContextThemeWrapper(MainActivity.this, R.style.SettingsMenuStyle);
+                PopupMenu popup = new PopupMenu(wrapper, imageSettings);
+                popup.getMenuInflater()
+                        .inflate(R.menu.settings_menu, popup.getMenu());
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()){
+                            case R.id.settings:
+                                break;
+                            case R.id.exit:
+                                MainActivity.this.finish();
+                                break;
+                        }
+                        return true;
+                    }
+                });
+
+                popup.show(); //showing popup menu
+            }
+        });
     }
 
     private void initViewModel() {
@@ -122,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
             initYoutube();
             imageViewYoutube.setVisibility(View.GONE);
         });
+
 
         viewModel.mccLiveData.observe(this, s ->{ textMcc.setText(s);});
         viewModel.mncLiveData.observe(this, s ->{ textMnc.setText(s);});
@@ -347,3 +381,67 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
