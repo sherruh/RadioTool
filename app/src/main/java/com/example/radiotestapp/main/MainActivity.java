@@ -137,7 +137,6 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
             });
 
             popupView.setOnTouchListener((v, event) -> {
-
                 popupWindow.dismiss();
                 return true;
             });
