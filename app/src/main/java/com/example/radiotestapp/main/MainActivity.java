@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
 
             TextView tvExit = popupView.findViewById(R.id.tv_exit);
             tvExit.setOnClickListener(k-> {
+                viewModel.onExitClick();
                 MainActivity.this.finish();
             });
 
@@ -202,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
                 transaction.remove(youtubeParamsFragment).commit();
             }
         });
+        viewModel.exitClickEvent.observe(this,v -> this.finish());
     }
 
     @Override

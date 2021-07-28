@@ -37,6 +37,7 @@ import com.example.radiotestapp.enums.EState;
 import com.example.radiotestapp.enums.EYoutubeState;
 import com.example.radiotestapp.main.radio.CustomPhoneStateListener;
 import com.example.radiotestapp.main.thread.LoggerRunnable;
+import com.example.radiotestapp.main.thread.RadioParamsUpdateRunnable;
 import com.example.radiotestapp.model.Event;
 import com.example.radiotestapp.model.Log;
 import com.example.radiotestapp.services.GettingLocationService;
@@ -67,6 +68,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     public SingleLiveEvent<Void> youtubeErrorEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> onStartYoutubeClickedEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> loggingStoppedEvent = new SingleLiveEvent<>();
+    public SingleLiveEvent<Void> exitClickEvent = new SingleLiveEvent<>();
     public MutableLiveData<Boolean> isLogging = new MutableLiveData<>();
     public MutableLiveData<Long> youtubeThroughputLiveData = App.logRepository.youtubeThroughputLiveData;
     public MutableLiveData<String> mccLiveData = App.logRepository.mccLiveData;
@@ -94,7 +96,9 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     private String signalLevel;
     private String logId;
     private LoggerRunnable logger;
+    private RadioParamsUpdateRunnable radioParamsUpdateRunnable;
     private Thread threadForLog;
+    private Thread threadForRadioParamsUpdate;
     private List<Log> logs = new ArrayList<>();
     private List<Event> eventLogs = new ArrayList<>();
     private Log currentLog;
@@ -121,6 +125,13 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         telephonyManager.listen(customPhoneStateListenerSignalStrength, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
         telephonyManager.listen(customPhoneStateListenerCellLocation, PhoneStateListener.LISTEN_CELL_LOCATION);
         initService();
+        startThreadForRadioParamsUpdating();
+    }
+
+    private void startThreadForRadioParamsUpdating() {
+        radioParamsUpdateRunnable = new RadioParamsUpdateRunnable();
+        threadForRadioParamsUpdate = new Thread(radioParamsUpdateRunnable);
+        threadForRadioParamsUpdate.start();
     }
 
     public void start(String mSignalStrength, int value) {
@@ -480,5 +491,17 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         if (youtubeState != null){
             App.logRepository.setYoutubeResolution(s);
         }
+    }
+
+    public void onExitClick() {
+        radioParamsUpdateRunnable.stop();
+        try {
+            threadForRadioParamsUpdate.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        exitClickEvent.call();
+        int pid = android.os.Process.myPid();
+        android.os.Process.killProcess(pid);
     }
 }
