@@ -69,6 +69,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     public SingleLiveEvent<Void> onStartYoutubeClickedEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> loggingStoppedEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> exitClickEvent = new SingleLiveEvent<>();
+    public SingleLiveEvent<Void> updateLevelListEvent = App.logRepository.updateLevelListEvent;
     public MutableLiveData<Boolean> isLogging = new MutableLiveData<>();
     public MutableLiveData<Long> youtubeThroughputLiveData = App.logRepository.youtubeThroughputLiveData;
     public MutableLiveData<String> mccLiveData = App.logRepository.mccLiveData;
