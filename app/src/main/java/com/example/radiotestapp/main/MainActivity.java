@@ -1,23 +1,24 @@
 package com.example.radiotestapp.main;
 
 import android.Manifest;
-import android.content.Context;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.telephony.CellLocation;
-import android.view.ContextThemeWrapper;
-import android.view.MenuItem;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -108,38 +109,40 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         textRsrqEcNoTitle = findViewById(R.id.text_rsrq_main_activity);
         textSnr = findViewById(R.id.text_snr_value_main_activity);
         textCqi = findViewById(R.id.text_cqi_value_main_activity);
-        initIamgeSettings();
+        initImageSettings();
         numberPickerCountOfRepeats = findViewById(R.id.number_picker_count_of_repeats_main_activity);
         numberPickerCountOfRepeats.setMaxValue(9999);
         numberPickerCountOfRepeats.setMinValue(1);
 
     }
 
-    private void initIamgeSettings() {
+    private void initImageSettings() {
         imageSettings = findViewById(R.id.image_settings_main_activity);
-        imageSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Context wrapper = new ContextThemeWrapper(MainActivity.this, R.style.SettingsMenuStyle);
-                PopupMenu popup = new PopupMenu(wrapper, imageSettings);
-                popup.getMenuInflater()
-                        .inflate(R.menu.settings_menu, popup.getMenu());
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()){
-                            case R.id.settings:
-                                break;
-                            case R.id.exit:
-                                MainActivity.this.finish();
-                                break;
-                        }
-                        return true;
-                    }
-                });
-
-                popup.show(); //showing popup menu
+        imageSettings.setOnClickListener(l ->{
+            LayoutInflater inflater = (LayoutInflater)
+                    getSystemService(LAYOUT_INFLATER_SERVICE);
+            View popupView = inflater.inflate(R.layout.menu_settings, null);
+            int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+            int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+            final PopupWindow popupWindow = new PopupWindow(popupView, width, height,true);
+            popupWindow.showAtLocation(imageSettings, Gravity.TOP|Gravity.RIGHT, 50, 50);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                popupWindow.setElevation(20);
             }
+            popupView.setFocusable(true);
+
+            TextView tvExit = popupView.findViewById(R.id.tv_exit);
+            tvExit.setOnClickListener(k-> {
+                MainActivity.this.finish();
+            });
+
+            popupView.setOnTouchListener((v, event) -> {
+
+                popupWindow.dismiss();
+                return true;
+            });
         });
+
     }
 
     private void initViewModel() {
