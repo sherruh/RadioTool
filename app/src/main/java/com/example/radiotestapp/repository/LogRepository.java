@@ -12,12 +12,16 @@ import com.example.radiotestapp.model.Event;
 import com.example.radiotestapp.model.Log;
 import com.example.radiotestapp.repository.local.ILocalLogRepository;
 import com.example.radiotestapp.repository.local.LogFileWriter;
+import com.example.radiotestapp.utils.SingleLiveEvent;
+
+import java.util.LinkedList;
 
 
 public class LogRepository {
 
     private ILocalLogRepository localLogRepository = new LogFileWriter();
 
+    public SingleLiveEvent<Void> updateLevelListEvent = new SingleLiveEvent<>();
     public MutableLiveData<Long> youtubeThroughputLiveData = new MutableLiveData<>();
     public MutableLiveData<String> mccLiveData = new MutableLiveData<>("--");
     public MutableLiveData<String> mncLiveData = new MutableLiveData<>("--");
@@ -28,6 +32,7 @@ public class LogRepository {
     public MutableLiveData<String> channelLiveData = new MutableLiveData<>("--");
     public MutableLiveData<String> pciPscBsicLiveData = new MutableLiveData<>("--");
     public MutableLiveData<String> levelLiveData = new MutableLiveData<>("--");
+    public LinkedList<String> levelList = new LinkedList<>();
     public MutableLiveData<String> rsrqEcNoLiveData = new MutableLiveData<>("--");
     public MutableLiveData<String> snrLiveData = new MutableLiveData<>("--");
     public MutableLiveData<String> cqiLiveData = new MutableLiveData<>("--");
@@ -275,5 +280,13 @@ public class LogRepository {
 
     public void closeLogFile(){
         localLogRepository.closeLogFile();
+    }
+
+    public void addToLevelList(String level) {
+        levelList.add(level);
+        if (levelList.size() > 10){
+            levelList.removeFirst();
+        }
+        updateLevelListEvent.call();
     }
 }

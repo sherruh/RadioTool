@@ -24,6 +24,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
+import com.example.radiotestapp.App;
 import com.example.radiotestapp.R;
 import com.example.radiotestapp.main.radio.CustomPhoneStateListener;
 import com.example.radiotestapp.utils.Logger;
@@ -204,6 +205,9 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
             }
         });
         viewModel.exitClickEvent.observe(this,v -> this.finish());
+        viewModel.updateLevelListEvent.observe(this, v1 -> {
+
+        });
     }
 
     @Override
