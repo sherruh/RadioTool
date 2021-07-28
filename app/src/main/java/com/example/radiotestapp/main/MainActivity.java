@@ -208,6 +208,11 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         viewModel.updateLevelListEvent.observe(this, v1 -> {
 
         });
+        initGraphFragment();
+    }
+
+    private void initGraphFragment() {
+
     }
 
     @Override
