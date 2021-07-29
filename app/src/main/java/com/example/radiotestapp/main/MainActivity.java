@@ -19,6 +19,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -159,7 +160,6 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         viewModel.onViewCreated(this, this, this);
         viewModel.onStartYoutubeClickedEvent.observe(this, aVoid -> {
             initYoutube();
-            imageViewYoutube.setVisibility(View.GONE);
         });
 
 
@@ -191,18 +191,18 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         viewModel.cqiLiveData.observe(this, s ->{ textCqi.setText(s);});
         viewModel.youtubeErrorEvent.observe(this, v ->{
             viewModel.youtubePlaybackEnded();
+            removeFragment(youtubePlayerFragment);
+            removeFragment(youtubeParamsFragment);
             Toaster.showShort(getBaseContext(),"Youtube timeout");
         });
         viewModel.loggingStoppedEvent.observe(this,aVoid ->{
             if (youtubePlayerFragment != null){
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.remove(youtubePlayerFragment).commit();
+                removeFragment(youtubePlayerFragment);
                 buttonStop.setVisibility(View.GONE);
                 buttonStart.setVisibility(View.VISIBLE);
             }
             if (youtubeParamsFragment != null){
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.remove(youtubeParamsFragment).commit();
+                removeFragment(youtubeParamsFragment);
             }
             initGraphFragment();
         });
@@ -211,6 +211,11 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
 
         });
         initGraphFragment();
+    }
+
+    private void removeFragment(Fragment fragment){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.remove(fragment).commit();
     }
 
     private void initGraphFragment() {
