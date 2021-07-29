@@ -284,7 +284,7 @@ public class LogRepository {
 
     public void addToLevelList(String level) {
         levelList.add(level);
-        if (levelList.size() > 10){
+        if (levelList.size() > 60){
             levelList.removeFirst();
         }
         updateLevelListEvent.call();

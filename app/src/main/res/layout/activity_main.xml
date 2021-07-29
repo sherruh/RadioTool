@@ -482,13 +482,6 @@
         android:background="@drawable/bg_rect_rounded"
         android:visibility="gone"
         />
-
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/graph_main_activity"
-        app:layout_constraintTop_toTopOf="@id/frame_main_activity"
-        app:layout_constraintStart_toStartOf="@id/frame_main_activity"
-        android:layout_width="375dp"
-        android:layout_height="210dp"/>
     
     <androidx.cardview.widget.CardView
         android:id="@+id/card_additional_params_main_activity"
