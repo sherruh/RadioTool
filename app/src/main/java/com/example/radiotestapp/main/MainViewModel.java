@@ -114,6 +114,10 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     private final long TIMEOUT_DELAY = 60000L;
     private int countOfRepeats = 1;
     private EYoutubeState youtubeState;
+    private boolean isNeedYoutubeTest = true;
+    private boolean isNeedDownloadTest = true;
+    private boolean isNeedUploadTest = true;
+    private boolean isNeedPingTest = true;
 
     public void onViewCreated(Context context, CustomPhoneStateListener.OnSignalStrengthChangedListener onSignalStrengthChangedListener,
                               CustomPhoneStateListener.OnCellLocationChangeListener onCellLocationChangeListener) {
@@ -440,11 +444,29 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         App.logRepository.setLogState(EState.IDLE);
         App.logRepository.setYoutubeResolution("");
         youtubeState = EYoutubeState.FINISHED;
+        Logger.d("checkWhetherToStartYoutubePlayback " + "youtubePlaybackEnded");
+        checkWhetherToStartDownloadTest();
+    }
+
+    private void checkWhetherToStartDownloadTest(){
+        if (isNeedDownloadTest && countOfRepeats > 0 && isLogging.getValue()){
+            downloadTestStart();
+        } else { checkWhetherToStartYoutubePlayback(); }
+    }
+
+    private void downloadTestStart() {
+        downloadTestEnded();
+        //TODO next Check
+    }
+
+    private void downloadTestEnded() {
         checkWhetherToStartYoutubePlayback();
     }
 
+
     private void checkWhetherToStartYoutubePlayback() {
         if (countOfRepeats > 0 && isLogging.getValue()){
+            Logger.d("checkWhetherToStartYoutubePlayback " + countOfRepeats + " " + isLogging.getValue());
             countOfRepeats--;
             onStartYoutubeClickedEvent.call();
             return;

@@ -1,14 +1,13 @@
 package com.example.radiotestapp.youtube_player;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.example.radiotestapp.R;
 import com.example.radiotestapp.main.MainViewModel;
@@ -118,5 +117,20 @@ public class YoutubePlayerFragment extends Fragment {
         super.onDestroy();
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
 
+    @Override
+    public void onDestroyView() {
+        youTubePlayerView.release();
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDetach() {
+        youTubePlayerView.release();
+        super.onDetach();
+    }
 }
