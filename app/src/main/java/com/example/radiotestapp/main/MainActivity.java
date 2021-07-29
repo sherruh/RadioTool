@@ -27,6 +27,7 @@ import com.bumptech.glide.Glide;
 import com.example.radiotestapp.App;
 import com.example.radiotestapp.R;
 import com.example.radiotestapp.main.radio.CustomPhoneStateListener;
+import com.example.radiotestapp.realtime_graph.RealTimeGraphFragment;
 import com.example.radiotestapp.utils.Logger;
 import com.example.radiotestapp.utils.Toaster;
 import com.example.radiotestapp.youtube_params.YoutubeParamsFragment;
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     private CellLocation mCellLocation;
     private YoutubePlayerFragment youtubePlayerFragment;
     private YoutubeParamsFragment youtubeParamsFragment;
+    private RealTimeGraphFragment realTimeGraphFragment;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     private Location geoLocation;
@@ -195,7 +197,6 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
             if (youtubePlayerFragment != null){
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.remove(youtubePlayerFragment).commit();
-                imageViewYoutube.setVisibility(View.VISIBLE);
                 buttonStop.setVisibility(View.GONE);
                 buttonStart.setVisibility(View.VISIBLE);
             }
@@ -203,6 +204,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.remove(youtubeParamsFragment).commit();
             }
+            initGraphFragment();
         });
         viewModel.exitClickEvent.observe(this,v -> this.finish());
         viewModel.updateLevelListEvent.observe(this, v1 -> {
@@ -212,7 +214,10 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     }
 
     private void initGraphFragment() {
-
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        realTimeGraphFragment = RealTimeGraphFragment.newInstance(viewModel);
+        fragmentTransaction.replace(R.id.frame_main_activity,realTimeGraphFragment);
+        fragmentTransaction.commit();
     }
 
     @Override
