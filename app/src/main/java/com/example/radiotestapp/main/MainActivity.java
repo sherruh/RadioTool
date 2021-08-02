@@ -4,10 +4,10 @@ import android.Manifest;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.telephony.CellLocation;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -25,10 +25,11 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
-import com.example.radiotestapp.App;
 import com.example.radiotestapp.R;
+import com.example.radiotestapp.download_test.DownloadTestFragment;
 import com.example.radiotestapp.main.radio.CustomPhoneStateListener;
-import com.example.radiotestapp.realtime_graph.RealTimeGraphFragment;
+import com.example.radiotestapp.realtime_graph_for_radio_params.RealTimeGraphForRadioParamsFragment;
+import com.example.radiotestapp.utils.DownloadManagerDisabler;
 import com.example.radiotestapp.utils.Logger;
 import com.example.radiotestapp.utils.Toaster;
 import com.example.radiotestapp.youtube_params.YoutubeParamsFragment;
@@ -45,6 +46,10 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements CustomPhoneStateListener.OnSignalStrengthChangedListener,
@@ -56,7 +61,8 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     private CellLocation mCellLocation;
     private YoutubePlayerFragment youtubePlayerFragment;
     private YoutubeParamsFragment youtubeParamsFragment;
-    private RealTimeGraphFragment realTimeGraphFragment;
+    private RealTimeGraphForRadioParamsFragment realTimeGraphForRadioParamsFragment;
+    private DownloadTestFragment downloadTestFragment;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     private Location geoLocation;
@@ -92,6 +98,20 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         mCellLocation = null;
         checkPlayServices();
         checkPermissions();
+        DownloadManagerDisabler.disableAllDownloadings(this);
+        String filepath = Environment.getExternalStorageDirectory().getPath();
+        File file = new File(filepath,"Test1");
+        file.mkdir();
+        try {
+            RandomAccessFile randomAccessFile = new RandomAccessFile(file.getPath() + "/" + "1.bin","rw");
+            randomAccessFile.setLength(1024*1024*50);
+            randomAccessFile.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void initViews() {
@@ -138,6 +158,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
             TextView tvExit = popupView.findViewById(R.id.tv_exit);
             tvExit.setOnClickListener(k-> {
                 viewModel.onExitClick();
+                DownloadManagerDisabler.disableAllDownloadings(MainActivity.this);
                 MainActivity.this.finish();
             });
 
@@ -204,13 +225,29 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
             if (youtubeParamsFragment != null){
                 removeFragment(youtubeParamsFragment);
             }
-            initGraphFragment();
+            initGraphParamsFragment();
         });
         viewModel.exitClickEvent.observe(this,v -> this.finish());
         viewModel.updateLevelListEvent.observe(this, v1 -> {
 
         });
-        initGraphFragment();
+        viewModel.downloadTestStartEvent.observe(this,v2 ->{
+            if (youtubeParamsFragment != null){
+                removeFragment(youtubeParamsFragment);
+            }
+            if (youtubePlayerFragment != null) {
+                removeFragment(youtubePlayerFragment);
+            }
+            initDownloadTestFragment();
+        });
+        initGraphParamsFragment();
+    }
+
+    private void initDownloadTestFragment() {
+        downloadTestFragment = DownloadTestFragment.newInstance(viewModel);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.frame_main_activity, downloadTestFragment);
+        fragmentTransaction.commit();
     }
 
     private void removeFragment(Fragment fragment){
@@ -218,10 +255,10 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         transaction.remove(fragment).commit();
     }
 
-    private void initGraphFragment() {
+    private void initGraphParamsFragment() {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        realTimeGraphFragment = RealTimeGraphFragment.newInstance(viewModel);
-        fragmentTransaction.replace(R.id.frame_main_activity,realTimeGraphFragment);
+        realTimeGraphForRadioParamsFragment = RealTimeGraphForRadioParamsFragment.newInstance(viewModel);
+        fragmentTransaction.replace(R.id.frame_main_activity, realTimeGraphForRadioParamsFragment);
         fragmentTransaction.commit();
     }
 

@@ -2,6 +2,7 @@ package com.example.radiotestapp.main;
 
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -19,7 +20,6 @@ import android.telephony.CellInfoWcdma;
 import android.telephony.CellLocation;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
-import android.content.Context;
 import android.telephony.gsm.GsmCellLocation;
 
 import androidx.annotation.NonNull;
@@ -42,6 +42,7 @@ import com.example.radiotestapp.model.Event;
 import com.example.radiotestapp.model.Log;
 import com.example.radiotestapp.services.GettingLocationService;
 import com.example.radiotestapp.utils.DateConverter;
+import com.example.radiotestapp.utils.DownloadManagerDisabler;
 import com.example.radiotestapp.utils.Logger;
 import com.example.radiotestapp.utils.SingleLiveEvent;
 import com.example.radiotestapp.utils.Toaster;
@@ -55,7 +56,6 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstan
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -70,6 +70,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     public SingleLiveEvent<Void> loggingStoppedEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> exitClickEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> updateLevelListEvent = App.logRepository.updateLevelListEvent;
+    public SingleLiveEvent<Void> downloadTestStartEvent = new SingleLiveEvent<>();
     public MutableLiveData<Boolean> isLogging = new MutableLiveData<>();
     public MutableLiveData<Long> youtubeThroughputLiveData = App.logRepository.youtubeThroughputLiveData;
     public MutableLiveData<String> mccLiveData = App.logRepository.mccLiveData;
@@ -166,6 +167,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         App.logRepository.setYoutubeResolution("");
         App.logRepository.closeLogFile();
         loggingStoppedEvent.call();
+        DownloadManagerDisabler.disableAllDownloadings(mContext);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -449,17 +451,25 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     }
 
     private void checkWhetherToStartDownloadTest(){
-        if (isNeedDownloadTest && countOfRepeats > 0 && isLogging.getValue()){
+        if (isNeedDownloadTest && isLogging.getValue()){
             downloadTestStart();
-        } else { checkWhetherToStartYoutubePlayback(); }
+        } else {//TODO next Check
+            checkWhetherToStartYoutubePlayback();
+        }
     }
 
     private void downloadTestStart() {
-        downloadTestEnded();
-        //TODO next Check
+        /*downloadTestStartEvent.call();
+        DownloadManager manager = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
+        Uri uri = Uri.parse("http://speed.o.kg/files/mb-200.bin");
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
+        long reference = manager.enqueue(request);
+*/
+        //downloadTestEnded();
     }
 
-    private void downloadTestEnded() {
+    private void downloadTestEnded() {//TODO next Check
         checkWhetherToStartYoutubePlayback();
     }
 
