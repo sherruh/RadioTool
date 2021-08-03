@@ -99,19 +99,6 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         checkPlayServices();
         checkPermissions();
         DownloadManagerDisabler.disableAllDownloadings(this);
-        String filepath = Environment.getExternalStorageDirectory().getPath();
-        File file = new File(filepath,"Test1");
-        file.mkdir();
-        try {
-            RandomAccessFile randomAccessFile = new RandomAccessFile(file.getPath() + "/" + "1.bin","rw");
-            randomAccessFile.setLength(1024*1024*50);
-            randomAccessFile.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 
     private void initViews() {
@@ -239,6 +226,12 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
                 removeFragment(youtubePlayerFragment);
             }
             initDownloadTestFragment();
+        });
+        viewModel.uploadErrorEvent.observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                Toaster.showLong(MainActivity.this,s);
+            }
         });
         initGraphParamsFragment();
     }
