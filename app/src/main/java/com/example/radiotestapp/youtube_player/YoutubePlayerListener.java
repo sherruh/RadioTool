@@ -1,4 +1,4 @@
-package com.example.radiotestapp.utils;
+package com.example.radiotestapp.youtube_player;
 
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;

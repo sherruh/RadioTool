@@ -1,32 +1,27 @@
 package com.example.radiotestapp.repository.local;
 
-import android.content.Context;
 import android.os.Environment;
 
 import com.example.radiotestapp.App;
+import com.example.radiotestapp.core.Constants;
 import com.example.radiotestapp.model.Event;
 import com.example.radiotestapp.model.Log;
-import com.example.radiotestapp.utils.Logger;
 import com.example.radiotestapp.utils.Toaster;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 
 public class LogFileWriter implements ILocalLogRepository {
 
-    private final String LOG_FOLDER = "RadioTestAppLogs";
     private final String HEADER = "LogId\tDate\tlongitude\tlatitude\taltitude\tMCC\tMNC\tTechnology" +
             "\tTACLAC\tENodeB\tCID\tbsic\tPSC\tPCI\tRSRP\tRSRQ\tRSCP\tRxLevel\tCQI\tSNR\tEcN0\tBER" +
             "\tChannel\tDlThrput\tUlThrput\tping\tYoutubeQuality\tEvent\tEventParameter\tEventDescription" +
             "\tLogState";
     private File logFile;
     private String logName = "";
-    private File folder = new File(Environment.getExternalStorageDirectory(), LOG_FOLDER);
+    private File folder = new File(Environment.getExternalStorageDirectory(), Constants.LOG_FOLDER);
     private FileOutputStream fileOutputStream;
 
     @Override
@@ -59,7 +54,7 @@ public class LogFileWriter implements ILocalLogRepository {
         if (folder.exists());
         else {
             String filepath = Environment.getExternalStorageDirectory().getPath();
-            folder = new File(filepath,LOG_FOLDER);
+            folder = new File(filepath,Constants.LOG_FOLDER);
             if (!folder.mkdir()) return;
         }
         logFile = new File(folder.getPath() + "/" + logId + ".txt");
@@ -78,7 +73,7 @@ public class LogFileWriter implements ILocalLogRepository {
         if (fileOutputStream == null) return;
         try {
             fileOutputStream.close();
-            Toaster.showLong(App.context,"Log saved: " + LOG_FOLDER + "/" + logName + ".txt");
+            Toaster.showLong(App.context,"Log saved: " + Constants.LOG_FOLDER + "/" + logName + ".txt");
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -7,5 +7,8 @@ public enum EEvents {
     YSB,//Youtube buffering start
     YFB,//Youtube buffering finished
     YEB,//Youtube buffering error
-    YSP//Youtube start playing
+    YSP,//Youtube start playing
+    US,
+    UE,
+    UF
 }

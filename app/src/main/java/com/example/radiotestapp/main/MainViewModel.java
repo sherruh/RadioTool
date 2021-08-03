@@ -10,6 +10,7 @@ import android.location.Location;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.telephony.CellIdentityGsm;
 import android.telephony.CellIdentityLte;
 import android.telephony.CellIdentityWcdma;
@@ -32,6 +33,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.radiotestapp.App;
+import com.example.radiotestapp.core.Constants;
 import com.example.radiotestapp.enums.EEvents;
 import com.example.radiotestapp.enums.EState;
 import com.example.radiotestapp.enums.EYoutubeState;
@@ -41,6 +43,7 @@ import com.example.radiotestapp.main.thread.RadioParamsUpdateRunnable;
 import com.example.radiotestapp.model.Event;
 import com.example.radiotestapp.model.Log;
 import com.example.radiotestapp.services.GettingLocationService;
+import com.example.radiotestapp.upload_test.Uploader;
 import com.example.radiotestapp.utils.DateConverter;
 import com.example.radiotestapp.utils.DownloadManagerDisabler;
 import com.example.radiotestapp.utils.Logger;
@@ -53,6 +56,10 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -66,6 +73,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
 
     public SingleLiveEvent<Void> isPermissionNotGranted = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> youtubeErrorEvent = new SingleLiveEvent<>();
+    public SingleLiveEvent<String> uploadErrorEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> onStartYoutubeClickedEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> loggingStoppedEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> exitClickEvent = new SingleLiveEvent<>();
@@ -112,7 +120,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     private long finishInitYoutubeTime;
     private long startBufferingTime;
     private long finishBufferingTime;
-    private final long TIMEOUT_DELAY = 60000L;
+    private final long TIMEOUT_DELAY = 30000L;
     private int countOfRepeats = 1;
     private EYoutubeState youtubeState;
     private boolean isNeedYoutubeTest = true;
@@ -132,6 +140,23 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         telephonyManager.listen(customPhoneStateListenerCellLocation, PhoneStateListener.LISTEN_CELL_LOCATION);
         initService();
         startThreadForRadioParamsUpdating();
+        createFileForUpload();
+    }
+
+    private void createFileForUpload() {
+        File folder = new File(Environment.getExternalStorageDirectory(), Constants.LOG_FOLDER);
+        if (!folder.exists()){
+            folder.mkdir();
+        }
+        try {
+            RandomAccessFile randomAccessFile = new RandomAccessFile(folder.getPath() + "/" + "1.bin","rw");
+            randomAccessFile.setLength(1024*1024*50);
+            randomAccessFile.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void startThreadForRadioParamsUpdating() {
@@ -467,6 +492,16 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         long reference = manager.enqueue(request);
 */
         //downloadTestEnded();
+
+
+        Uploader uploader = new Uploader();
+        uploader.uploadFile("http://nambas.kg", new Uploader.UploadListener() {
+            @Override
+            public void onFailure(String message) {
+                uploader.setUploadAgain(false);
+                uploadErrorEvent.postValue(message);
+            }
+        });
     }
 
     private void downloadTestEnded() {//TODO next Check
