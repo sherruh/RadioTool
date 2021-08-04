@@ -1,6 +1,7 @@
 package com.example.radiotestapp.main;
 
 import android.annotation.SuppressLint;
+import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -202,6 +204,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         }
         isLogging.postValue(false);
         App.logRepository.setYoutubeResolution("");
+        App.logRepository.setLogState(EState.IDLE);
         App.logRepository.closeLogFile();
         logSavedEvent.postValue("Log saved: " + Constants.LOG_FOLDER + "/" + logId + ".txt");
         loggingStoppedEvent.call();
@@ -505,15 +508,23 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     }
 
     private void downloadTestStart() {
-        /*downloadTestStartEvent.call();
-        DownloadManager manager = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
-        Uri uri = Uri.parse("http://speed.o.kg/files/mb-200.bin");
-        DownloadManager.Request request = new DownloadManager.Request(uri);
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
-        long reference = manager.enqueue(request);
-*/
-        //downloadTestEnded();
-        uploadTestStart();
+        downloadTestStartEvent.call();
+        long downloadID = 0;
+        BroadcastReceiver onDownloadComplete = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                //Fetching the download id received with the broadcast
+                long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+                //Checking if the received broadcast is for our enqueued download by matching download id
+                if (downloadID == id) {
+
+                }
+            }
+        };
+        mContext.registerReceiver(onDownloadComplete,new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
+        /*downloadTestEnded();
+        uploadTestStart();*/
 
     }
 
@@ -529,10 +540,13 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
             public void onFailure(String message) {
                 uploader.setUploadAgain(false);
                 uploader.cancelUpload();
-                uploadErrorEvent.postValue(message);
-                eventLogs.add(new Event( logId,EEvents.UE,System.currentTimeMillis(),
-                        "",EState.UPLOAD_TEST));
-                App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
+                if (!message.equals("Socket closed")){
+                    uploadErrorEvent.postValue(message);
+                    eventLogs.add(new Event( logId,EEvents.UE,System.currentTimeMillis(),
+                            "",EState.UPLOAD_TEST));
+                    App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
+                }
+
                 uploadTestEnded();
                 return;
             }
