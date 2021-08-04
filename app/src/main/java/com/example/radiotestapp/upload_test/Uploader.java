@@ -26,11 +26,12 @@ public class Uploader {
     }
 
     private boolean isUploadAgain = true;
+    private OkHttpClient client;
 
     public void uploadFile(String targetUrl, UploadListener uploadListener){
         File folder = new File(Environment.getExternalStorageDirectory(), Constants.LOG_FOLDER);
         File file = new File(folder.getPath(),"/1.bin");
-        OkHttpClient client = new OkHttpClient.Builder()
+        client = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .writeTimeout(10, TimeUnit.SECONDS)
                 .readTimeout(10, TimeUnit.SECONDS)
@@ -69,6 +70,10 @@ public class Uploader {
         } catch (Exception ex) {
             uploadListener.onFailure(ex.getMessage());
         }
+    }
+
+    public void cancelUpload(){
+        if (client != null) client.dispatcher().cancelAll();
     }
 
     public interface UploadListener{

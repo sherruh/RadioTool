@@ -2,11 +2,9 @@ package com.example.radiotestapp.repository.local;
 
 import android.os.Environment;
 
-import com.example.radiotestapp.App;
 import com.example.radiotestapp.core.Constants;
 import com.example.radiotestapp.model.Event;
 import com.example.radiotestapp.model.Log;
-import com.example.radiotestapp.utils.Toaster;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -73,7 +71,6 @@ public class LogFileWriter implements ILocalLogRepository {
         if (fileOutputStream == null) return;
         try {
             fileOutputStream.close();
-            Toaster.showLong(App.context,"Log saved: " + Constants.LOG_FOLDER + "/" + logName + ".txt");
         } catch (IOException e) {
             e.printStackTrace();
         }

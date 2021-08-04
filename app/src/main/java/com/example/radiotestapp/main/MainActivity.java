@@ -1,10 +1,10 @@
 package com.example.radiotestapp.main;
 
 import android.Manifest;
+import android.app.DownloadManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.telephony.CellLocation;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -25,10 +25,13 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
+import com.example.radiotestapp.App;
 import com.example.radiotestapp.R;
+import com.example.radiotestapp.core.Constants;
 import com.example.radiotestapp.download_test.DownloadTestFragment;
 import com.example.radiotestapp.main.radio.CustomPhoneStateListener;
 import com.example.radiotestapp.realtime_graph_for_radio_params.RealTimeGraphForRadioParamsFragment;
+import com.example.radiotestapp.upload_test.UploadTestFragment;
 import com.example.radiotestapp.utils.DownloadManagerDisabler;
 import com.example.radiotestapp.utils.Logger;
 import com.example.radiotestapp.utils.Toaster;
@@ -46,10 +49,6 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements CustomPhoneStateListener.OnSignalStrengthChangedListener,
@@ -63,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     private YoutubeParamsFragment youtubeParamsFragment;
     private RealTimeGraphForRadioParamsFragment realTimeGraphForRadioParamsFragment;
     private DownloadTestFragment downloadTestFragment;
+    private UploadTestFragment uploadTestFragment;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     private Location geoLocation;
@@ -227,11 +227,18 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
             }
             initDownloadTestFragment();
         });
-        viewModel.uploadErrorEvent.observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                Toaster.showLong(MainActivity.this,s);
+        viewModel.uploadTestStartEvent.observe(this, unused -> {
+            if (youtubeParamsFragment != null){
+                removeFragment(youtubeParamsFragment);
             }
+            if (youtubePlayerFragment != null) {
+                removeFragment(youtubePlayerFragment);
+            }
+            initUploadTestFragment();
+        });
+        viewModel.uploadErrorEvent.observe(this, s -> Toaster.showLong(MainActivity.this,s));
+        viewModel.logSavedEvent.observe(this, s -> {
+            Toaster.showLong(App.context,s);
         });
         initGraphParamsFragment();
     }
@@ -240,6 +247,14 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         downloadTestFragment = DownloadTestFragment.newInstance(viewModel);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frame_main_activity, downloadTestFragment);
+        fragmentTransaction.commit();
+    }
+
+    private void initUploadTestFragment() {
+        DownloadManagerDisabler.disableAllDownloadings(this);
+        uploadTestFragment = UploadTestFragment.newInstance(viewModel);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.frame_main_activity, uploadTestFragment);
         fragmentTransaction.commit();
     }
 

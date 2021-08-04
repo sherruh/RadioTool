@@ -78,7 +78,12 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     public SingleLiveEvent<Void> loggingStoppedEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> exitClickEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> updateLevelListEvent = App.logRepository.updateLevelListEvent;
+    public SingleLiveEvent<Void> updateUploadThroughputListEvent = App.logRepository.updateUploadThroughputListEvent;
     public SingleLiveEvent<Void> downloadTestStartEvent = new SingleLiveEvent<>();
+    public SingleLiveEvent<Void> downloadTestStopEvent = new SingleLiveEvent<>();
+    public SingleLiveEvent<Void> uploadTestStartEvent = new SingleLiveEvent<>();
+    public SingleLiveEvent<Void> uploadTestStopEvent = new SingleLiveEvent<>();
+    public SingleLiveEvent<String> logSavedEvent = new SingleLiveEvent<>();
     public MutableLiveData<Boolean> isLogging = new MutableLiveData<>();
     public MutableLiveData<Long> youtubeThroughputLiveData = App.logRepository.youtubeThroughputLiveData;
     public MutableLiveData<String> mccLiveData = App.logRepository.mccLiveData;
@@ -105,6 +110,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     private CustomPhoneStateListener customPhoneStateListenerCellLocation;
     private String signalLevel;
     private String logId;
+    private Uploader uploader;
     private LoggerRunnable logger;
     private RadioParamsUpdateRunnable radioParamsUpdateRunnable;
     private Thread threadForLog;
@@ -121,6 +127,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     private long startBufferingTime;
     private long finishBufferingTime;
     private final long TIMEOUT_DELAY = 30000L;
+    private final long UPLOAD_DURATION = 30000L;
     private int countOfRepeats = 1;
     private EYoutubeState youtubeState;
     private boolean isNeedYoutubeTest = true;
@@ -182,15 +189,21 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     }
 
     public void stop() {
+        if(timer != null) timer.cancel();
+        if (uploader != null) {
+            uploader.setUploadAgain(false);
+            uploader.cancelUpload();
+        }
         logger.stopLog();
         try {
             threadForLog.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        isLogging.setValue(false);
+        isLogging.postValue(false);
         App.logRepository.setYoutubeResolution("");
         App.logRepository.closeLogFile();
+        logSavedEvent.postValue("Log saved: " + Constants.LOG_FOLDER + "/" + logId + ".txt");
         loggingStoppedEvent.call();
         DownloadManagerDisabler.disableAllDownloadings(mContext);
     }
@@ -478,6 +491,14 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     private void checkWhetherToStartDownloadTest(){
         if (isNeedDownloadTest && isLogging.getValue()){
             downloadTestStart();
+        } else {
+            checkWhetherToStartUploadTest();
+        }
+    }
+
+    private void checkWhetherToStartUploadTest(){
+        if (isNeedDownloadTest && isLogging.getValue()){
+            uploadTestStart();
         } else {//TODO next Check
             checkWhetherToStartYoutubePlayback();
         }
@@ -492,19 +513,52 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         long reference = manager.enqueue(request);
 */
         //downloadTestEnded();
+        uploadTestStart();
 
+    }
 
-        Uploader uploader = new Uploader();
-        uploader.uploadFile("http://nambas.kg", new Uploader.UploadListener() {
+    private void uploadTestStart() {
+        uploadTestStartEvent.call();
+        uploader = new Uploader();
+        App.logRepository.setLogState(EState.UPLOAD_TEST);
+        eventLogs.add(new Event( logId,EEvents.US,System.currentTimeMillis(),
+                "",EState.UPLOAD_TEST));
+        App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
+        uploader.uploadFile("http://speed.o.kg", new Uploader.UploadListener() {
             @Override
             public void onFailure(String message) {
                 uploader.setUploadAgain(false);
+                uploader.cancelUpload();
                 uploadErrorEvent.postValue(message);
+                eventLogs.add(new Event( logId,EEvents.UE,System.currentTimeMillis(),
+                        "",EState.UPLOAD_TEST));
+                App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
+                uploadTestEnded();
+                return;
             }
         });
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run () {
+                uploader.setUploadAgain(false);
+                eventLogs.add(new Event( logId,EEvents.UF,System.currentTimeMillis(),
+                        "",EState.UPLOAD_TEST));
+                App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
+                uploadTestEnded();
+                timer.cancel();
+            }
+        }, UPLOAD_DURATION);
     }
 
-    private void downloadTestEnded() {//TODO next Check
+    private void downloadTestEnded() {
+        checkWhetherToStartUploadTest();
+    }
+
+    private void uploadTestEnded(){
+        if (uploader != null) uploader.cancelUpload();
+        uploadTestStopEvent.call();
+        App.logRepository.setLogState(EState.IDLE);
         checkWhetherToStartYoutubePlayback();
     }
 
@@ -562,6 +616,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     }
 
     public void onExitClick() {
+        if (uploader != null) uploader.setUploadAgain(false);
         radioParamsUpdateRunnable.stop();
         try {
             threadForRadioParamsUpdate.join();

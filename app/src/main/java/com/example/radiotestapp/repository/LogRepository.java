@@ -22,7 +22,9 @@ public class LogRepository {
     private ILocalLogRepository localLogRepository = new LogFileWriter();
 
     public SingleLiveEvent<Void> updateLevelListEvent = new SingleLiveEvent<>();
+    public SingleLiveEvent<Void> updateUploadThroughputListEvent = new SingleLiveEvent<>();
     public MutableLiveData<Long> youtubeThroughputLiveData = new MutableLiveData<>();
+    public MutableLiveData<Long> uploadThroughputLiveData = new MutableLiveData<>();
     public MutableLiveData<String> mccLiveData = new MutableLiveData<>("--");
     public MutableLiveData<String> mncLiveData = new MutableLiveData<>("--");
     public MutableLiveData<String> techLiveData = new MutableLiveData<>("--");
@@ -33,6 +35,7 @@ public class LogRepository {
     public MutableLiveData<String> pciPscBsicLiveData = new MutableLiveData<>("--");
     public MutableLiveData<String> levelLiveData = new MutableLiveData<>("--");
     public LinkedList<String> levelList = new LinkedList<>();
+    public LinkedList<Long> uploadThroughputList = new LinkedList<>();
     public MutableLiveData<String> rsrqEcNoLiveData = new MutableLiveData<>("--");
     public MutableLiveData<String> snrLiveData = new MutableLiveData<>("--");
     public MutableLiveData<String> cqiLiveData = new MutableLiveData<>("--");
@@ -258,7 +261,7 @@ public class LogRepository {
     public void setYoutubeResolution(String youtubeResolution) {
         synchronized (this){
             mLog.setYoutubeResolution(youtubeResolution);
-            youtubeResolutionLiveData.setValue(youtubeResolution);
+            youtubeResolutionLiveData.postValue(youtubeResolution);
         }
     }
 
@@ -288,5 +291,22 @@ public class LogRepository {
             levelList.removeFirst();
         }
         updateLevelListEvent.call();
+    }
+
+    private void addToUploadThroughputList(long ulThroughput){
+        uploadThroughputList.add(ulThroughput);
+        if (uploadThroughputList.size() > 60){
+            uploadThroughputList.removeFirst();
+        }
+        updateUploadThroughputListEvent.call();
+    }
+
+    public void setUlThroughput(long ulThroughput) {
+        synchronized (this){
+            mLog.setUlThrput(ulThroughput);
+            mLog.setLogState(logState);
+            uploadThroughputLiveData.postValue(ulThroughput);
+            addToUploadThroughputList(ulThroughput);
+        }
     }
 }
