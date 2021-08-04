@@ -19,7 +19,6 @@ import okhttp3.Response;
 
 public class Uploader {
 
-    private final long UPLOAD_COMPLETE_TIMEOUT = 30000l;
 
     public void setUploadAgain(boolean uploadAgain) {
         isUploadAgain = uploadAgain;

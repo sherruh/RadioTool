@@ -102,19 +102,19 @@ public class UploadTestFragment extends Fragment {
 
         YAxis rightAxis = lineChart.getAxisRight();
         rightAxis.setEnabled(false);
-        addInitailEntries();
+        //addInitailEntries();
     }
 
     private void addInitailEntries() {
         if (App.logRepository.uploadThroughputList.size() > 0){
 
             for(long l : new ArrayList<Long>( App.logRepository.uploadThroughputList) ){
-                addEntry(l);
+                addEntry(l / 1024f);
             }
         }
     }
 
-    private void addEntry(float level) {
+    private void addEntry(float l) {
 
         LineData data = lineChart.getData();
         if (data != null) {
@@ -125,10 +125,10 @@ public class UploadTestFragment extends Fragment {
                 data.addDataSet(set);
             }
             set.setLabel(getLabel());
-            data.addEntry(new Entry(set.getEntryCount(), level), 0);
+            data.addEntry(new Entry(set.getEntryCount(), l / 1024f), 0);
             data.notifyDataChanged();
-            lineChart.getAxisLeft().setAxisMaximum(set.getYMax() + 10f);
-            lineChart.getAxisLeft().setAxisMinimum(set.getYMin() - 10f);
+            lineChart.getAxisLeft().setAxisMaximum(set.getYMax() + 0.5f);
+            lineChart.getAxisLeft().setAxisMinimum(set.getYMin() - 0.5f);
             lineChart.notifyDataSetChanged();
             lineChart.setVisibleXRangeMaximum(60);
             lineChart.moveViewToX(data.getEntryCount());
@@ -149,7 +149,7 @@ public class UploadTestFragment extends Fragment {
         set1.setHighlightEnabled(false);
         set1.setColor(Color.WHITE);
         set1.setFillColor(Color.BLUE);
-        set1.setFillAlpha(100);
+        set1.setFillAlpha(50);
         set1.setDrawValues(false);
         set1.setDrawHorizontalHighlightIndicator(false);
         set1.setFillFormatter(new IFillFormatter() {
