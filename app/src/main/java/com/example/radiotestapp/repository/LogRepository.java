@@ -23,8 +23,10 @@ public class LogRepository {
 
     public SingleLiveEvent<Void> updateLevelListEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> updateUploadThroughputListEvent = new SingleLiveEvent<>();
+    public SingleLiveEvent<Void> updateDownloadThroughputListEvent = new SingleLiveEvent<>();
     public MutableLiveData<Long> youtubeThroughputLiveData = new MutableLiveData<>();
     public MutableLiveData<Long> uploadThroughputLiveData = new MutableLiveData<>();
+    public MutableLiveData<Long> downloadThroughputLiveData = new MutableLiveData<>();
     public MutableLiveData<String> mccLiveData = new MutableLiveData<>("--");
     public MutableLiveData<String> mncLiveData = new MutableLiveData<>("--");
     public MutableLiveData<String> techLiveData = new MutableLiveData<>("--");
@@ -36,6 +38,7 @@ public class LogRepository {
     public MutableLiveData<String> levelLiveData = new MutableLiveData<>("--");
     public LinkedList<String> levelList = new LinkedList<>();
     public LinkedList<Long> uploadThroughputList = new LinkedList<>();
+    public LinkedList<Long> downloadThroughputList = new LinkedList<>();
     public MutableLiveData<String> rsrqEcNoLiveData = new MutableLiveData<>("--");
     public MutableLiveData<String> snrLiveData = new MutableLiveData<>("--");
     public MutableLiveData<String> cqiLiveData = new MutableLiveData<>("--");
@@ -71,11 +74,20 @@ public class LogRepository {
         }
     }
 
-    public void setDlThroughput(long dlThroughput){
+    public void setYoutubeThroughput(long dlThroughput){
         synchronized (this){
             mLog.setDlThrput(dlThroughput);
             mLog.setLogState(logState);
             youtubeThroughputLiveData.postValue(dlThroughput);
+        }
+    }
+
+    public void setDownloadTestThroughput(long dlThroughput){
+        synchronized (this){
+            mLog.setDlThrput(dlThroughput);
+            mLog.setLogState(logState);
+            addToDownloadThroughputList(dlThroughput);
+            downloadThroughputLiveData.postValue(dlThroughput);
         }
     }
 
@@ -299,6 +311,14 @@ public class LogRepository {
             uploadThroughputList.removeFirst();
         }
         updateUploadThroughputListEvent.call();
+    }
+
+    private void addToDownloadThroughputList(long dlThroughput){
+        downloadThroughputList.add(dlThroughput);
+        if (downloadThroughputList.size() > 60){
+            downloadThroughputList.removeFirst();
+        }
+        updateDownloadThroughputListEvent.call();
     }
 
     public void setUlThroughput(long ulThroughput) {

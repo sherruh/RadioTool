@@ -1,7 +1,6 @@
 package com.example.radiotestapp.main;
 
 import android.annotation.SuppressLint;
-import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,7 +8,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.ConnectivityManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -36,6 +34,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.radiotestapp.App;
 import com.example.radiotestapp.core.Constants;
+import com.example.radiotestapp.download_test.Downloader;
 import com.example.radiotestapp.enums.EEvents;
 import com.example.radiotestapp.enums.EState;
 import com.example.radiotestapp.enums.EYoutubeState;
@@ -81,7 +80,9 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     public SingleLiveEvent<Void> exitClickEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> updateLevelListEvent = App.logRepository.updateLevelListEvent;
     public SingleLiveEvent<Void> updateUploadThroughputListEvent = App.logRepository.updateUploadThroughputListEvent;
+    public SingleLiveEvent<Void> updateDownloadThroughputListEvent = App.logRepository.updateDownloadThroughputListEvent;
     public SingleLiveEvent<Void> downloadTestStartEvent = new SingleLiveEvent<>();
+    public SingleLiveEvent<String> downloadTestFailedEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> downloadTestStopEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> uploadTestStartEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> uploadTestStopEvent = new SingleLiveEvent<>();
@@ -113,6 +114,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     private String signalLevel;
     private String logId;
     private Uploader uploader;
+    private Downloader downloader;
     private LoggerRunnable logger;
     private RadioParamsUpdateRunnable radioParamsUpdateRunnable;
     private Thread threadForLog;
@@ -196,6 +198,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
             uploader.setUploadAgain(false);
             uploader.cancelUpload();
         }
+        if (downloader != null) downloader.stopDownload();
         logger.stopLog();
         try {
             threadForLog.join();
@@ -509,19 +512,37 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
 
     private void downloadTestStart() {
         downloadTestStartEvent.call();
-        long downloadID = 0;
-        BroadcastReceiver onDownloadComplete = new BroadcastReceiver() {
+        App.logRepository.setLogState(EState.DOWNLOAD_TEST);
+        downloader = new Downloader();
+        eventLogs.add(new Event( logId,EEvents.DS,System.currentTimeMillis(),
+                "",EState.DOWNLOAD_TEST));
+        App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
+        downloader.download("http://speedtest.tele2.net/10MB.zip", mContext, new Downloader.DownloadListener() {
             @Override
-            public void onReceive(Context context, Intent intent) {
-                //Fetching the download id received with the broadcast
-                long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-                //Checking if the received broadcast is for our enqueued download by matching download id
-                if (downloadID == id) {
-
-                }
+            public void onFailure(String message) {
+                if (App.logRepository.getLogState() != EState.DOWNLOAD_TEST) return;
+                downloadTestFailedEvent.postValue(message);
+                eventLogs.add(new Event( logId,EEvents.DE,System.currentTimeMillis(),
+                        "",EState.DOWNLOAD_TEST));
+                App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
+                downloadTestEnded();
             }
-        };
-        mContext.registerReceiver(onDownloadComplete,new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
+            @Override
+            public void onComplete() {
+                eventLogs.add(new Event( logId,EEvents.DF,System.currentTimeMillis(),
+                        "",EState.DOWNLOAD_TEST));
+                App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
+                downloadTestEnded();
+            }
+        });
+
+        /*DownloadManagerBroadcastReceiver downloadManagerBroadcastReceiver = new DownloadManagerBroadcastReceiver();
+        downloadManagerBroadcastReceiver.registerOnCompleteReceiver(downloadID);
+        downloadManagerBroadcastReceiver.registerOnFailedReceiver(downloadID);
+        downloadManagerBroadcastReceiver.registerOnFinishedReceiver(downloadID);
+        mContext.registerReceiver(downloadManagerBroadcastReceiver.onCompleteReceiver,new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+*/
 
         /*downloadTestEnded();
         uploadTestStart();*/
@@ -566,6 +587,8 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     }
 
     private void downloadTestEnded() {
+        App.logRepository.setLogState(EState.IDLE);
+        DownloadManagerDisabler.disableAllDownloadings(mContext);
         checkWhetherToStartUploadTest();
     }
 

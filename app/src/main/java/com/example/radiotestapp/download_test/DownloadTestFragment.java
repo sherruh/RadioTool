@@ -65,12 +65,8 @@ public class DownloadTestFragment extends Fragment {
     }
 
     private void initViewModel() {
-        mainViewModel.updateLevelListEvent.observe(getViewLifecycleOwner(),o->{
-            float level;
-            try {
-                level = Float.parseFloat(App.logRepository.levelList.getLast());
-                addEntry(level);
-            }catch (Exception e) {}
+        mainViewModel.updateDownloadThroughputListEvent.observe(getViewLifecycleOwner(),o->{
+            addEntry(App.logRepository.downloadThroughputList.getLast());
         });
     }
 
@@ -99,14 +95,14 @@ public class DownloadTestFragment extends Fragment {
 
         YAxis rightAxis = lineChart.getAxisRight();
         rightAxis.setTextColor(Color.WHITE);
-        rightAxis.setAxisMaximum(-140f);
-        rightAxis.setAxisMinimum(-140f);
+        rightAxis.setAxisMaximum(0f);
+        rightAxis.setAxisMinimum(0f);
         rightAxis.setDrawGridLines(false);
         rightAxis.setGridColor(getResources().getColor(R.color.colorWhite));
 
         YAxis lefAxis = lineChart.getAxisLeft();
         lefAxis.setEnabled(false);
-        addInitailEntries();
+        //addInitailEntries();
     }
 
     private void addInitailEntries() {
@@ -120,7 +116,7 @@ public class DownloadTestFragment extends Fragment {
         }
     }
 
-    private void addEntry(float level) {
+    private void addEntry(float l) {
 
         LineData data = lineChart.getData();
         if (data != null) {
@@ -131,10 +127,10 @@ public class DownloadTestFragment extends Fragment {
                 data.addDataSet(set);
             }
             set.setLabel(getLabel());
-            data.addEntry(new Entry(set.getEntryCount(), level), 0);
+            data.addEntry(new Entry(set.getEntryCount(), l / 1024f), 0);
             data.notifyDataChanged();
-            lineChart.getAxisRight().setAxisMaximum(set.getYMax() + 10f);
-            lineChart.getAxisRight().setAxisMinimum(set.getYMin() - 10f);
+            lineChart.getAxisRight().setAxisMaximum(set.getYMax() + 0.5f);
+            lineChart.getAxisRight().setAxisMinimum(set.getYMin() - 0.5f);
             lineChart.notifyDataSetChanged();
             lineChart.setVisibleXRangeMaximum(60);
             lineChart.moveViewToX(data.getEntryCount());
@@ -154,14 +150,14 @@ public class DownloadTestFragment extends Fragment {
         set1.setHighLightColor(Color.rgb(244, 117, 117));
         set1.setHighlightEnabled(false);
         set1.setColor(Color.WHITE);
-        set1.setFillColor(Color.WHITE);
-        set1.setFillAlpha(100);
+        set1.setFillColor(Color.BLUE);
+        set1.setFillAlpha(50);
         set1.setDrawValues(false);
         set1.setDrawHorizontalHighlightIndicator(false);
         set1.setFillFormatter(new IFillFormatter() {
             @Override
             public float getFillLinePosition(ILineDataSet dataSet, LineDataProvider dataProvider) {
-                return lineChart.getAxisLeft().getAxisMinimum();
+                return lineChart.getAxisRight().getAxisMinimum();
             }
         });
         return set1;
