@@ -15,9 +15,12 @@ public class LoggerRunnable implements Runnable {
     private volatile boolean isRunning = true;
     private List<Log> mLogs;
     private Context mContext;
-    private long prevousRecievedBytes = 0;
+    private long prevousRecievedBytesYouTube = 0;
+    private long prevousRecievedBytesDownload = 0;
     private long prevousTransmittedBytes = 0;
-    private long prevTime = 0;
+    private long prevTimeYoutube = 0;
+    private long prevTimeUpload = 0;
+    private long prevTimeDownload = 0;
 
     public void stopLog(){
         isRunning = false;
@@ -33,8 +36,9 @@ public class LoggerRunnable implements Runnable {
     @Override
     public void run() {
         while (isRunning){
-            if (App.logRepository.getLogState() == EState.YOUTUBE_TEST) App.logRepository.setDlThroughput(getYouTubeThroughput());
+            if (App.logRepository.getLogState() == EState.YOUTUBE_TEST) App.logRepository.setYoutubeThroughput(getYouTubeThroughput());
             if (App.logRepository.getLogState() == EState.UPLOAD_TEST) App.logRepository.setUlThroughput(getUlThroughput());
+            if (App.logRepository.getLogState() == EState.DOWNLOAD_TEST) App.logRepository.setDownloadTestThroughput(getDLThroughput());
             App.logRepository.setDate(System.currentTimeMillis());
             Logger.d("Logging " + App.logRepository.getLog());
             mLogs.add(App.logRepository.getLog());
@@ -48,27 +52,39 @@ public class LoggerRunnable implements Runnable {
     }
 
     private long getYouTubeThroughput(){
-        if (prevousRecievedBytes == 0 || System.currentTimeMillis() - prevTime > 700){
-            prevousRecievedBytes = TrafficStats.getTotalRxBytes();
-            prevTime = System.currentTimeMillis();
+        if (prevousRecievedBytesYouTube == 0 || System.currentTimeMillis() - prevTimeYoutube > 700){
+            prevousRecievedBytesYouTube = TrafficStats.getTotalRxBytes();
+            prevTimeYoutube = System.currentTimeMillis();
             return 0;
         }
-        long downSpeed = ((TrafficStats.getTotalRxBytes() - prevousRecievedBytes) / 1024 * 8) * 2;
-        prevousRecievedBytes = TrafficStats.getTotalRxBytes();
-        prevTime = System.currentTimeMillis();
+        long downSpeed = ((TrafficStats.getTotalRxBytes() - prevousRecievedBytesYouTube) / 1024 * 8) * 2;
+        prevousRecievedBytesYouTube = TrafficStats.getTotalRxBytes();
+        prevTimeYoutube = System.currentTimeMillis();
         return downSpeed;
     }
 
     private long getUlThroughput(){
-        if (prevousTransmittedBytes == 0 || System.currentTimeMillis() - prevTime > 700){
+        if (prevousTransmittedBytes == 0 || System.currentTimeMillis() - prevTimeUpload > 700){
             prevousTransmittedBytes = TrafficStats.getTotalTxBytes();
-            prevTime = System.currentTimeMillis();
+            prevTimeUpload = System.currentTimeMillis();
             return 0;
         }
         long upSpeed = ((TrafficStats.getTotalTxBytes() - prevousTransmittedBytes) / 1024 * 8) * 2;
         prevousTransmittedBytes = TrafficStats.getTotalTxBytes();
-        prevTime = System.currentTimeMillis();
+        prevTimeUpload = System.currentTimeMillis();
         return upSpeed;
+    }
+
+    private long getDLThroughput(){
+        if (prevousRecievedBytesDownload == 0 || System.currentTimeMillis() - prevTimeDownload > 700){
+            prevousRecievedBytesDownload = TrafficStats.getTotalRxBytes();
+            prevTimeDownload = System.currentTimeMillis();
+            return 0;
+        }
+        long downSpeed = ((TrafficStats.getTotalRxBytes() - prevousRecievedBytesDownload) / 1024 * 8) * 2;
+        prevousRecievedBytesDownload = TrafficStats.getTotalRxBytes();
+        prevTimeDownload = System.currentTimeMillis();
+        return downSpeed;
     }
 
 

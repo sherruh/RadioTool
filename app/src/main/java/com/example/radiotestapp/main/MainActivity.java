@@ -237,6 +237,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
             initUploadTestFragment();
         });
         viewModel.uploadErrorEvent.observe(this, s -> Toaster.showLong(MainActivity.this,s));
+        viewModel.downloadTestFailedEvent.observe(this, s -> Toaster.showLong(MainActivity.this,s));
         viewModel.logSavedEvent.observe(this, s -> {
             Toaster.showLong(App.context,s);
         });

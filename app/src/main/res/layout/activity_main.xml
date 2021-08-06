@@ -442,14 +442,13 @@
         android:id="@+id/button_start_main_activity"
         android:layout_width="94dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="52dp"
         android:background="@drawable/bg_button_start"
         android:onClick="onButtonStartClick"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card_additional_params_main_activity" />
 
     <Button
         android:id="@+id/button_stop_main_activity"
@@ -458,10 +457,10 @@
         android:onClick="onButtonStopClick"
         android:visibility="gone"
         android:background="@drawable/bg_button_stop"
-        android:layout_marginBottom="52dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/card_additional_params_main_activity"  />
 
     <FrameLayout
         android:id="@+id/frame_main_activity"
