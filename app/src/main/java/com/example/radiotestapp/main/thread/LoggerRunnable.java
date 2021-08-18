@@ -60,6 +60,8 @@ public class LoggerRunnable implements Runnable {
         long downSpeed = ((TrafficStats.getTotalRxBytes() - prevousRecievedBytesYouTube) / 1024 * 8) * 2;
         prevousRecievedBytesYouTube = TrafficStats.getTotalRxBytes();
         prevTimeYoutube = System.currentTimeMillis();
+        resetRecievedBytesDownload();
+        resetTransmittedBytesUpload();
         return downSpeed;
     }
 
@@ -72,6 +74,8 @@ public class LoggerRunnable implements Runnable {
         long upSpeed = ((TrafficStats.getTotalTxBytes() - prevousTransmittedBytes) / 1024 * 8) * 2;
         prevousTransmittedBytes = TrafficStats.getTotalTxBytes();
         prevTimeUpload = System.currentTimeMillis();
+        resetRecievedBytesYoutube();
+        resetRecievedBytesDownload();
         return upSpeed;
     }
 
@@ -84,9 +88,22 @@ public class LoggerRunnable implements Runnable {
         long downSpeed = ((TrafficStats.getTotalRxBytes() - prevousRecievedBytesDownload) / 1024 * 8) * 2;
         prevousRecievedBytesDownload = TrafficStats.getTotalRxBytes();
         prevTimeDownload = System.currentTimeMillis();
+        resetRecievedBytesYoutube();
+        resetTransmittedBytesUpload();
         return downSpeed;
     }
 
+    private void resetRecievedBytesDownload(){
+        prevousRecievedBytesDownload = 0;
+    }
+
+    private void resetRecievedBytesYoutube(){
+        prevousRecievedBytesYouTube = 0;
+    }
+
+    private void resetTransmittedBytesUpload(){
+        prevousTransmittedBytes = 0;
+    }
 
     public List<Log> getLogs() {
         return mLogs;
