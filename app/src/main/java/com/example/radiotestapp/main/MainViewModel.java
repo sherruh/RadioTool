@@ -138,6 +138,10 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     private boolean isNeedDownloadTest = true;
     private boolean isNeedUploadTest = true;
     private boolean isNeedPingTest = true;
+    Timer timerYouTubeBuffering = new Timer();
+    Timer timerYouTubeInitial = new Timer();
+    Timer timerUpload = new Timer();
+
 
     public void onViewCreated(Context context, CustomPhoneStateListener.OnSignalStrengthChangedListener onSignalStrengthChangedListener,
                               CustomPhoneStateListener.OnCellLocationChangeListener onCellLocationChangeListener) {
@@ -193,7 +197,9 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     }
 
     public void stop() {
-        if(timer != null) timer.cancel();
+        if(timerUpload != null) timerUpload.cancel();
+        if(timerYouTubeBuffering != null) timerYouTubeBuffering.cancel();
+        if(timerYouTubeInitial != null) timerYouTubeInitial.cancel();
         if (uploader != null) {
             uploader.setUploadAgain(false);
             uploader.cancelUpload();
@@ -426,36 +432,32 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
 
     }
 
-    Timer timer = new Timer();
-
     public void youTubePlayerInitializing() {
         App.logRepository.setLogState(EState.YOUTUBE_TEST);
         startInitYoutubeTime = System.currentTimeMillis();
         eventLogs.add(new Event( logId,EEvents.YSI,startInitYoutubeTime,"",EState.YOUTUBE_TEST));
         App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
-        timer = new Timer();
-        final long start = System.currentTimeMillis();
-        timer.schedule(new TimerTask() {
+        timerYouTubeInitial = new Timer();
+        timerYouTubeInitial.schedule(new TimerTask() {
             @Override
             public void run () {
                 eventLogs.add(new Event(logId,EEvents.YEI,System.currentTimeMillis(),"",EState.YOUTUBE_TEST));
                 App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
                 youtubeErrorEvent.call();
-                timer.cancel();
+                timerYouTubeInitial.cancel();
             }
         }, TIMEOUT_DELAY);
     }
 
     public void startBuffering(boolean initialBuffering) {
-        timer = new Timer();
-        final long start = System.currentTimeMillis();
-        timer.schedule(new TimerTask() {
+        timerYouTubeBuffering = new Timer();
+        timerYouTubeBuffering.schedule(new TimerTask() {
             @Override
             public void run () {
                 eventLogs.add(new Event(logId,EEvents.YEB,System.currentTimeMillis(),"",EState.YOUTUBE_TEST));
                 App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
                 youtubeErrorEvent.call();
-                timer.cancel();
+                timerYouTubeBuffering.cancel();
             }
         }, TIMEOUT_DELAY);
         if (initialBuffering) {
@@ -471,7 +473,8 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
                 String.valueOf(finishInitYoutubeTime - startInitYoutubeTime),EState.YOUTUBE_TEST));
         App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
         initTimeLiveData.setValue(finishInitYoutubeTime - startInitYoutubeTime);
-        timer.cancel();
+        timerYouTubeBuffering.cancel();
+        timerYouTubeInitial.cancel();
     }
 
     public void startPlayingVideo(boolean initialBuffering) {
@@ -483,7 +486,8 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
             bufferingTimeLiveData.setValue(finishBufferingTime - startBufferingTime);
         }
         youtubeState = EYoutubeState.PLAYING;
-        timer.cancel();
+        timerYouTubeInitial.cancel();
+        timerYouTubeBuffering.cancel();
     }
 
     public void youtubePlaybackEnded(){
@@ -566,14 +570,14 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
                     eventLogs.add(new Event( logId,EEvents.UE,System.currentTimeMillis(),
                             "",EState.UPLOAD_TEST));
                     App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
+                    uploadTestEnded();
                 }
 
-                uploadTestEnded();
                 return;
             }
         });
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
+        timerUpload = new Timer();
+        timerUpload.schedule(new TimerTask() {
             @Override
             public void run () {
                 uploader.setUploadAgain(false);
@@ -581,7 +585,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
                         "",EState.UPLOAD_TEST));
                 App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
                 uploadTestEnded();
-                timer.cancel();
+                timerUpload.cancel();
             }
         }, UPLOAD_DURATION);
     }
@@ -594,6 +598,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
 
     private void uploadTestEnded(){
         if (uploader != null) uploader.cancelUpload();
+        timerUpload.cancel();
         uploadTestStopEvent.call();
         App.logRepository.setLogState(EState.IDLE);
         checkWhetherToStartYoutubePlayback();
