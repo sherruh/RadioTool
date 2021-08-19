@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_menu_settings">
+
+    <TextView
+        android:id="@+id/tv_settings"
+        style="@style/MenuItemTitleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_margin="8dp"
+        android:text="Settings        "/>
+
+    <TextView
+        android:id="@+id/tv_exit"
+        style="@style/MenuItemTitleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_settings"
+        android:layout_margin="8dp"
+        android:text="Exit             "/>
+
+</RelativeLayout>
