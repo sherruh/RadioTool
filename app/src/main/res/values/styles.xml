@@ -41,12 +41,40 @@
         <item name="fontFamily">@font/roboto_regular</item>
     </style>
 
+    <style name="EditTextTitle" parent="ParamValue">
+        <item name="android:textSize">12sp</item>
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:textColor">@color/colorWhiteGrey</item>
+    </style>
+
+    <style name="UrlEditText">
+        <item name="android:layout_height">35dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:background">@color/colorPrimaryDark</item>
+        <item name="fontFamily">@font/roboto_regular</item>
+    </style>
+
     <style name="SettingsButton">
         <item name="android:layout_width">25dp</item>
         <item name="android:layout_height">24dp</item>
         <item name="android:layout_marginEnd">16dp</item>
         <item name="android:layout_marginTop">12dp</item>
         <item name="android:src">@drawable/ic_settings_toggle</item>
+    </style>
+
+    <style name="CheckBox">
+        <item name="android:layout_height">20dp</item>
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="buttonTint">@color/colorWhite</item>
+    </style>
+
+    <style name="CheckBoxTitle" parent="MenuItemTitleText">
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 
     <style name="ParametersFrameStyle">
