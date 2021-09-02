@@ -32,6 +32,7 @@ import com.example.radiotestapp.R;
 import com.example.radiotestapp.download_test.DownloadTestFragment;
 import com.example.radiotestapp.main.radio.CustomPhoneStateListener;
 import com.example.radiotestapp.realtime_graph_for_radio_params.RealTimeGraphForRadioParamsFragment;
+import com.example.radiotestapp.settings.SettingsActivity;
 import com.example.radiotestapp.upload_test.UploadTestFragment;
 import com.example.radiotestapp.utils.DownloadManagerDisabler;
 import com.example.radiotestapp.utils.Logger;
@@ -130,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
 
     private void initImageSettings() {
         imageSettings = findViewById(R.id.image_settings_main_activity);
+
         imageSettings.setOnClickListener(l ->{
             LayoutInflater inflater = (LayoutInflater)
                     getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -151,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
             });
             TextView tvSettings = popupView.findViewById(R.id.tv_settings);
             tvSettings.setOnClickListener( m ->{
-                showSettingsPopUp();
+                startSettingsActivity();
                 popupWindow.dismiss();
             });
 
@@ -160,21 +162,12 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
                 return true;
             });
         });
-
     }
 
-    private void showSettingsPopUp() {
-        LayoutInflater inflater = (LayoutInflater)
-                getSystemService(LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.menu_settings, null);
-        int width = findViewById(android.R.id.content).getRootView().getMeasuredWidth() / 2;
-        int height = findViewById(android.R.id.content).getRootView().getMeasuredHeight() / 2;
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height,false);
-        popupWindow.showAtLocation(findViewById(android.R.id.content).getRootView(), Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 50, 50);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            popupWindow.setElevation(20);
-        }
+    private void startSettingsActivity() {
+        SettingsActivity.startActivity(this);
     }
+
 
     private void initViewModel() {
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
