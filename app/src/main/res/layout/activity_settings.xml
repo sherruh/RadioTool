@@ -42,6 +42,8 @@
     <EditText
         android:id="@+id/edit_youtube_start_url"
         android:text="https://youtu.be/"
+        android:inputType="none"
+        android:enabled="false"
         android:freezesText="true"
         app:layout_constraintStart_toStartOf="@id/text_youtube_url"
         app:layout_constraintTop_toBottomOf="@id/text_youtube_url"
