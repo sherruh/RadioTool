@@ -67,6 +67,92 @@
         style="@style/CheckBoxTitle"
         />
 
+    <View
+        android:id="@+id/view_download_settings_frame_settings_activity"
+        style="@style/ParametersFrameStyle"
+        android:layout_height="150dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_parameters_frame"
+        app:layout_constraintTop_toBottomOf="@id/view_youtube_settings_frame_settings_activity"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <CheckBox
+        android:id="@+id/check_download_activity_settings"
+        app:layout_constraintTop_toTopOf="@id/view_download_settings_frame_settings_activity"
+        app:layout_constraintStart_toStartOf="@id/view_download_settings_frame_settings_activity"
+        style="@style/CheckBox"/>
+
+    <TextView
+        android:text="Download Test"
+        app:layout_constraintStart_toEndOf="@id/check_download_activity_settings"
+        app:layout_constraintTop_toTopOf="@id/check_download_activity_settings"
+        style="@style/CheckBoxTitle"
+        />
+
+    <TextView
+        android:id="@+id/text_download_url"
+        android:text="Download file URL:"
+        app:layout_constraintStart_toEndOf="@id/check_download_activity_settings"
+        app:layout_constraintTop_toBottomOf="@id/check_download_activity_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/EditTextTitle"
+        />
+    <EditText
+        android:id="@+id/edit_download_start_url"
+        android:hint="https://example.com/filename"
+        android:layout_width="250dp"
+        android:textColorHint="@color/colorWhite"
+        app:layout_constraintStart_toStartOf="@id/text_download_url"
+        app:layout_constraintTop_toBottomOf="@id/text_download_url"
+        style="@style/UrlEditText"
+        />
+
+    <View
+        android:id="@+id/view_upload_settings_frame_settings_activity"
+        style="@style/ParametersFrameStyle"
+        android:layout_height="150dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_parameters_frame"
+        app:layout_constraintTop_toBottomOf="@id/view_download_settings_frame_settings_activity"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <CheckBox
+        android:id="@+id/check_upload_activity_settings"
+        app:layout_constraintTop_toTopOf="@id/view_upload_settings_frame_settings_activity"
+        app:layout_constraintStart_toStartOf="@id/view_upload_settings_frame_settings_activity"
+        style="@style/CheckBox"/>
+
+    <TextView
+        android:text="Upload Test"
+        app:layout_constraintStart_toEndOf="@id/check_upload_activity_settings"
+        app:layout_constraintTop_toTopOf="@id/check_upload_activity_settings"
+        style="@style/CheckBoxTitle"
+        />
+
+    <TextView
+        android:id="@+id/text_upload_url"
+        android:text="Upload file URL:"
+        app:layout_constraintStart_toEndOf="@id/check_upload_activity_settings"
+        app:layout_constraintTop_toBottomOf="@id/check_upload_activity_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/EditTextTitle"
+        />
+    <EditText
+        android:id="@+id/edit_upload_start_url"
+        android:hint="https://example.com"
+        android:layout_width="250dp"
+        android:textColorHint="@color/colorWhite"
+        app:layout_constraintStart_toStartOf="@id/text_upload_url"
+        app:layout_constraintTop_toBottomOf="@id/text_upload_url"
+        style="@style/UrlEditText"
+        />
+
     <Button
         android:id="@+id/button_save_activity_settings"
         android:layout_width="94dp"
