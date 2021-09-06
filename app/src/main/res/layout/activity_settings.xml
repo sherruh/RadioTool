@@ -63,7 +63,7 @@
         app:layout_constraintTop_toBottomOf="@id/edit_youtube_start_url"
         style="@style/CheckBox"/>
     <TextView
-        android:text="Use default"
+        android:text="Use default url"
         app:layout_constraintStart_toEndOf="@id/check_use_default_youtube_activity_settings"
         app:layout_constraintTop_toTopOf="@id/check_use_default_youtube_activity_settings"
         style="@style/CheckBoxTitle"
