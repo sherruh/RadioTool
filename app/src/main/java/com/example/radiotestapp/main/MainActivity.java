@@ -218,12 +218,12 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         viewModel.loggingStoppedEvent.observe(this,aVoid ->{
             if (youtubePlayerFragment != null){
                 removeFragment(youtubePlayerFragment);
-                buttonStop.setVisibility(View.GONE);
-                buttonStart.setVisibility(View.VISIBLE);
             }
             if (youtubeParamsFragment != null){
                 removeFragment(youtubeParamsFragment);
             }
+            buttonStop.setVisibility(View.GONE);
+            buttonStart.setVisibility(View.VISIBLE);
             initGraphParamsFragment();
         });
         viewModel.exitClickEvent.observe(this,v -> this.finish());

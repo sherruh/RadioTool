@@ -135,7 +135,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     private int countOfRepeats = 1;
     private EYoutubeState youtubeState;
     private boolean isNeedYoutubeTest = true;
-    private boolean isNeedDownloadTest = true;
+    private boolean isNeedDownloadTest = false;
     private boolean isNeedUploadTest = true;
     private boolean isNeedPingTest = true;
     Timer timerYouTubeBuffering = new Timer();
@@ -499,6 +499,9 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     }
 
     private void checkWhetherToStartDownloadTest(){
+        isNeedDownloadTest = App.localStorage.getSettingsParameter(Constants.IS_DOWNLOAD_NEED) != null &&
+                (App.localStorage.getSettingsParameter(Constants.IS_DOWNLOAD_NEED)
+                .getValue().equals(Constants.YES));
         if (isNeedDownloadTest && isLogging.getValue()){
             downloadTestStart();
         } else {
@@ -507,9 +510,12 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     }
 
     private void checkWhetherToStartUploadTest(){
-        if (isNeedDownloadTest && isLogging.getValue()){
+        isNeedUploadTest = App.localStorage.getSettingsParameter(Constants.IS_UPLOAD_NEED) != null
+                && App.localStorage.getSettingsParameter(Constants.IS_UPLOAD_NEED)
+                .getValue().equals(Constants.YES);
+        if (isNeedUploadTest && isLogging.getValue()){
             uploadTestStart();
-        } else {//TODO next Check
+        } else {
             checkWhetherToStartYoutubePlayback();
         }
     }
@@ -609,10 +615,15 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         if (countOfRepeats > 0 && isLogging.getValue()){
             Logger.d("checkWhetherToStartYoutubePlayback " + countOfRepeats + " " + isLogging.getValue());
             countOfRepeats--;
-            onStartYoutubeClickedEvent.call();
-            return;
+            if (App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_NEED) != null &&
+                    App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_NEED).getValue().equals(Constants.NO)){
+            checkWhetherToStartDownloadTest();
+            }else{
+                onStartYoutubeClickedEvent.call();
+            }
+        }else{
+            stop();
         }
-        stop();
     }
 
     private boolean isNetworkConnected() {
