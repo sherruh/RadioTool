@@ -9,8 +9,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.radiotestapp.App;
 import com.example.radiotestapp.R;
+import com.example.radiotestapp.core.Constants;
 import com.example.radiotestapp.main.MainViewModel;
+import com.example.radiotestapp.model.SettingsParameter;
 import com.example.radiotestapp.utils.Toaster;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
@@ -56,10 +59,23 @@ public class YoutubePlayerFragment extends Fragment {
             @Override
             public void onYouTubePlayer(YouTubePlayer youTubePlayer) {
                 mYouTubePlayer = youTubePlayer;
-                youTubePlayer.cueVideo("fimmQNc6_uI",0);//VBKNoLcj8jA
-                youTubePlayer.play();
+                String videoId = getVideoId();
+                youTubePlayer.cueVideo(videoId,0);//VBKNoLcj8jA
+                /*Logger.d("YoutubePlayerPlay");
+                youTubePlayer.play();*/
             }
         });
+    }
+
+    private String getVideoId() {
+        if (App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_DEFAULT) == null ||
+                App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_DEFAULT).getValue().equals(Constants.YES))
+            return "fimmQNc6_uI";
+        String videoId;
+        SettingsParameter settingsParameter = App.localStorage.getSettingsParameter(Constants.YOUTUBE_URL);
+        if (settingsParameter != null) videoId = settingsParameter.getValue();
+        else videoId = "fimmQNc6_uI";
+        return videoId;
     }
 
     private void initYoutubeListener() {
@@ -98,6 +114,7 @@ public class YoutubePlayerFragment extends Fragment {
                     }
                     case VIDEO_CUED:{
                         mViewModel.videoCued();
+                        youTubePlayer.play();
                         break;
                     }
                     case UNKNOWN:{

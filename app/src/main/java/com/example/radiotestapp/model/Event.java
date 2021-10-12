@@ -1,9 +1,38 @@
 package com.example.radiotestapp.model;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.example.radiotestapp.enums.EEvents;
 import com.example.radiotestapp.enums.EState;
 
-public class Event {
+@Entity(tableName = "event")
+public class Event implements Cloneable {
+    @PrimaryKey
+    private long id;
+
+    public long getId() {
+        return id;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Event(long id, EEvents event, long eventTime, String parameter, String logId, EState state) {
+        this.id = id;
+        this.event = event;
+        this.eventTime = eventTime;
+        this.parameter = parameter;
+        this.logId = logId;
+        this.state = state;
+    }
+
     private EEvents event;
     private long eventTime;
     private String parameter;

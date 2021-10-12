@@ -43,7 +43,10 @@ import com.example.radiotestapp.main.thread.LoggerRunnable;
 import com.example.radiotestapp.main.thread.RadioParamsUpdateRunnable;
 import com.example.radiotestapp.model.Event;
 import com.example.radiotestapp.model.Log;
+import com.example.radiotestapp.model.SettingsParameter;
+import com.example.radiotestapp.repository.Callback;
 import com.example.radiotestapp.services.GettingLocationService;
+import com.example.radiotestapp.test_result.TestResultActivity;
 import com.example.radiotestapp.upload_test.Uploader;
 import com.example.radiotestapp.utils.DateConverter;
 import com.example.radiotestapp.utils.DownloadManagerDisabler;
@@ -101,6 +104,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     public MutableLiveData<String> rsrqEcNoLiveData = App.logRepository.rsrqEcNoLiveData;
     public MutableLiveData<String> snrLiveData = App.logRepository.snrLiveData;
     public MutableLiveData<String> cqiLiveData = App.logRepository.cqiLiveData;
+    public MutableLiveData<Boolean> isProgressStartBarShowLiveData = new MutableLiveData<>();
     public MutableLiveData<Long> initTimeLiveData = new MutableLiveData<>();
     public MutableLiveData<Long> bufferingTimeLiveData = new MutableLiveData<>();
     public MutableLiveData<String> youtubeResolutionLiveData = App.logRepository.youtubeResolutionLiveData;
@@ -197,6 +201,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     }
 
     public void stop() {
+        isProgressStartBarShowLiveData.setValue(true);
         if(timerUpload != null) timerUpload.cancel();
         if(timerYouTubeBuffering != null) timerYouTubeBuffering.cancel();
         if(timerYouTubeInitial != null) timerYouTubeInitial.cancel();
@@ -214,7 +219,21 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         isLogging.postValue(false);
         App.logRepository.setYoutubeResolution("");
         App.logRepository.setLogState(EState.IDLE);
-        App.logRepository.closeLogFile();
+        App.logRepository.closeLogFile(new Callback<List<Long>>() {
+            @Override
+            public void onSuccess(List<Long> longs) {
+                isProgressStartBarShowLiveData.postValue(false);
+                Logger.d("LocalStorage1 logs " + longs);
+                Logger.d("TestResultData " + App.localStorage.getLogById((long) (longs.get(longs.size() - 1))).getLogId());
+                String logId = App.localStorage.getLogById((long) (longs.get(longs.size() - 1))).getLogId();
+                TestResultActivity.startActivity(isNeedYoutubeTest,isNeedDownloadTest,isNeedUploadTest,logId,mContext);
+            }
+
+            @Override
+            public void onFailure(String s) {
+                isProgressStartBarShowLiveData.postValue(false);
+            }
+        });
         logSavedEvent.postValue("Log saved: " + Constants.LOG_FOLDER + "/" + logId + ".txt");
         loggingStoppedEvent.call();
         DownloadManagerDisabler.disableAllDownloadings(mContext);
@@ -434,6 +453,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
 
     public void youTubePlayerInitializing() {
         App.logRepository.setLogState(EState.YOUTUBE_TEST);
+        App.logRepository.setYoutubeState(EYoutubeState.INITIALIZING);
         startInitYoutubeTime = System.currentTimeMillis();
         eventLogs.add(new Event( logId,EEvents.YSI,startInitYoutubeTime,"",EState.YOUTUBE_TEST));
         App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
@@ -443,6 +463,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
             public void run () {
                 eventLogs.add(new Event(logId,EEvents.YEI,System.currentTimeMillis(),"",EState.YOUTUBE_TEST));
                 App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
+                App.logRepository.setYoutubeState(EYoutubeState.FINISHED);
                 youtubeErrorEvent.call();
                 timerYouTubeInitial.cancel();
             }
@@ -451,9 +472,11 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
 
     public void startBuffering(boolean initialBuffering) {
         timerYouTubeBuffering = new Timer();
+        App.logRepository.setYoutubeState(EYoutubeState.BUFFERING);
         timerYouTubeBuffering.schedule(new TimerTask() {
             @Override
             public void run () {
+                App.logRepository.setYoutubeState(EYoutubeState.FINISHED);
                 eventLogs.add(new Event(logId,EEvents.YEB,System.currentTimeMillis(),"",EState.YOUTUBE_TEST));
                 App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
                 youtubeErrorEvent.call();
@@ -486,6 +509,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
             bufferingTimeLiveData.setValue(finishBufferingTime - startBufferingTime);
         }
         youtubeState = EYoutubeState.PLAYING;
+        App.logRepository.setYoutubeState(youtubeState);
         timerYouTubeInitial.cancel();
         timerYouTubeBuffering.cancel();
     }
@@ -494,7 +518,9 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         App.logRepository.setLogState(EState.IDLE);
         App.logRepository.setYoutubeResolution("");
         youtubeState = EYoutubeState.FINISHED;
+        App.logRepository.setYoutubeState(youtubeState);
         Logger.d("checkWhetherToStartYoutubePlayback " + "youtubePlaybackEnded");
+        isProgressStartBarShowLiveData.setValue(true);
         checkWhetherToStartDownloadTest();
     }
 
@@ -502,9 +528,11 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         isNeedDownloadTest = App.localStorage.getSettingsParameter(Constants.IS_DOWNLOAD_NEED) != null &&
                 (App.localStorage.getSettingsParameter(Constants.IS_DOWNLOAD_NEED)
                 .getValue().equals(Constants.YES));
+        isProgressStartBarShowLiveData.setValue(false);
         if (isNeedDownloadTest && isLogging.getValue()){
             downloadTestStart();
         } else {
+            isProgressStartBarShowLiveData.setValue(true);
             checkWhetherToStartUploadTest();
         }
     }
@@ -513,9 +541,11 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         isNeedUploadTest = App.localStorage.getSettingsParameter(Constants.IS_UPLOAD_NEED) != null
                 && App.localStorage.getSettingsParameter(Constants.IS_UPLOAD_NEED)
                 .getValue().equals(Constants.YES);
+        isProgressStartBarShowLiveData.setValue(false);
         if (isNeedUploadTest && isLogging.getValue()){
             uploadTestStart();
         } else {
+            isProgressStartBarShowLiveData.setValue(true);
             checkWhetherToStartYoutubePlayback();
         }
     }
@@ -527,7 +557,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         eventLogs.add(new Event( logId,EEvents.DS,System.currentTimeMillis(),
                 "",EState.DOWNLOAD_TEST));
         App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
-        downloader.download("http://speedtest.tele2.net/10MB.zip", mContext, new Downloader.DownloadListener() {
+        downloader.download(getDownloadUrl(), mContext, new Downloader.DownloadListener() {
             @Override
             public void onFailure(String message) {
                 if (App.logRepository.getLogState() != EState.DOWNLOAD_TEST) return;
@@ -559,6 +589,12 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
 
     }
 
+    private String getDownloadUrl() {
+        SettingsParameter settingsParameter = App.localStorage.getSettingsParameter(Constants.DOWNLOAD_URL);
+        if (settingsParameter != null) return settingsParameter.getValue();
+        return "";
+    }
+
     private void uploadTestStart() {
         uploadTestStartEvent.call();
         uploader = new Uploader();
@@ -566,7 +602,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         eventLogs.add(new Event( logId,EEvents.US,System.currentTimeMillis(),
                 "",EState.UPLOAD_TEST));
         App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
-        uploader.uploadFile("http://speed.o.kg", new Uploader.UploadListener() {
+        uploader.uploadFile(getUploadUrl(), new Uploader.UploadListener() {
             @Override
             public void onFailure(String message) {
                 uploader.setUploadAgain(false);
@@ -596,6 +632,12 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         }, UPLOAD_DURATION);
     }
 
+    private String getUploadUrl() {
+        SettingsParameter settingsParameter = App.localStorage.getSettingsParameter(Constants.UPLOAD_URL);
+        if (settingsParameter != null) return settingsParameter.getValue();
+        return "";
+    }
+
     private void downloadTestEnded() {
         App.logRepository.setLogState(EState.IDLE);
         DownloadManagerDisabler.disableAllDownloadings(mContext);
@@ -607,6 +649,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         timerUpload.cancel();
         uploadTestStopEvent.call();
         App.logRepository.setLogState(EState.IDLE);
+        isProgressStartBarShowLiveData.setValue(true);
         checkWhetherToStartYoutubePlayback();
     }
 
@@ -619,9 +662,11 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
                     App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_NEED).getValue().equals(Constants.NO)){
             checkWhetherToStartDownloadTest();
             }else{
+                isProgressStartBarShowLiveData.setValue(false);
                 onStartYoutubeClickedEvent.call();
             }
         }else{
+            isProgressStartBarShowLiveData.setValue(false);
             stop();
         }
     }

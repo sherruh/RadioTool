@@ -15,7 +15,7 @@ import java.util.TimerTask;
 
 public class Downloader {
 
-    private final int DOWNLOAD_TIMEOUT = 4000;
+    private final int DOWNLOAD_TIMEOUT = 10000;
     private final int DOWNLOAD_DURATION_TIMEOUT = 30000;
     private Context mContext;
     private DownloadListener downloadListener;
@@ -31,6 +31,11 @@ public class Downloader {
         this.downloadListener = downloadListener;
         manager = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
         this.url = url;
+        if (!url.contains("http://") && !url.contains("https://")) {
+            downloadListener.onFailure("Error url");
+            isNeedStart = false;
+            return;
+        }
         Uri uri = Uri.parse(url);
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
@@ -49,6 +54,7 @@ public class Downloader {
                 int downloadedBytes = 0;
                 if (c.moveToFirst()) {
                    downloadedBytes = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+                   Logger.d("DownloadedBytes " + downloadedBytes);
                 }
                 if (downloadedBytes == 0) {
                     if (timerForDuration != null) timerForDuration.cancel();
@@ -118,7 +124,4 @@ public class Downloader {
         void onComplete();
     }
 
-    public interface DownloadStartListener{
-        void onDownloadStarted();
-    }
 }

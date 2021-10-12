@@ -16,7 +16,7 @@ public class LogFileWriter implements ILocalLogRepository {
     private final String HEADER = "LogId\tDate\tlongitude\tlatitude\taltitude\tMCC\tMNC\tTechnology" +
             "\tTACLAC\tENodeB\tCID\tbsic\tPSC\tPCI\tRSRP\tRSRQ\tRSCP\tRxLevel\tCQI\tSNR\tEcN0\tBER" +
             "\tChannel\tDlThrput\tUlThrput\tping\tYoutubeQuality\tEvent\tEventParameter\tEventDescription" +
-            "\tLogState";
+            "\tLogState\tYoutubeState";
     private File logFile;
     private String logName = "";
     private File folder = new File(Environment.getExternalStorageDirectory(), Constants.LOG_FOLDER);
@@ -27,7 +27,7 @@ public class LogFileWriter implements ILocalLogRepository {
         synchronized (this){
             if (logFile == null || fileOutputStream == null) return;
             Log log = new Log();
-            log.seteEvent(event.getEvent());
+            log.setEEvent(event.getEvent());
             log.setEventParam(event.getParameter());
             log.setLogId(event.getLogId());
             log.setDate(event.getEventTime());

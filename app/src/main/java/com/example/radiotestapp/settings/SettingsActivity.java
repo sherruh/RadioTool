@@ -84,7 +84,14 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void initViews() {
         checkYoutubeNeed = findViewById(R.id.check_youtube_activity_settings);
+        checkYoutubeNeed.setOnClickListener(l -> {
+            checkYoutubeDefault.setEnabled(checkYoutubeNeed.isChecked());
+            editYoutubeVideoId.setEnabled(checkYoutubeNeed.isChecked());
+        });
         checkYoutubeDefault = findViewById(R.id.check_use_default_youtube_activity_settings);
+        checkYoutubeDefault.setOnClickListener(l -> {
+            editYoutubeVideoId.setEnabled(!checkYoutubeDefault.isChecked());
+        });
         checkDownloadNeed = findViewById(R.id.check_download_activity_settings);
         checkUploadNeed = findViewById(R.id.check_upload_activity_settings);
         editYoutubeVideoId = findViewById(R.id.edit_youtube_url_activity_settings);
