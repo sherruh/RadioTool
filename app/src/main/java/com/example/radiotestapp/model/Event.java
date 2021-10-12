@@ -24,18 +24,31 @@ public class Event implements Cloneable {
         this.id = id;
     }
 
-    public Event(long id, EEvents event, long eventTime, String parameter, String logId, EState state) {
-        this.id = id;
-        this.event = event;
-        this.eventTime = eventTime;
-        this.parameter = parameter;
-        this.logId = logId;
-        this.state = state;
-    }
+
 
     private EEvents event;
     private long eventTime;
     private String parameter;
+    private String parameter2;
+
+    public String getParameter2() {
+        return parameter2;
+    }
+
+    public void setParameter2(String parameter2) {
+        this.parameter2 = parameter2;
+    }
+
+    public Event(long id, EEvents event, long eventTime, String parameter, String parameter2, String logId, EState state) {
+        this.id = id;
+        this.event = event;
+        this.eventTime = eventTime;
+        this.parameter = parameter;
+        this.parameter2 = parameter2;
+        this.logId = logId;
+        this.state = state;
+    }
+
     private String logId;
     private EState state;
 
@@ -77,6 +90,15 @@ public class Event implements Cloneable {
 
     public void setState(EState state) {
         this.state = state;
+    }
+
+    public Event(String logId, EEvents event, long eventTime, String parameter, String parameter2, EState eState) {
+        this.event = event;
+        this.eventTime = eventTime;
+        this.parameter = parameter;
+        this.parameter2 = parameter2;
+        this.logId = logId;
+        this.state = eState;
     }
 
     public Event(String logId, EEvents event, long eventTime, String parameter, EState eState) {

@@ -3,8 +3,7 @@ package com.example.radiotestapp.test_result;
 import androidx.lifecycle.ViewModel;
 
 import com.example.radiotestapp.App;
-import com.example.radiotestapp.enums.EState;
-import com.example.radiotestapp.enums.EYoutubeState;
+import com.example.radiotestapp.enums.EEvents;
 import com.example.radiotestapp.model.Event;
 import com.example.radiotestapp.model.Log;
 import com.example.radiotestapp.utils.Logger;
@@ -88,17 +87,26 @@ public class TestResultViewModel extends ViewModel {
         }
         if (youBufferTimeList.size() > 0) avgBufferTime /= (double) youBufferTimeList.size();
 
-        Logger.d("TestResultData " + youtubeSR + " " + avgInitTime + " " + avgBufferTime);
-        calculateYoutubeThruput();
+        Logger.d("TestResultData " + youtubeSR + " " + avgInitTime + " " + avgBufferTime +
+                "AvgYoutubeThrpu " + calculateYoutubeThruput());
     }
 
-    private void calculateYoutubeThruput() {
-        for (Log l : logList){
-            Logger.d("TestResultData youtubethrput " + l.getLogState() + " " +l .getYoutubeState());
-            if (l.getLogState() == EState.YOUTUBE_TEST && l.getYoutubeState() == EYoutubeState.BUFFERING){
-                Logger.d("TestResultData youtubethrput " + l);
+    private int calculateYoutubeThruput() {
+        int k = 0;
+        int avgThrput = 0;
+        for (Event e : eventList){
+            if (e.getEvent() == EEvents.YFB) {
+                Logger.d("TestResultData youtubethrput in event " +e.getParameter2());
+
+                try{
+                    avgThrput+= Integer.parseInt(e.getParameter2());
+                    k++;
+                } catch (Exception exception ){}
+                if (k != 0) avgThrput /= k;
+
             }
         }
+        return avgThrput;
     }
 
 

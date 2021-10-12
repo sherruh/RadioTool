@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.ConnectivityManager;
+import android.net.TrafficStats;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -133,7 +134,9 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     private long startInitYoutubeTime;
     private long finishInitYoutubeTime;
     private long startBufferingTime;
+    private long startBufferingKbits;
     private long finishBufferingTime;
+    private long finishBufferingKbits;
     private final long TIMEOUT_DELAY = 30000L;
     private final long UPLOAD_DURATION = 30000L;
     private int countOfRepeats = 1;
@@ -485,6 +488,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         }, TIMEOUT_DELAY);
         if (initialBuffering) {
             startBufferingTime = System.currentTimeMillis();
+            startBufferingKbits = TrafficStats.getTotalRxBytes() / 1024 * 8;
             eventLogs.add(new Event( logId,EEvents.YSB,startBufferingTime,"",EState.YOUTUBE_TEST));
             App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
         }
@@ -503,8 +507,11 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     public void startPlayingVideo(boolean initialBuffering) {
         if (initialBuffering) {
             finishBufferingTime = System.currentTimeMillis();
+            finishBufferingKbits = TrafficStats.getTotalRxBytes() / 1024 * 8;
             eventLogs.add(new Event( logId,EEvents.YFB,finishBufferingTime,
-                    String.valueOf(finishBufferingTime - startBufferingTime),EState.YOUTUBE_TEST));
+                    String.valueOf(finishBufferingTime - startBufferingTime),
+                    String.valueOf(1000 * (finishBufferingKbits - startBufferingKbits)/((finishBufferingTime - startBufferingTime))),
+                    EState.YOUTUBE_TEST));
             App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
             bufferingTimeLiveData.setValue(finishBufferingTime - startBufferingTime);
         }
