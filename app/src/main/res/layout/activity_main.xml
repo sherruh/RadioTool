@@ -472,6 +472,16 @@
         android:background="@drawable/bg_rect_rounded"
         />
 
+    <ProgressBar
+        android:id="@+id/progress_main_activity"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/frame_main_activity"
+        app:layout_constraintStart_toStartOf="@id/frame_main_activity"
+        app:layout_constraintEnd_toEndOf="@id/frame_main_activity"
+        app:layout_constraintBottom_toBottomOf="@id/frame_main_activity"/>
+
     <ImageView
         android:id="@+id/image_youtube_main_activity"
         app:layout_constraintTop_toTopOf="@id/frame_main_activity"

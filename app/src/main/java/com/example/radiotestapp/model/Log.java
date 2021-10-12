@@ -1,12 +1,18 @@
 package com.example.radiotestapp.model;
 
-import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import com.example.radiotestapp.enums.EEvents;
 import com.example.radiotestapp.enums.EState;
+import com.example.radiotestapp.enums.EYoutubeState;
 import com.example.radiotestapp.utils.DateConverter;
 
-public class Log {
+@Entity(tableName = "log")
+public class Log implements Cloneable {
+    @PrimaryKey
+    private long id;
+
     private String logId;
     private long date;
     private double longitude;
@@ -38,9 +44,54 @@ public class Log {
     private String eventParam;
     private String eventDescription;
     private EState logState;
+    private EYoutubeState youtubeState;
 
     public void setLogId(String logId) {
         this.logId = logId;
+    }
+
+    public Log(long id, String logId, long date, double longitude, double latitude, int altitude, String mcc, String mnc, String technology, String tacLac, String eNodeB, String cellId, String bsic, String psc, String pci, String rsrp, String rsrq, String rscp, String rxLevel, String cqi, String snr, String ecNO, String ber, String channel, long dlThrput, long ulThrput, int ping, String youtubeResolution, EEvents eEvent, String eventParam, String eventDescription, EState logState, EYoutubeState youtubeState) {
+        this.id = id;
+        this.logId = logId;
+        this.date = date;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.altitude = altitude;
+        this.mcc = mcc;
+        this.mnc = mnc;
+        this.technology = technology;
+        this.tacLac = tacLac;
+        this.eNodeB = eNodeB;
+        this.cellId = cellId;
+        this.bsic = bsic;
+        this.psc = psc;
+        this.pci = pci;
+        this.rsrp = rsrp;
+        this.rsrq = rsrq;
+        this.rscp = rscp;
+        this.rxLevel = rxLevel;
+        this.cqi = cqi;
+        this.snr = snr;
+        this.ecNO = ecNO;
+        this.ber = ber;
+        this.channel = channel;
+        this.dlThrput = dlThrput;
+        this.ulThrput = ulThrput;
+        this.ping = ping;
+        this.youtubeResolution = youtubeResolution;
+        this.eEvent = eEvent;
+        this.eventParam = eventParam;
+        this.eventDescription = eventDescription;
+        this.logState = logState;
+        this.youtubeState = youtubeState;
+    }
+
+    public EYoutubeState getYoutubeState() {
+        return youtubeState;
+    }
+
+    public void setYoutubeState(EYoutubeState youtubeState) {
+        this.youtubeState = youtubeState;
     }
 
     public void setDate(long date) {
@@ -123,7 +174,7 @@ public class Log {
                 + rsrq + '\t' + rscp + '\t' + rxLevel + '\t' + cqi + '\t' + snr + '\t'
                 + ecNO + '\t' + ber + '\t' + channel + '\t' + dlThrput + '\t' +  ulThrput + '\t'
                 + ping +'\t' + youtubeResolution + '\t' + eEvent + '\t' + eventParam + '\t'
-                + eventDescription + '\t' +  logState;
+                + eventDescription + '\t' +  logState + '\t' + youtubeState;
     }
 
     public String getYoutubeResolution() {
@@ -134,11 +185,11 @@ public class Log {
         this.youtubeResolution = youtubeResolution;
     }
 
-    public String geteNodeB() {
+    public String getENodeB() {
         return eNodeB;
     }
 
-    public void seteNodeB(String eNodeB) {
+    public void setENodeB(String eNodeB) {
         this.eNodeB = eNodeB;
     }
 
@@ -158,13 +209,18 @@ public class Log {
         this.ping = ping;
     }
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
     public Log() {
     }
-    public EEvents geteEvent() {
+    public EEvents getEEvent() {
         return eEvent;
     }
 
-    public void seteEvent(EEvents eEvent) {
+    public void setEEvent(EEvents eEvent) {
         this.eEvent = eEvent;
     }
 
@@ -182,6 +238,54 @@ public class Log {
 
     public void setRsrq(String rsrq) {
         this.rsrq = rsrq;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Log(int id, String logId, long date, double longitude, double latitude, int altitude,
+               String mcc, String mnc, String technology, String tacLac, String eNodeB,
+               String cellId, String bsic, String psc, String pci, String rsrp, String rsrq,
+               String rscp, String rxLevel, String cqi, String snr, String ecNO, String ber,
+               String channel, long dlThrput, long ulThrput, int ping, String youtubeResolution,
+               EEvents eEvent, String eventParam, String eventDescription, EState logState) {
+        this.id = id;
+        this.logId = logId;
+        this.date = date;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.altitude = altitude;
+        this.mcc = mcc;
+        this.mnc = mnc;
+        this.technology = technology;
+        this.tacLac = tacLac;
+        this.eNodeB = eNodeB;
+        this.cellId = cellId;
+        this.bsic = bsic;
+        this.psc = psc;
+        this.pci = pci;
+        this.rsrp = rsrp;
+        this.rsrq = rsrq;
+        this.rscp = rscp;
+        this.rxLevel = rxLevel;
+        this.cqi = cqi;
+        this.snr = snr;
+        this.ecNO = ecNO;
+        this.ber = ber;
+        this.channel = channel;
+        this.dlThrput = dlThrput;
+        this.ulThrput = ulThrput;
+        this.ping = ping;
+        this.youtubeResolution = youtubeResolution;
+        this.eEvent = eEvent;
+        this.eventParam = eventParam;
+        this.eventDescription = eventDescription;
+        this.logState = logState;
     }
 
     public Log(String logId, long date, double longitude, double latitude, String mcc, String mnc,

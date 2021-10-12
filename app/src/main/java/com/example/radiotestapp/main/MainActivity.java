@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -91,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     private TextView textSnr;
     private TextView textCqi;
     private NumberPicker numberPickerCountOfRepeats;
+    private ProgressBar progressBar;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         numberPickerCountOfRepeats = findViewById(R.id.number_picker_count_of_repeats_main_activity);
         numberPickerCountOfRepeats.setMaxValue(9999);
         numberPickerCountOfRepeats.setMinValue(1);
-
+        progressBar = findViewById(R.id.progress_main_activity);
     }
 
     private void initImageSettings() {
@@ -252,6 +254,10 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         viewModel.downloadTestFailedEvent.observe(this, s -> Toaster.showLong(MainActivity.this,s));
         viewModel.logSavedEvent.observe(this, s -> {
             Toaster.showLong(App.context,s);
+        });
+        viewModel.isProgressStartBarShowLiveData.observe(this, b ->{
+            if (b) progressBar.setVisibility(View.VISIBLE);
+            else progressBar.setVisibility(View.GONE);
         });
         initGraphParamsFragment();
     }

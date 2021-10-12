@@ -7,20 +7,27 @@ import android.telephony.CellIdentityWcdma;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.radiotestapp.App;
 import com.example.radiotestapp.enums.EState;
+import com.example.radiotestapp.enums.EYoutubeState;
 import com.example.radiotestapp.model.Event;
 import com.example.radiotestapp.model.Log;
 import com.example.radiotestapp.repository.local.ILocalLogRepository;
 import com.example.radiotestapp.repository.local.LogFileWriter;
+import com.example.radiotestapp.utils.Logger;
 import com.example.radiotestapp.utils.SingleLiveEvent;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 
 public class LogRepository {
 
     private ILocalLogRepository localLogRepository = new LogFileWriter();
 
+    private List<Log> logList = new ArrayList();
+    private List<Event> eventList = new ArrayList();
     public SingleLiveEvent<Void> updateLevelListEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> updateUploadThroughputListEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> updateDownloadThroughputListEvent = new SingleLiveEvent<>();
@@ -56,6 +63,7 @@ public class LogRepository {
     }
 
     private EState logState;
+    private EYoutubeState youtubeState;
 
     public void setLog(Log log){
         synchronized (this){
@@ -79,6 +87,18 @@ public class LogRepository {
             mLog.setDlThrput(dlThroughput);
             mLog.setLogState(logState);
             youtubeThroughputLiveData.postValue(dlThroughput);
+        }
+    }
+
+    public EYoutubeState getYoutubeState() {
+        return youtubeState;
+    }
+
+    public void setYoutubeState(EYoutubeState youtubeState) {
+        synchronized (this) {
+            Logger.d("TestResultData youtubestate" + youtubeState);
+            this.youtubeState = youtubeState;
+            mLog.setYoutubeState(youtubeState);
         }
     }
 
@@ -123,7 +143,7 @@ public class LogRepository {
             mLog.setChannel("");
             mLog.setPsc("");
             mLog.setPci("");
-            mLog.seteNodeB("");
+            mLog.setENodeB("");
         }
     }
 
@@ -265,7 +285,7 @@ public class LogRepository {
 
     public void setEnodeB(String eNodeB) {
         synchronized (this){
-            mLog.seteNodeB(eNodeB);
+            mLog.setENodeB(eNodeB);
             eNodeBLiveData.setValue(eNodeB);
         }
     }
@@ -280,21 +300,55 @@ public class LogRepository {
     public void saveEvent(Event event){
         synchronized (this){
             localLogRepository.saveEvent(event);
+            Event currentEvent = null;
+            try {
+                currentEvent = (Event) event.clone();
+                currentEvent.setId(System.currentTimeMillis());
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+            eventList.add(currentEvent);
         }
     }
 
     public void saveLog(Log log){
         synchronized (this){
+            Logger.d("TestResultData youtubestate" + " here");
             localLogRepository.saveLog(log);
+            Log currentLog = null;
+            try {
+                currentLog = (Log)log.clone();
+                currentLog.setId(System.currentTimeMillis());
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+            logList.add(currentLog);
         }
     }
 
     public void createLogFile(String logId){
         localLogRepository.createLogFile(logId);
+        logList.clear();
+        eventList.clear();
     }
 
-    public void closeLogFile(){
+    public void closeLogFile(Callback<List<Long>> callback){
         localLogRepository.closeLogFile();
+        App.localStorage.saveEvents(eventList, new Callback<List<Long>>() {
+            @Override
+            public void onSuccess(List<Long> longs) {
+                Logger.d("LocalStorage1 events " + longs.size());
+            }
+
+            @Override
+            public void onFailure(String s) {
+
+            }
+        });
+        App.localStorage.saveLogs(logList,callback);
+
+        Logger.d("TestResultData youtubethrput " + logList.get(0).getId() + " "
+                + logList.get(1).getId());
     }
 
     public void addToLevelList(String level) {

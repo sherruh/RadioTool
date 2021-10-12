@@ -36,7 +36,7 @@ public class LoggerRunnable implements Runnable {
     @Override
     public void run() {
         while (isRunning){
-            if (App.logRepository.getLogState() == EState.YOUTUBE_TEST) App.logRepository.setYoutubeThroughput(getYouTubeThroughput());
+            if (App.logRepository.getLogState() == EState.YOUTUBE_TEST ) App.logRepository.setYoutubeThroughput(getYouTubeThroughput());
             if (App.logRepository.getLogState() == EState.UPLOAD_TEST) App.logRepository.setUlThroughput(getUlThroughput());
             if (App.logRepository.getLogState() == EState.DOWNLOAD_TEST) App.logRepository.setDownloadTestThroughput(getDLThroughput());
             App.logRepository.setDate(System.currentTimeMillis());
