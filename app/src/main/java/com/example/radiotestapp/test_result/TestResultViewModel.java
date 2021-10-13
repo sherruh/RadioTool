@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.radiotestapp.App;
 import com.example.radiotestapp.enums.EEvents;
+import com.example.radiotestapp.enums.EState;
 import com.example.radiotestapp.model.Event;
 import com.example.radiotestapp.model.Log;
 import com.example.radiotestapp.utils.Logger;
@@ -25,6 +26,49 @@ public class TestResultViewModel extends ViewModel {
 
     private void startCalculations(boolean isTestedYoutube, boolean isTestedDownload, boolean isTestedUpload) {
         if (isTestedYoutube) calculateYoutube();
+        if (isTestedDownload) calculateDownloadTest();
+    }
+
+    private void calculateDownloadTest() {
+        int downloadStart = 0;
+        int downloadFinish = 0;
+        int downloadFailed = 0;
+        Double downloadSR = 0.0;
+        for(Event e : eventList){
+            switch (e.getEvent()){
+                case DS:
+                    downloadStart++;
+                    break;
+                case DF:
+                    downloadFinish++;
+                    break;
+                case DE:
+                    downloadFailed++;
+                    break;
+            }
+        }
+        try{
+            downloadSR = (double)downloadFinish / (double) downloadStart;
+        } catch (Exception exception){
+
+        }
+        downloadSR *= 100;
+        Logger.d("TestResultData download avg " + calculateDownloadThruput() + " " + downloadSR);
+    }
+
+    private long calculateDownloadThruput() {
+        long k = 0L;
+        long avgThrput = 0L;
+        for (Log l : logList){
+            if (l.getLogState() == EState.DOWNLOAD_TEST) {
+                try{
+                    avgThrput += l.getDlThrput();
+                    k++;
+                } catch (Exception exception ){ Logger.d("TestResultData download " + exception.getMessage()); }
+            }
+        }
+        if (k != 0L) avgThrput /= k;
+        return avgThrput;
     }
 
     private void calculateYoutube() {
@@ -102,10 +146,10 @@ public class TestResultViewModel extends ViewModel {
                     avgThrput+= Integer.parseInt(e.getParameter2());
                     k++;
                 } catch (Exception exception ){}
-                if (k != 0) avgThrput /= k;
 
             }
         }
+        if (k != 0) avgThrput /= k;
         return avgThrput;
     }
 
