@@ -204,7 +204,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     }
 
     public void stop() {
-        isProgressStartBarShowLiveData.setValue(true);
+        isProgressStartBarShowLiveData.postValue(true);
         if(timerUpload != null) timerUpload.cancel();
         if(timerYouTubeBuffering != null) timerYouTubeBuffering.cancel();
         if(timerYouTubeInitial != null) timerYouTubeInitial.cancel();
@@ -527,7 +527,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         youtubeState = EYoutubeState.FINISHED;
         App.logRepository.setYoutubeState(youtubeState);
         Logger.d("checkWhetherToStartYoutubePlayback " + "youtubePlaybackEnded");
-        isProgressStartBarShowLiveData.setValue(true);
+        isProgressStartBarShowLiveData.postValue(true);
         checkWhetherToStartDownloadTest();
     }
 
@@ -535,11 +535,11 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         isNeedDownloadTest = App.localStorage.getSettingsParameter(Constants.IS_DOWNLOAD_NEED) != null &&
                 (App.localStorage.getSettingsParameter(Constants.IS_DOWNLOAD_NEED)
                 .getValue().equals(Constants.YES));
-        isProgressStartBarShowLiveData.setValue(false);
+        isProgressStartBarShowLiveData.postValue(false);
         if (isNeedDownloadTest && isLogging.getValue()){
             downloadTestStart();
         } else {
-            isProgressStartBarShowLiveData.setValue(true);
+            isProgressStartBarShowLiveData.postValue(true);
             checkWhetherToStartUploadTest();
         }
     }
@@ -548,11 +548,11 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         isNeedUploadTest = App.localStorage.getSettingsParameter(Constants.IS_UPLOAD_NEED) != null
                 && App.localStorage.getSettingsParameter(Constants.IS_UPLOAD_NEED)
                 .getValue().equals(Constants.YES);
-        isProgressStartBarShowLiveData.setValue(false);
+        isProgressStartBarShowLiveData.postValue(false);
         if (isNeedUploadTest && isLogging.getValue()){
             uploadTestStart();
         } else {
-            isProgressStartBarShowLiveData.setValue(true);
+            isProgressStartBarShowLiveData.postValue(true);
             checkWhetherToStartYoutubePlayback();
         }
     }
@@ -656,7 +656,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         timerUpload.cancel();
         uploadTestStopEvent.call();
         App.logRepository.setLogState(EState.IDLE);
-        isProgressStartBarShowLiveData.setValue(true);
+        isProgressStartBarShowLiveData.postValue(true);
         checkWhetherToStartYoutubePlayback();
     }
 
@@ -669,11 +669,11 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
                     App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_NEED).getValue().equals(Constants.NO)){
             checkWhetherToStartDownloadTest();
             }else{
-                isProgressStartBarShowLiveData.setValue(false);
+                isProgressStartBarShowLiveData.postValue(false);
                 onStartYoutubeClickedEvent.call();
             }
         }else{
-            isProgressStartBarShowLiveData.setValue(false);
+            isProgressStartBarShowLiveData.postValue(false);
             stop();
         }
     }
