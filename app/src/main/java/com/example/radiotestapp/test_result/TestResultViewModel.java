@@ -9,6 +9,7 @@ import com.example.radiotestapp.model.Event;
 import com.example.radiotestapp.model.Log;
 import com.example.radiotestapp.utils.Logger;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +28,49 @@ public class TestResultViewModel extends ViewModel {
     private void startCalculations(boolean isTestedYoutube, boolean isTestedDownload, boolean isTestedUpload) {
         if (isTestedYoutube) calculateYoutube();
         if (isTestedDownload) calculateDownloadTest();
+        if (isTestedUpload) calculateUploadTest();
+    }
+
+    private void calculateUploadTest() {
+        int uploadStart = 0;
+        int uploadFinish = 0;
+        int uploadFailed = 0;
+        Double uploadSR = 0.0;
+        for (Event e : eventList){
+            switch (e.getEvent()){
+                case US:
+                    uploadStart++;
+                    break;
+                case UF:
+                    uploadFinish++;
+                    break;
+                case UE:
+                    uploadFailed++;
+                    break;
+            }
+        }
+        try{
+            uploadSR = (double)uploadFinish / (double)uploadStart;
+        } catch (Exception exception){
+            uploadSR = 0.0;
+        }
+        uploadSR *= 100;
+        Logger.d("TestResultData upload avg " + calculateUploadThruput() + " " + uploadSR);
+    }
+
+    private long calculateUploadThruput() {
+        long k = 0L;
+        long avgThrput = 0L;
+        for (Log l : logList){
+            if (l.getLogState() == EState.UPLOAD_TEST) {
+                try{
+                    avgThrput += l.getUlThrput();
+                    k++;
+                } catch (Exception exception ){ Logger.d("TestResultData upload " + exception.getMessage()); }
+            }
+        }
+        if (k != 0L) avgThrput /= k;
+        return avgThrput;
     }
 
     private void calculateDownloadTest() {
@@ -34,7 +78,7 @@ public class TestResultViewModel extends ViewModel {
         int downloadFinish = 0;
         int downloadFailed = 0;
         Double downloadSR = 0.0;
-        for(Event e : eventList){
+        for (Event e : eventList){
             switch (e.getEvent()){
                 case DS:
                     downloadStart++;
@@ -50,7 +94,7 @@ public class TestResultViewModel extends ViewModel {
         try{
             downloadSR = (double)downloadFinish / (double) downloadStart;
         } catch (Exception exception){
-
+            downloadSR = 0.0;
         }
         downloadSR *= 100;
         Logger.d("TestResultData download avg " + calculateDownloadThruput() + " " + downloadSR);
@@ -133,6 +177,85 @@ public class TestResultViewModel extends ViewModel {
 
         Logger.d("TestResultData " + youtubeSR + " " + avgInitTime + " " + avgBufferTime +
                 "AvgYoutubeThrpu " + calculateYoutubeThruput());
+
+        calculateYoutubeResolution();
+    }
+
+    private void calculateYoutubeResolution() {
+        int res144p = 0;
+        int res240p = 0;
+        int res360p = 0;
+        int res480p = 0;
+        int res720p = 0;
+        int res1080p = 0;
+        int resMore1080p = 0;
+        boolean isNextRes = true;
+        for (int i = logList.size() - 1 ; i >= 0; i-- ){
+            Logger.d("TestResultData resolution " + i + " " + logList.get(i).getYoutubeResolution());
+            if (logList.get(i).getYoutubeResolution() == null || logList.get(i).getYoutubeResolution().equals("")
+                    || logList.get(i).getYoutubeResolution().equals("null")) {
+                isNextRes = true;
+                continue;
+            };
+            if (isNextRes){
+                if (logList.get(i).getYoutubeResolution().equals("144p")) {
+                    res144p++;
+                    isNextRes = false;
+                    continue;
+                }
+                if (logList.get(i).getYoutubeResolution().equals("240p")) {
+                    res240p++;
+                    isNextRes = false;
+                    continue;
+                }
+                if (logList.get(i).getYoutubeResolution().equals("360p")) {
+                    res360p++;
+                    isNextRes = false;
+                    continue;
+                }
+                if (logList.get(i).getYoutubeResolution().equals("480p")) {
+                    res480p++;
+                    isNextRes = false;
+                    continue;
+                }
+                if (logList.get(i).getYoutubeResolution().equals("720p")) {
+                    res720p++;
+                    isNextRes = false;
+                    continue;
+                }
+                if (logList.get(i).getYoutubeResolution().equals("1080p")) {
+                    res1080p++;
+                    isNextRes = false;
+                    continue;
+                }
+                if (logList.get(i).getYoutubeResolution().equals(">1080p")) {
+                    resMore1080p++;
+                    isNextRes = false;
+                    continue;
+                }
+            }
+        }
+        Logger.d("TestResultData resolution " + res144p + " " + res240p + " " + res360p + " " +
+                    res480p + " " + res720p + " " + res1080p + " " + resMore1080p);
+
+        double res144Rate = 0.0;
+        double res240Rate = 0.0;
+        double res360Rate = 0.0;
+        double res480Rate = 0.0;
+        double res720Rate = 0.0;
+        double res1080Rate = 0.0;
+        double resMore1080Rate = 0.0;
+
+        int sum = res144p + res240p + res360p + res480p + res720p + res1080p + resMore1080p;
+        if (sum == 0) sum = 1;
+        res144Rate = (double)res144p / (double)sum;
+        res240Rate = (double)res240p / (double)sum;
+        res360Rate = (double)res360p / (double)sum;
+        res480Rate = (double)res480p / (double)sum;
+        res720Rate = 100.0 * (double)res720p / (double)sum;
+        res1080Rate = (double)res1080p / (double)sum;
+        resMore1080Rate = (double)resMore1080Rate / (double)sum;
+        Logger.d("TestResultData resolution " + new DecimalFormat("##.0").format(res720Rate));
     }
 
     private int calculateYoutubeThruput() {
@@ -145,7 +268,9 @@ public class TestResultViewModel extends ViewModel {
                 try{
                     avgThrput+= Integer.parseInt(e.getParameter2());
                     k++;
-                } catch (Exception exception ){}
+                } catch (Exception exception ){
+
+                }
 
             }
         }
