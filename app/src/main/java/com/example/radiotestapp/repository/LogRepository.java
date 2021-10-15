@@ -96,7 +96,7 @@ public class LogRepository {
 
     public void setYoutubeState(EYoutubeState youtubeState) {
         synchronized (this) {
-            Logger.d("TestResultData youtubestate" + youtubeState);
+            Logger.d("TestResultData youtubestate" + youtubeState + " resolution " + mLog.getYoutubeResolution());
             this.youtubeState = youtubeState;
             mLog.setYoutubeState(youtubeState);
         }
@@ -313,7 +313,6 @@ public class LogRepository {
 
     public void saveLog(Log log){
         synchronized (this){
-            Logger.d("TestResultData youtubestate" + " here");
             localLogRepository.saveLog(log);
             Log currentLog = null;
             try {
@@ -346,9 +345,6 @@ public class LogRepository {
             }
         });
         App.localStorage.saveLogs(logList,callback);
-
-        Logger.d("TestResultData youtubethrput " + logList.get(0).getId() + " "
-                + logList.get(1).getId());
     }
 
     public void addToLevelList(String level) {
