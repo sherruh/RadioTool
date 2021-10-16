@@ -246,6 +246,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     public void radioStateChanged(String mSignalStrength, CellLocation mCellLocation) {
         gsmCellLocation = (GsmCellLocation) getCellLocation();
         updateSignalData(getSignalStrength());
+        Logger.d("TestResultData cells " + getSignalStrength());
         plmn = getPlmn();
         App.logRepository.setPlmn(plmn);
         if (ActivityCompat.checkSelfPermission(mContext, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -297,6 +298,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         App.logRepository.clearSignalData();
         if (signalStrength.equals("")) return;
         int networkType = telephonyManager.getNetworkType();
+        Logger.d("TestResultData cells " + networkType);
         switch (networkType) {
             case TelephonyManager.NETWORK_TYPE_GPRS:
             case TelephonyManager.NETWORK_TYPE_EDGE:
@@ -330,7 +332,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     }
 
     private void updateGsmSignalData(String signalData) {
-        int rxIndex = signalData.indexOf("ss=");
+        int rxIndex = signalData.indexOf("ssi=");
         App.logRepository.setTech("GSM");
         App.logRepository.setRxLevel(getValueOfParameter(signalData,rxIndex));
     }

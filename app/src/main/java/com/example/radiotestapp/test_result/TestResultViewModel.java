@@ -1,5 +1,6 @@
 package com.example.radiotestapp.test_result;
 
+import androidx.core.util.Pair;
 import androidx.lifecycle.ViewModel;
 
 import com.example.radiotestapp.App;
@@ -11,6 +12,9 @@ import com.example.radiotestapp.utils.Logger;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 public class TestResultViewModel extends ViewModel {
@@ -29,6 +33,186 @@ public class TestResultViewModel extends ViewModel {
         if (isTestedYoutube) calculateYoutube();
         if (isTestedDownload) calculateDownloadTest();
         if (isTestedUpload) calculateUploadTest();
+        getTopCells();
+        calculateLevels();
+        calculateQualities();
+    }
+
+    private void calculateQualities() {
+        calculateLteQualities();
+        calculateUmtsQualities();
+        calculateGsmQualities();
+
+    }
+
+    private void calculateGsmQualities() {
+        double ci = 0.0;
+        double ciSum = 0.0;
+        double ciCount = 0.0;
+
+        for (Log log : logList){
+            if (log.getTechnology() != null && log.getTechnology().equals("GSM")){
+                try {
+                    ciSum += Double.parseDouble(log.getSnr());
+                    ciCount ++;
+                }catch (Exception e) {};
+            }
+        }
+
+        if (ciCount > 0.0) ci = ciSum / ciCount;
+        Logger.d("TestResultData level ci " + ci);
+    }
+
+    private void calculateUmtsQualities() {
+        double ecN0 = 0.0;
+        double ecN0Sum = 0.0;
+        double ecN0Count = 0.0;
+        double cqiUmts = 0.0;
+        double cqiUmtsSum = 0.0;
+        double cqiUmtsCount = 0.0;
+
+        for (Log log : logList){
+            if (log.getTechnology() != null && log.getTechnology().equals("WCDMA")){
+                try {
+                    ecN0Sum += Double.parseDouble(log.getEcNO());
+                    ecN0Count ++;
+                }catch (Exception e) {};
+                try {
+                    cqiUmtsSum += Double.parseDouble(log.getCqi());
+                    cqiUmtsCount ++;
+                }catch (Exception e) {};
+            }
+        }
+
+        if (ecN0Count > 0.0) ecN0 = ecN0Sum / ecN0Count;
+        if (cqiUmtsCount > 0.0) cqiUmts = cqiUmtsSum / cqiUmtsCount;
+
+        Logger.d("TestResultData level ecN0 " + ecN0);
+        Logger.d("TestResultData level cqi " + cqiUmts);
+    }
+
+    private void calculateLteQualities() {
+        double rsrq = 0.0;
+        double rsrqSum = 0.0;
+        double rsrqCount = 0.0;
+        double snr = 0.0;
+        double snrSum = 0.0;
+        double snrCount = 0.0;
+        double cqiLte = 0.0;
+        double cqiLteSum = 0.0;
+        double cqiLteCount = 0.0;
+        for (Log log: logList){
+            if (log.getTechnology() != null && log.getTechnology().equals("LTE")){
+                try {
+                    rsrqSum += Double.parseDouble(log.getRsrq());
+                    rsrqCount ++;
+                }catch (Exception e) {};
+                try{
+                    snrSum += Double.parseDouble(log.getSnr());
+                    snrCount ++;
+                }catch (Exception e) {};
+                try{
+                    cqiLteSum += Double.parseDouble(log.getCqi());
+                    cqiLteCount ++;
+                }
+                catch (Exception e) {};
+            }
+        }
+
+        if(rsrqCount > 0.0) rsrq = rsrqSum / rsrqCount;
+        if (snrCount > 0.0) snr = snrSum / snrCount;
+        if (cqiLteCount > 0.0) cqiLte = cqiLteSum / cqiLteCount;
+
+        Logger.d("TestResultData level rsrq " + rsrq);
+        Logger.d("TestResultData level snr " + snr);
+        Logger.d("TestResultData level cqi " + cqiLte);
+    }
+
+    private void calculateLevels() {
+        double lteLevel = 0.0;
+        double lteSumLevel = 0.0;
+        double lteCount = 0.0;
+        double umtsLevel = 0.0;
+        double umtsSumLevel = 0.0;
+        double umtsCount = 0.0;
+        double gsmLevel = 0.0;
+        double gsmSumLevel = 0.0;
+        double gsmCount = 0.0;
+        for (Log log: logList){
+            if (log.getTechnology() != null && log.getTechnology().equals("LTE")){
+                try {
+                    lteSumLevel += Double.parseDouble(log.getRsrp());
+                    lteCount ++;
+                }catch (Exception e) {};
+            }
+            if (log.getTechnology() != null && log.getTechnology().equals("WCDMA")){
+                try {
+                    umtsSumLevel += Double.parseDouble(log.getRscp());
+                    umtsCount ++;
+                }catch (Exception e) {};
+            }
+            if (log.getTechnology() != null && log.getTechnology().equals("GSM")){
+                try {
+                    gsmSumLevel += Double.parseDouble(log.getRxLevel());
+                    gsmCount ++;
+                }catch (Exception e) {};
+            }
+        }
+        if (lteCount > 0.0) lteLevel = lteSumLevel / lteCount;
+        if (umtsCount > 0.0) umtsLevel = umtsSumLevel / umtsCount;
+        if (gsmCount > 0.0) gsmLevel = gsmSumLevel / gsmCount;
+        Logger.d("TestResultData level " + lteLevel + " counts " + lteCount);
+        Logger.d("TestResultData level " + umtsLevel + " counts " + umtsCount);
+        Logger.d("TestResultData level " + gsmLevel + " counts " + gsmCount);
+    }
+
+    private void getTopCells() {
+        HashSet<String> cellsSet = new HashSet<>();
+        List<String> cellsList = new ArrayList<>();
+        for (Log l : logList){
+            if (l.getTechnology() == null) continue;
+            if (l.getTechnology().equals("LTE")){
+                cellsSet.add("LTE" + l.getENodeB() + "_" + l.getCellId());
+                cellsList.add("LTE" + l.getENodeB() + "_" + l.getCellId());
+                continue;
+            }
+            Logger.d("TestResultData cells " + l.getTechnology());
+            if (l.getTechnology().equals("WCDMA") || l.getTechnology().equals("GSM"))
+            {
+                Logger.d("TestResultData cells " + l.getTechnology());
+                if (l.getTacLac() == null || l.getTacLac().equals("")) continue;
+                cellsSet.add(l.getTechnology() + l.getTacLac() + "_" + l.getCellId());
+                cellsList.add(l.getTechnology() + l.getTacLac() + "_" + l.getCellId());
+            }
+        }
+
+
+        List<Pair<String,Integer>> cellsPairList= new ArrayList<>();
+        Iterator<String> iterator = cellsSet.iterator();
+        while (iterator.hasNext()){
+            String cell = iterator.next();
+            cellsPairList.add(new Pair<>(cell, Collections.frequency(cellsList, cell)));
+        }
+
+        if (cellsPairList.size() > 1){
+            Collections.sort(cellsPairList, (t1, t2) -> {
+                if (t1.second > t2.second) return -1;
+                if (t1.second.equals(t2.second)) return 0;
+                return 1;
+            });
+        }
+        List<Pair<String, Double>> cellsRatePairList = new ArrayList<>();
+        int sum = 0;
+        for (Pair<String, Integer> pair : cellsPairList ){
+            sum += pair.second;
+            Logger.d("TestResultData cells " + pair.first + " number " + pair.second );
+        }
+        for (Pair<String, Integer> pair : cellsPairList){
+            double rate = 100.0 * (double)pair.second / (double) sum;
+            cellsRatePairList.add(new Pair(pair.first, rate));
+            Logger.d("TestResultData cells " + pair.first + " rate " + rate );
+        }
+
     }
 
     private void calculateUploadTest() {
@@ -248,13 +432,13 @@ public class TestResultViewModel extends ViewModel {
 
         int sum = res144p + res240p + res360p + res480p + res720p + res1080p + resMore1080p;
         if (sum == 0) sum = 1;
-        res144Rate = (double)res144p / (double)sum;
-        res240Rate = (double)res240p / (double)sum;
-        res360Rate = (double)res360p / (double)sum;
-        res480Rate = (double)res480p / (double)sum;
+        res144Rate = 100.0 * (double)res144p / (double)sum;
+        res240Rate = 100.0 * (double)res240p / (double)sum;
+        res360Rate = 100.0 * (double)res360p / (double)sum;
+        res480Rate = 100.0 * (double)res480p / (double)sum;
         res720Rate = 100.0 * (double)res720p / (double)sum;
-        res1080Rate = (double)res1080p / (double)sum;
-        resMore1080Rate = (double)resMore1080Rate / (double)sum;
+        res1080Rate = 100.0 * (double)res1080p / (double)sum;
+        resMore1080Rate = 100.0 * (double)resMore1080Rate / (double)sum;
         Logger.d("TestResultData resolution " + new DecimalFormat("##.0").format(res720Rate));
     }
 
