@@ -375,7 +375,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_top3_cells_activity_result"
         app:layout_constraintStart_toStartOf="@id/frame_radio_activity_result"
         android:layout_marginTop="10dp"
-        android:text="1st most frequent cell:"
+        android:text="1st cell:"
         style="@style/ParamName"
         />
 
@@ -480,7 +480,7 @@
         app:layout_constraintStart_toStartOf="@id/frame_radio_activity_result"
         android:layout_marginTop="10dp"
         android:layout_marginStart="135dp"
-        android:text="2nd most frequent cell:"
+        android:text="2nd cell:"
         style="@style/ParamName"
         />
 
@@ -589,7 +589,7 @@
         app:layout_constraintStart_toStartOf="@id/frame_radio_activity_result"
         android:layout_marginTop="10dp"
         android:layout_marginStart="260dp"
-        android:text="3rd most frequent cell:"
+        android:text="3rd cell:"
         style="@style/ParamName"
         />
 
