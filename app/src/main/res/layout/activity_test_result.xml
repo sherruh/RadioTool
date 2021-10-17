@@ -11,7 +11,7 @@
     <View
         android:id="@+id/frame_radio_activity_result"
         android:layout_width="375dp"
-        android:layout_height="190dp"
+        android:layout_height="320dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,19 +40,19 @@
     <View
         style="@style/SeparateLineVertical"
         app:layout_constraintTop_toTopOf="@id/frame_radio_activity_result"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="29dp"
         app:layout_constraintStart_toStartOf="@id/frame_radio_activity_result"
         android:layout_marginLeft="125dp"
-        android:layout_height="40dp"
+        android:layout_height="42dp"
         />
 
     <View
         style="@style/SeparateLineVertical"
         app:layout_constraintTop_toTopOf="@id/frame_radio_activity_result"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="29dp"
         app:layout_constraintStart_toStartOf="@id/frame_radio_activity_result"
         android:layout_marginLeft="250dp"
-        android:layout_height="40dp"
+        android:layout_height="42dp"
         />
 
     <TextView
@@ -241,19 +241,19 @@
     <View
         style="@style/SeparateLineVertical"
         app:layout_constraintTop_toBottomOf="@id/tv_signal_quality_activity_result"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="46dp"
         app:layout_constraintStart_toStartOf="@id/frame_radio_activity_result"
         android:layout_marginLeft="125dp"
-        android:layout_height="40dp"
+        android:layout_height="42dp"
         />
 
     <View
         style="@style/SeparateLineVertical"
         app:layout_constraintTop_toBottomOf="@id/tv_signal_quality_activity_result"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="46dp"
         app:layout_constraintStart_toStartOf="@id/frame_radio_activity_result"
         android:layout_marginLeft="250dp"
-        android:layout_height="40dp"
+        android:layout_height="42dp"
         />
 
     <TextView
@@ -327,6 +327,378 @@
         app:layout_constraintStart_toStartOf="@id/frame_radio_activity_result"
         android:layout_marginTop="2dp"
         />
+
+
+    <TextView
+        android:id="@+id/tv_top3_cells_activity_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/frame_radio_activity_result"
+        app:layout_constraintTop_toBottomOf="@id/text_cqi_lte_value_result_activity"
+        android:layout_marginTop="4dp"
+        android:text="Top 3 serving cells"
+        style="@style/SubTitle"
+        />
+
+    <View
+        style="@style/SeparateLineHorizontal"
+        android:background="@drawable/bg_separate_lines"
+        app:layout_constraintTop_toBottomOf="@id/tv_top3_cells_activity_result"
+        app:layout_constraintStart_toStartOf="@id/frame_radio_activity_result"
+        android:layout_marginTop="5dp"
+        />
+
+
+    <View
+        style="@style/SeparateLineVertical"
+        app:layout_constraintTop_toBottomOf="@id/tv_top3_cells_activity_result"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toStartOf="@id/frame_radio_activity_result"
+        android:layout_marginLeft="125dp"
+        android:layout_height="107dp"
+        />
+
+    <View
+        style="@style/SeparateLineVertical"
+        app:layout_constraintTop_toBottomOf="@id/tv_top3_cells_activity_result"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toStartOf="@id/frame_radio_activity_result"
+        android:layout_marginLeft="250dp"
+        android:layout_height="107dp"
+        />
+
+
+    <TextView
+        android:id="@+id/text_first_cell_activity_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_top3_cells_activity_result"
+        app:layout_constraintStart_toStartOf="@id/frame_radio_activity_result"
+        android:layout_marginTop="10dp"
+        android:text="1st most frequent cell:"
+        style="@style/ParamName"
+        />
+
+    <TextView
+        android:id="@+id/text_first_cell_tech_activity_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_first_cell_activity_result"
+        app:layout_constraintStart_toStartOf="@id/frame_radio_activity_result"
+        android:layout_marginTop="3dp"
+        android:text="Tech:         "
+        style="@style/ParamName"
+        />
+
+    <TextView
+        android:id="@+id/text_first_cell_tech_value_result_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/text_first_cell_tech_activity_result"
+        app:layout_constraintStart_toEndOf="@id/text_first_cell_tech_activity_result"
+        android:text="--"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="2dp"
+        style="@style/ParamValue"
+        />
+
+
+    <TextView
+        android:id="@+id/text_first_cell_tac_lac_activity_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_first_cell_tech_value_result_activity"
+        app:layout_constraintStart_toStartOf="@id/frame_radio_activity_result"
+        android:layout_marginTop="3dp"
+        android:text="TAC/LAC:"
+        style="@style/ParamName"
+        />
+
+    <TextView
+        android:id="@+id/text_first_cell_tac_lac_value_result_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/text_first_cell_tac_lac_activity_result"
+        app:layout_constraintStart_toEndOf="@id/text_first_cell_tech_activity_result"
+        android:text="--"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="2dp"
+        style="@style/ParamValue"
+        />
+
+    <TextView
+        android:id="@+id/text_first_cell_enodeb_activity_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_first_cell_tac_lac_value_result_activity"
+        app:layout_constraintStart_toStartOf="@id/frame_radio_activity_result"
+        android:layout_marginTop="3dp"
+        android:text="ENodeB:"
+        style="@style/ParamName"
+        />
+
+    <TextView
+        android:id="@+id/text_first_cell_enodeb_value_result_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/text_first_cell_enodeb_activity_result"
+        app:layout_constraintStart_toEndOf="@id/text_first_cell_tech_activity_result"
+        android:text="--"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="2dp"
+        style="@style/ParamValue"
+        />
+
+    <TextView
+        android:id="@+id/text_first_cell_cid_activity_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_first_cell_enodeb_value_result_activity"
+        app:layout_constraintStart_toStartOf="@id/frame_radio_activity_result"
+        android:layout_marginTop="3dp"
+        android:text="CID:"
+        style="@style/ParamName"
+        />
+
+    <TextView
+        android:id="@+id/text_first_cell_cid_value_activity_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/text_first_cell_cid_activity_result"
+        app:layout_constraintStart_toEndOf="@id/text_first_cell_tech_activity_result"
+        android:text="--"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="2dp"
+        style="@style/ParamValue"
+        />
+
+    <TextView
+        android:id="@+id/text_second_cell_activity_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_top3_cells_activity_result"
+        app:layout_constraintStart_toStartOf="@id/frame_radio_activity_result"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="135dp"
+        android:text="2nd most frequent cell:"
+        style="@style/ParamName"
+        />
+
+    <TextView
+        android:id="@+id/text_second_cell_tech_activity_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_second_cell_activity_result"
+        app:layout_constraintStart_toStartOf="@id/text_second_cell_activity_result"
+        android:layout_marginTop="3dp"
+        android:layout_marginStart="0dp"
+        android:text="Tech:         "
+        style="@style/ParamName"
+        />
+
+    <TextView
+        android:id="@+id/text_second_cell_tech_value_result_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/text_second_cell_tech_activity_result"
+        app:layout_constraintStart_toEndOf="@id/text_second_cell_tech_activity_result"
+        android:text="--"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="2dp"
+        style="@style/ParamValue"
+        />
+
+
+    <TextView
+        android:id="@+id/text_second_cell_tac_lac_activity_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_second_cell_tech_value_result_activity"
+        app:layout_constraintStart_toStartOf="@id/text_second_cell_activity_result"
+        android:layout_marginTop="3dp"
+        android:layout_marginStart="0dp"
+        android:text="TAC/LAC:"
+        style="@style/ParamName"
+        />
+
+    <TextView
+        android:id="@+id/text_second_cell_tac_lac_value_result_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/text_second_cell_tac_lac_activity_result"
+        app:layout_constraintStart_toEndOf="@id/text_second_cell_tech_activity_result"
+        android:text="--"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="2dp"
+        style="@style/ParamValue"
+        />
+
+    <TextView
+        android:id="@+id/text_second_cell_enodeb_activity_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_second_cell_tac_lac_value_result_activity"
+        app:layout_constraintStart_toStartOf="@id/text_second_cell_activity_result"
+        android:layout_marginTop="3dp"
+        android:layout_marginStart="0dp"
+        android:text="ENodeB:"
+        style="@style/ParamName"
+        />
+
+    <TextView
+        android:id="@+id/text_second_cell_enodeb_value_result_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/text_second_cell_enodeb_activity_result"
+        app:layout_constraintStart_toEndOf="@id/text_second_cell_tech_activity_result"
+        android:text="--"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="2dp"
+        style="@style/ParamValue"
+        />
+
+    <TextView
+        android:id="@+id/text_second_cell_cid_activity_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_second_cell_enodeb_value_result_activity"
+        app:layout_constraintStart_toStartOf="@id/text_second_cell_activity_result"
+        android:layout_marginTop="3dp"
+        android:layout_marginStart="0dp"
+        android:text="CID:"
+        style="@style/ParamName"
+        />
+
+    <TextView
+        android:id="@+id/text_second_cell_cid_value_activity_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/text_second_cell_cid_activity_result"
+        app:layout_constraintStart_toEndOf="@id/text_second_cell_tech_activity_result"
+        android:text="--"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="2dp"
+        style="@style/ParamValue"
+        />
+
+    <TextView
+        android:id="@+id/text_third_cell_activity_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_top3_cells_activity_result"
+        app:layout_constraintStart_toStartOf="@id/frame_radio_activity_result"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="260dp"
+        android:text="3rd most frequent cell:"
+        style="@style/ParamName"
+        />
+
+    <TextView
+        android:id="@+id/text_third_cell_tech_activity_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_third_cell_activity_result"
+        app:layout_constraintStart_toStartOf="@id/text_third_cell_activity_result"
+        android:layout_marginTop="3dp"
+        android:layout_marginStart="0dp"
+        android:text="Tech:         "
+        style="@style/ParamName"
+        />
+
+    <TextView
+        android:id="@+id/text_third_cell_tech_value_result_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/text_third_cell_tech_activity_result"
+        app:layout_constraintStart_toEndOf="@id/text_third_cell_tech_activity_result"
+        android:text="--"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="2dp"
+        style="@style/ParamValue"
+        />
+
+
+    <TextView
+        android:id="@+id/text_third_cell_tac_lac_activity_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_third_cell_tech_value_result_activity"
+        app:layout_constraintStart_toStartOf="@id/text_third_cell_activity_result"
+        android:layout_marginTop="3dp"
+        android:layout_marginStart="0dp"
+        android:text="TAC/LAC:"
+        style="@style/ParamName"
+        />
+
+    <TextView
+        android:id="@+id/text_third_cell_tac_lac_value_result_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/text_third_cell_tac_lac_activity_result"
+        app:layout_constraintStart_toEndOf="@id/text_third_cell_tech_activity_result"
+        android:text="--"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="2dp"
+        style="@style/ParamValue"
+        />
+
+    <TextView
+        android:id="@+id/text_third_cell_enodeb_activity_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_third_cell_tac_lac_value_result_activity"
+        app:layout_constraintStart_toStartOf="@id/text_third_cell_activity_result"
+        android:layout_marginTop="3dp"
+        android:layout_marginStart="0dp"
+        android:text="ENodeB:"
+        style="@style/ParamName"
+        />
+
+    <TextView
+        android:id="@+id/text_third_cell_enodeb_value_result_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/text_third_cell_enodeb_activity_result"
+        app:layout_constraintStart_toEndOf="@id/text_third_cell_tech_activity_result"
+        android:text="--"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="2dp"
+        style="@style/ParamValue"
+        />
+
+    <TextView
+        android:id="@+id/text_third_cell_cid_activity_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_third_cell_enodeb_value_result_activity"
+        app:layout_constraintStart_toStartOf="@id/text_third_cell_activity_result"
+        android:layout_marginTop="3dp"
+        android:layout_marginStart="0dp"
+        android:text="CID:"
+        style="@style/ParamName"
+        />
+
+    <TextView
+        android:id="@+id/text_third_cell_cid_value_activity_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/text_third_cell_cid_activity_result"
+        app:layout_constraintStart_toEndOf="@id/text_third_cell_tech_activity_result"
+        android:text="--"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="2dp"
+        style="@style/ParamValue"
+        />
+
+
+    <View
+        style="@style/SeparateLineHorizontal"
+        android:background="@drawable/bg_separate_lines"
+        app:layout_constraintTop_toBottomOf="@id/text_first_cell_cid_value_activity_result"
+        app:layout_constraintStart_toStartOf="@id/frame_radio_activity_result"
+        android:layout_marginTop="2dp"
+        />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
