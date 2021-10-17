@@ -1,6 +1,7 @@
 package com.example.radiotestapp.test_result;
 
 import androidx.core.util.Pair;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.radiotestapp.App;
@@ -21,6 +22,45 @@ public class TestResultViewModel extends ViewModel {
 
     private List<Log> logList = new ArrayList();
     private List<Event> eventList = new ArrayList();
+
+    public MutableLiveData<Double> rsrpLiveData = new MutableLiveData<>();
+    public MutableLiveData<Double> rscpLiveData = new MutableLiveData<>();
+    public MutableLiveData<Double> rxLevelLiveData = new MutableLiveData<>();
+    public MutableLiveData<Double> snrLiveData = new MutableLiveData<>();
+    public MutableLiveData<Double> ecN0LiveData = new MutableLiveData<>();
+    public MutableLiveData<Double> ciLiveData = new MutableLiveData<>();
+    public MutableLiveData<Double> cqiLteLiveData = new MutableLiveData<>();
+    public MutableLiveData<Double> rsrqLiveData = new MutableLiveData<>();
+    public MutableLiveData<Double> cqiUmtsLiveData = new MutableLiveData<>();
+
+    public MutableLiveData<String> firstTech = new MutableLiveData<>();
+    public MutableLiveData<String> firstTacLac = new MutableLiveData<>();
+    public MutableLiveData<String> firstENodeB = new MutableLiveData<>();
+    public MutableLiveData<String> firstCID = new MutableLiveData<>();
+    public MutableLiveData<String> secondTech = new MutableLiveData<>();
+    public MutableLiveData<String> secondTacLac = new MutableLiveData<>();
+    public MutableLiveData<String> secondENodeB = new MutableLiveData<>();
+    public MutableLiveData<String> secondCID = new MutableLiveData<>();
+    public MutableLiveData<String> thirdTech = new MutableLiveData<>();
+    public MutableLiveData<String> thirdTacLac = new MutableLiveData<>();
+    public MutableLiveData<String> thirdENodeB = new MutableLiveData<>();
+    public MutableLiveData<String> thirdCID = new MutableLiveData<>();
+    public MutableLiveData<Double> firstRateLiveData = new MutableLiveData<>();
+    public MutableLiveData<Double> secondRateLiveData = new MutableLiveData<>();
+    public MutableLiveData<Double> thirdRateLiveData = new MutableLiveData<>();
+
+    public MutableLiveData<Double> bufferingTimeLiveData = new MutableLiveData<>();
+    public MutableLiveData<Double> bufferingThroughputLiveData = new MutableLiveData<>();
+    public MutableLiveData<Double> bufferingSuccessRateLiveData = new MutableLiveData<>();
+    public MutableLiveData<Double> initTimeLiveData = new MutableLiveData<>();
+    public MutableLiveData<Double> initSuccessRateLiveData = new MutableLiveData<>();
+    public MutableLiveData<Double> youtubeSuccessRateLiveData = new MutableLiveData<>();
+    public MutableLiveData<List<Double>> youtubeResolutionList = new MutableLiveData<>();
+
+    public MutableLiveData<Long> downThrputLiveData = new MutableLiveData<>();
+    public MutableLiveData<Double> downSRLiveData = new MutableLiveData<>();
+    public MutableLiveData<Long> uploadThrputLiveData = new MutableLiveData<>();
+    public MutableLiveData<Double> uploadSRLiveData = new MutableLiveData<>();
 
     public void getLogsAndEventsByLogId(String logId, boolean isTestedYoutube,
                                         boolean isTestedDownload, boolean isTestedUpload){
@@ -60,6 +100,8 @@ public class TestResultViewModel extends ViewModel {
         }
 
         if (ciCount > 0.0) ci = ciSum / ciCount;
+
+        ciLiveData.setValue(ci);
         Logger.d("TestResultData level ci " + ci);
     }
 
@@ -86,6 +128,9 @@ public class TestResultViewModel extends ViewModel {
 
         if (ecN0Count > 0.0) ecN0 = ecN0Sum / ecN0Count;
         if (cqiUmtsCount > 0.0) cqiUmts = cqiUmtsSum / cqiUmtsCount;
+
+        ecN0LiveData.setValue(ecN0);
+        cqiUmtsLiveData.setValue(cqiUmts);
 
         Logger.d("TestResultData level ecN0 " + ecN0);
         Logger.d("TestResultData level cqi " + cqiUmts);
@@ -122,6 +167,10 @@ public class TestResultViewModel extends ViewModel {
         if(rsrqCount > 0.0) rsrq = rsrqSum / rsrqCount;
         if (snrCount > 0.0) snr = snrSum / snrCount;
         if (cqiLteCount > 0.0) cqiLte = cqiLteSum / cqiLteCount;
+
+        snrLiveData.setValue(snr);
+        cqiLteLiveData.setValue(cqiLte);
+        rsrqLiveData.setValue(rsrq);
 
         Logger.d("TestResultData level rsrq " + rsrq);
         Logger.d("TestResultData level snr " + snr);
@@ -161,6 +210,9 @@ public class TestResultViewModel extends ViewModel {
         if (lteCount > 0.0) lteLevel = lteSumLevel / lteCount;
         if (umtsCount > 0.0) umtsLevel = umtsSumLevel / umtsCount;
         if (gsmCount > 0.0) gsmLevel = gsmSumLevel / gsmCount;
+        rsrpLiveData.setValue(lteLevel);
+        rscpLiveData.setValue(umtsLevel);
+        rxLevelLiveData.setValue(gsmLevel);
         Logger.d("TestResultData level " + lteLevel + " counts " + lteCount);
         Logger.d("TestResultData level " + umtsLevel + " counts " + umtsCount);
         Logger.d("TestResultData level " + gsmLevel + " counts " + gsmCount);
@@ -170,10 +222,10 @@ public class TestResultViewModel extends ViewModel {
         HashSet<String> cellsSet = new HashSet<>();
         List<String> cellsList = new ArrayList<>();
         for (Log l : logList){
-            if (l.getTechnology() == null) continue;
+            if (l.getTechnology() == null || l.getTacLac() == null || l.getTacLac().equals("")) continue;
             if (l.getTechnology().equals("LTE")){
-                cellsSet.add("LTE" + l.getENodeB() + "_" + l.getCellId());
-                cellsList.add("LTE" + l.getENodeB() + "_" + l.getCellId());
+                cellsSet.add("LTE" + l.getENodeB() + "_" + l.getCellId() + "-" + l.getTacLac());
+                cellsList.add("LTE" + l.getENodeB() + "_" + l.getCellId() + "-" + l.getTacLac());
                 continue;
             }
             Logger.d("TestResultData cells " + l.getTechnology());
@@ -213,6 +265,83 @@ public class TestResultViewModel extends ViewModel {
             Logger.d("TestResultData cells " + pair.first + " rate " + rate );
         }
 
+        if (cellsRatePairList.size() == 1){
+            setDataForFirst(cellsRatePairList.get(0));
+            firstRateLiveData.setValue(cellsRatePairList.get(0).second);
+        }
+        if (cellsRatePairList.size() == 2){
+            setDataForFirst(cellsRatePairList.get(0));
+            setDataForSecond(cellsRatePairList.get(1));
+            firstRateLiveData.setValue(cellsRatePairList.get(0).second);
+            secondRateLiveData.setValue(cellsRatePairList.get(1).second);
+        }
+        if (cellsRatePairList.size() == 3){
+            setDataForFirst(cellsRatePairList.get(0));
+            setDataForSecond(cellsRatePairList.get(1));
+            setDataForThird(cellsRatePairList.get(2));
+            firstRateLiveData.setValue(cellsRatePairList.get(0).second);
+            secondRateLiveData.setValue(cellsRatePairList.get(1).second);
+            thirdRateLiveData.setValue(cellsRatePairList.get(2).second);
+        }
+
+    }
+
+    private void setDataForThird(Pair<String, Double> stringDoublePair) {
+        setDataForCell(thirdTech, thirdTacLac, thirdENodeB, thirdCID, stringDoublePair);
+    }
+
+    private void setDataForSecond(Pair<String, Double> stringDoublePair) {
+        setDataForCell(secondTech, secondTacLac, secondENodeB, secondCID, stringDoublePair);
+    }
+
+    private void setDataForFirst(Pair<String, Double> stringDoublePair) {
+        setDataForCell(firstTech, firstTacLac, firstENodeB, firstCID, stringDoublePair);
+    }
+
+    private void setDataForCell(MutableLiveData<String> techLiveData, MutableLiveData<String> tacLacLiveData,
+                                MutableLiveData<String> eNodeBLiveData, MutableLiveData<String> cidLiveData,
+                                Pair<String, Double> pair) {
+        String s = pair.first;
+        if (s.contains("LTE")){
+            techLiveData.setValue("LTE");
+            int idx = s.indexOf("-");
+            String eNodeB = "--";
+            try{
+                eNodeB = s.substring(3,idx);
+            }catch (Exception e){}
+            eNodeBLiveData.setValue(eNodeB);
+            int idxSecond = s.indexOf("-");
+            String cid = "--";
+            try{
+                cid = s.substring(idx + 1, idxSecond);
+            }catch (Exception e){}
+            cidLiveData.setValue(cid);
+            String lacTac = "--";
+            try{
+                lacTac = s.substring(idxSecond + 1);
+            }catch (Exception e){}
+            tacLacLiveData.setValue(lacTac);
+        }
+
+        if (s.contains("WCDMA") || s.contains("GSM")){
+            int startIdx = 0;
+            int idx = s.indexOf("_");
+            if (s.contains("WCDMA")) startIdx = 5;
+            else startIdx = 4;
+            String lacTac = "--";
+            try {
+                lacTac = s.substring(startIdx,idx);
+            }catch (Exception e){}
+            String cid = "--";
+            try{
+                cid = s.substring(idx + 1);
+            }catch (Exception e){}
+            tacLacLiveData.setValue(lacTac);
+            cidLiveData.setValue(cid);
+        }
+
+        if (s.contains("WCDMA")) techLiveData.setValue("WCDMA");
+        if (s.contains("GSM")) techLiveData.setValue("GSM");
     }
 
     private void calculateUploadTest() {
@@ -240,6 +369,8 @@ public class TestResultViewModel extends ViewModel {
         }
         uploadSR *= 100;
         Logger.d("TestResultData upload avg " + calculateUploadThruput() + " " + uploadSR);
+        uploadSRLiveData.setValue(uploadSR);
+        uploadThrputLiveData.setValue(calculateUploadThruput());
     }
 
     private long calculateUploadThruput() {
@@ -282,6 +413,8 @@ public class TestResultViewModel extends ViewModel {
         }
         downloadSR *= 100;
         Logger.d("TestResultData download avg " + calculateDownloadThruput() + " " + downloadSR);
+        downThrputLiveData.setValue(calculateDownloadThruput());
+        downSRLiveData.setValue(downloadSR);
     }
 
     private long calculateDownloadThruput() {
@@ -312,6 +445,8 @@ public class TestResultViewModel extends ViewModel {
         double avgBufferTime = 0.0;
         int youStartPlay = 0;
         Double youtubeSR = 0.0;
+        Double bufferSR = 0.0;
+        Double initSR = 0.0;
         for (Event e : eventList){
             switch (e.getEvent()){
                 case YSI:
@@ -347,6 +482,13 @@ public class TestResultViewModel extends ViewModel {
             youtubeSR = ((double)youInitFinish / (double)youInitStart) *
                     ((double)youBufFinish / (double)youBufStart);
         } catch (Exception exception){ }
+        try{
+            bufferSR = (double) youBufFinish / (double) youBufStart * 100.0;
+        }catch (Exception e){}
+        try{
+            initSR = (double) youInitFinish / (double) youInitStart * 100.0;
+        }catch (Exception e){}
+
         youtubeSR *= 100;
 
         for (double d : youInitTimeList){
@@ -362,6 +504,12 @@ public class TestResultViewModel extends ViewModel {
         Logger.d("TestResultData " + youtubeSR + " " + avgInitTime + " " + avgBufferTime +
                 "AvgYoutubeThrpu " + calculateYoutubeThruput());
 
+        bufferingTimeLiveData.setValue(avgBufferTime);
+        bufferingThroughputLiveData.setValue((double)calculateYoutubeThruput());
+        bufferingSuccessRateLiveData.setValue(bufferSR);
+        initSuccessRateLiveData.setValue(initSR);
+        initTimeLiveData.setValue(avgInitTime);
+        youtubeSuccessRateLiveData.setValue(youtubeSR);
         calculateYoutubeResolution();
     }
 
@@ -440,6 +588,15 @@ public class TestResultViewModel extends ViewModel {
         res1080Rate = 100.0 * (double)res1080p / (double)sum;
         resMore1080Rate = 100.0 * (double)resMore1080Rate / (double)sum;
         Logger.d("TestResultData resolution " + new DecimalFormat("##.0").format(res720Rate));
+
+        List<Double> resolutionList = new ArrayList<>();
+        resolutionList.add(res144Rate);
+        resolutionList.add(res240Rate);
+        resolutionList.add(res360Rate);
+        resolutionList.add(res480Rate);
+        resolutionList.add(res720Rate);
+        resolutionList.add(res1080Rate + resMore1080Rate);
+        youtubeResolutionList.setValue(resolutionList);
     }
 
     private int calculateYoutubeThruput() {
