@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "454447354769",
+    "firebase_url": "https://radiotestapp.firebaseio.com",
+    "project_id": "radiotestapp",
+    "storage_bucket": "radiotestapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:454447354769:android:dc4789cc49bf45a4efc030",
+        "android_client_info": {
+          "package_name": "com.example.radiotestapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "454447354769-j2gd7h2m9ebq3epqdj434i4j0ldpojb6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlQsdlOqJ43et4z0R-v-wu5B9P2RLctYI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "454447354769-j2gd7h2m9ebq3epqdj434i4j0ldpojb6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
