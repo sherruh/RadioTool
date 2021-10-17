@@ -753,7 +753,7 @@
         app:layout_constraintTop_toTopOf="@id/frame_youtube_activity_result"
         app:layout_constraintStart_toStartOf="@id/frame_youtube_activity_result"
         android:layout_marginTop="35dp"
-        android:text="Buffering time, s:"
+        android:text="Buffering time, ms:"
         style="@style/ParamName"
         />
 
@@ -775,7 +775,7 @@
         app:layout_constraintStart_toStartOf="@id/frame_youtube_activity_result"
         android:layout_marginTop="35dp"
         android:layout_marginStart="135dp"
-        android:text="Throughput, Mb/s:"
+        android:text="Throughput, kb/s:"
         style="@style/ParamName"
         />
 
@@ -865,7 +865,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_youtube_stats_activity_result"
         app:layout_constraintStart_toStartOf="@id/frame_youtube_activity_result"
         android:layout_marginTop="10dp"
-        android:text="Initialization time, S:"
+        android:text="Initialization time, ms:"
         style="@style/ParamName"
         />
 
@@ -1201,7 +1201,7 @@
         app:layout_constraintStart_toStartOf="@id/frame_file_transfer_activity_result"
         android:layout_marginTop="10dp"
         android:layout_marginStart="5dp"
-        android:text="Download thr., Mb/s:"
+        android:text="Download thr., kb/s:"
         style="@style/ParamName"
         />
 
@@ -1244,7 +1244,7 @@
         app:layout_constraintStart_toStartOf="@id/frame_file_transfer_activity_result"
         android:layout_marginTop="0dp"
         android:layout_marginStart="193dp"
-        android:text="Upload thr., Mb/s:"
+        android:text="Upload thr., kb/s:"
         style="@style/ParamName"
         />
 

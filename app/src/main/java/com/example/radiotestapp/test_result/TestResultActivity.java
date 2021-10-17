@@ -102,13 +102,13 @@ public class TestResultActivity extends AppCompatActivity {
         viewModel.rsrqLiveData.observe(this, d ->  setDoubleValue(textRsrq, d));
         viewModel.cqiUmtsLiveData.observe(this, d ->  setDoubleValue(textUmtsCqi, d));
         viewModel.firstRateLiveData.observe(this, d ->  {
-            if (d > 0.0) textFirstCell.setText("1st cell " + d.toString() + "%:");
+            if (d > 0.0) textFirstCell.setText("1st cell " +  new DecimalFormat("##.0").format(d) + "%:");
         });
         viewModel.secondRateLiveData.observe(this, d ->  {
-            if (d > 0.0) textSecondCell.setText("1st cell " + d.toString() + "%:");
+            if (d > 0.0) textSecondCell.setText("2nd cell " + new DecimalFormat("##.0").format(d) + "%:");
         });
         viewModel.thirdRateLiveData.observe(this, d ->  {
-            if (d > 0.0) textThirdCell.setText("1st cell " + d.toString() + "%:");
+            if (d > 0.0) textThirdCell.setText("3rd cell " + new DecimalFormat("##.0").format(d) + "%:");
         });
         viewModel.firstTech.observe(this, s -> textFirstTech.setText(s));
         viewModel.secondTech.observe(this, s -> textSecondTech.setText(s));

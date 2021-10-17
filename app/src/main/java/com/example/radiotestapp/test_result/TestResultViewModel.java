@@ -275,7 +275,7 @@ public class TestResultViewModel extends ViewModel {
             firstRateLiveData.setValue(cellsRatePairList.get(0).second);
             secondRateLiveData.setValue(cellsRatePairList.get(1).second);
         }
-        if (cellsRatePairList.size() == 3){
+        if (cellsRatePairList.size() >= 3){
             setDataForFirst(cellsRatePairList.get(0));
             setDataForSecond(cellsRatePairList.get(1));
             setDataForThird(cellsRatePairList.get(2));
@@ -310,7 +310,7 @@ public class TestResultViewModel extends ViewModel {
                 eNodeB = s.substring(3,idx);
             }catch (Exception e){}
             eNodeBLiveData.setValue(eNodeB);
-            int idxSecond = s.indexOf("-");
+            int idxSecond = s.indexOf("_");
             String cid = "--";
             try{
                 cid = s.substring(idx + 1, idxSecond);
