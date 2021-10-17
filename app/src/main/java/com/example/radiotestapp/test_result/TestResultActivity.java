@@ -139,10 +139,10 @@ public class TestResultActivity extends AppCompatActivity {
             setDoubleValue(textYoutube1080,l.get(5));
         });
 
-        viewModel.downThrputLiveData.observe(this, l -> setDoubleValue(textDownThrput, (double) l / 1024));
-        viewModel.uploadThrputLiveData.observe(this, l -> setDoubleValue(textUploadThrput, (double) l / 1024));
-        viewModel.downSRLiveData.observe(this, l -> setDoubleValue(textDownSR, (double) l / 1024));
-        viewModel.uploadSRLiveData.observe(this, l -> setDoubleValue(textUploadSR, (double) l / 1024));
+        viewModel.downThrputLiveData.observe(this, l -> setDoubleValue(textDownThrput, (double) l ));
+        viewModel.uploadThrputLiveData.observe(this, l -> setDoubleValue(textUploadThrput, (double) l ));
+        viewModel.downSRLiveData.observe(this, l -> setDoubleValue(textDownSR,  l ));
+        viewModel.uploadSRLiveData.observe(this, l -> setDoubleValue(textUploadSR,  l ));
 
     }
 

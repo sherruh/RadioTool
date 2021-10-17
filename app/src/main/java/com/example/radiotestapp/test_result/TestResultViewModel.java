@@ -304,13 +304,13 @@ public class TestResultViewModel extends ViewModel {
         String s = pair.first;
         if (s.contains("LTE")){
             techLiveData.setValue("LTE");
-            int idx = s.indexOf("-");
+            int idx = s.indexOf("_");
             String eNodeB = "--";
             try{
                 eNodeB = s.substring(3,idx);
             }catch (Exception e){}
             eNodeBLiveData.setValue(eNodeB);
-            int idxSecond = s.indexOf("_");
+            int idxSecond = s.indexOf("-");
             String cid = "--";
             try{
                 cid = s.substring(idx + 1, idxSecond);
