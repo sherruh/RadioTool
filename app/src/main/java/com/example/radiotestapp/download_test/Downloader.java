@@ -16,7 +16,7 @@ import java.util.TimerTask;
 public class Downloader {
 
     private final int DOWNLOAD_TIMEOUT = 10000;
-    private final int DOWNLOAD_DURATION_TIMEOUT = 10000;
+    private final int DOWNLOAD_DURATION_TIMEOUT = 30000;
     private Context mContext;
     private DownloadListener downloadListener;
     private Timer timerForDuration;

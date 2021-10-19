@@ -259,6 +259,13 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
             if (b) progressBar.setVisibility(View.VISIBLE);
             else progressBar.setVisibility(View.GONE);
         });
+        viewModel.initialNumberOfRepeatsLiveData.observe(this,   l -> {
+            numberPickerCountOfRepeats.setEnabled(true);
+            numberPickerCountOfRepeats.setValue(l);
+        });
+        viewModel.currentNumberOfRepeatsLiveData.observe(this, l ->{
+            if (l > 0) numberPickerCountOfRepeats.setValue(l);
+        });
         initGraphParamsFragment();
     }
 
@@ -415,12 +422,14 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         viewModel.start(mSignalStrength,numberPickerCountOfRepeats.getValue());
         buttonStop.setVisibility(View.VISIBLE);
         buttonStart.setVisibility(View.GONE);
+        numberPickerCountOfRepeats.setEnabled(false);
     }
 
     public void onButtonStopClick(View view) {
         viewModel.stop();
         buttonStop.setVisibility(View.GONE);
         buttonStart.setVisibility(View.VISIBLE);
+        numberPickerCountOfRepeats.setEnabled(true);
     }
 
 

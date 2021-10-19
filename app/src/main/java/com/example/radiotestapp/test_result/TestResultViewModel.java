@@ -67,6 +67,7 @@ public class TestResultViewModel extends ViewModel {
         logList.addAll(App.localStorage.getLogsByLogId(logId));
         eventList.addAll(App.localStorage.getEventsByLogId(logId));
         startCalculations(isTestedYoutube, isTestedDownload, isTestedUpload);
+        Logger.d("TestResultData succesR " + logId);
     }
 
     private void startCalculations(boolean isTestedYoutube, boolean isTestedDownload, boolean isTestedUpload) {
@@ -363,7 +364,7 @@ public class TestResultViewModel extends ViewModel {
             }
         }
         try{
-            uploadSR = (double)uploadFinish / (double)uploadStart;
+            if (uploadStart > 0.0) uploadSR = (double)uploadFinish / (double)uploadStart;
         } catch (Exception exception){
             uploadSR = 0.0;
         }
@@ -407,7 +408,7 @@ public class TestResultViewModel extends ViewModel {
             }
         }
         try{
-            downloadSR = (double)downloadFinish / (double) downloadStart;
+            if (downloadStart > 0.0)downloadSR = (double)downloadFinish / (double) downloadStart;
         } catch (Exception exception){
             downloadSR = 0.0;
         }
@@ -478,18 +479,16 @@ public class TestResultViewModel extends ViewModel {
                     break;
             }
         }
-        try {
-            youtubeSR = ((double)youInitFinish / (double)youInitStart) *
-                    ((double)youBufFinish / (double)youBufStart);
-        } catch (Exception exception){ }
         try{
-            bufferSR = (double) youBufFinish / (double) youBufStart * 100.0;
-        }catch (Exception e){}
+            if ( youBufStart > 0.0 ) bufferSR =  100.0 * (double) youBufFinish / (double) youBufStart;
+        }catch (Exception e){ bufferSR = 0.0;}
         try{
-            initSR = (double) youInitFinish / (double) youInitStart * 100.0;
-        }catch (Exception e){}
+            if(youInitStart > 0.0) initSR = 100.0 * (double) youInitFinish / (double) youInitStart;
+        }catch (Exception e){ initSR = 0.0;}
 
-        youtubeSR *= 100;
+        try {
+            youtubeSR =  initSR * bufferSR / 100.0;
+        } catch (Exception exception){youtubeSR = 0.0;}
 
         for (double d : youInitTimeList){
             avgInitTime += d;
@@ -501,7 +500,7 @@ public class TestResultViewModel extends ViewModel {
         }
         if (youBufferTimeList.size() > 0) avgBufferTime /= (double) youBufferTimeList.size();
 
-        Logger.d("TestResultData " + youtubeSR + " " + avgInitTime + " " + avgBufferTime +
+        Logger.d("TestResultData succesR " + youtubeSR + " " + avgInitTime + " " + avgBufferTime +
                 "AvgYoutubeThrpu " + calculateYoutubeThruput());
 
         bufferingTimeLiveData.setValue(avgBufferTime);
