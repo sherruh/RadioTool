@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.radiotestapp.R;
+import com.example.radiotestapp.test_result.TestResultActivity;
 import com.example.radiotestapp.utils.Toaster;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -26,8 +27,10 @@ public class SettingsActivity extends AppCompatActivity {
     private EditText editYoutubeVideoId;
     private EditText editDownloadUrl;
     private EditText editUploadUrl;
+    private EditText editLogId;
     private Button buttonSave;
     private Button buttonCancel;
+    private Button buttonShowLog;
 
     private SettingsViewModel viewModel;
 
@@ -101,6 +104,12 @@ public class SettingsActivity extends AppCompatActivity {
         buttonSave.setOnClickListener( l -> { saveSettings(); });
         buttonCancel = findViewById(R.id.button_cancel_activity_settings);
         buttonCancel.setOnClickListener( l -> { finish(); });
+        editLogId = findViewById(R.id.edit_log_activity_settings);
+        buttonShowLog = findViewById(R.id.button_show_activity_settings);
+        buttonShowLog.setOnClickListener( l -> {
+            TestResultActivity.startActivity(true,true,true,
+                    editLogId.getText().toString(),this);
+        });
     }
 
     private void saveSettings() {

@@ -140,6 +140,9 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     private final long TIMEOUT_DELAY = 30000L;
     private final long UPLOAD_DURATION = 30000L;
     private int countOfRepeats = 1;
+    public MutableLiveData<Integer> currentNumberOfRepeatsLiveData = new MutableLiveData<>();
+    public MutableLiveData<Integer> initialNumberOfRepeatsLiveData = new MutableLiveData<>();
+    private int initialNumberOfRepeats = 1;
     private EYoutubeState youtubeState;
     private boolean isNeedYoutubeTest = true;
     private boolean isNeedDownloadTest = false;
@@ -189,6 +192,8 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
 
     public void start(String mSignalStrength, int value) {
         countOfRepeats = value;
+        initialNumberOfRepeats = value;
+        currentNumberOfRepeatsLiveData.setValue(countOfRepeats);
         currentLog = new Log();
         Date date = new Date(System.currentTimeMillis());
         logId = DateConverter.shortDate(date);
@@ -205,6 +210,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
 
     public void stop() {
         isProgressStartBarShowLiveData.postValue(true);
+        initialNumberOfRepeatsLiveData.setValue(initialNumberOfRepeats);
         if(timerUpload != null) timerUpload.cancel();
         if(timerYouTubeBuffering != null) timerYouTubeBuffering.cancel();
         if(timerYouTubeInitial != null) timerYouTubeInitial.cancel();
@@ -667,6 +673,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         if (countOfRepeats > 0 && isLogging.getValue()){
             Logger.d("checkWhetherToStartYoutubePlayback " + countOfRepeats + " " + isLogging.getValue());
             countOfRepeats--;
+            currentNumberOfRepeatsLiveData.setValue(countOfRepeats);
             if (App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_NEED) != null &&
                     App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_NEED).getValue().equals(Constants.NO)){
             checkWhetherToStartDownloadTest();
