@@ -3,6 +3,7 @@ package com.example.radiotestapp.test_result;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
@@ -10,8 +11,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.radiotestapp.BuildConfig;
 import com.example.radiotestapp.R;
 import com.example.radiotestapp.core.Constants;
 import com.example.radiotestapp.utils.Logger;
@@ -19,6 +22,7 @@ import com.example.radiotestapp.utils.Logger;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 public class TestResultActivity extends AppCompatActivity {
 
@@ -42,6 +46,8 @@ public class TestResultActivity extends AppCompatActivity {
     private boolean isTestedDownload;
     private boolean isTestedUpload;
     private String logId;
+    private String screenPath;
+    private String logPath;
 
     private TextView textRsrp;
     private TextView textRscp;
@@ -90,6 +96,7 @@ public class TestResultActivity extends AppCompatActivity {
 
     private Button buttonShare;
     private Button buttonClose;
+    private boolean isScreenSaved;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -216,14 +223,40 @@ public class TestResultActivity extends AppCompatActivity {
 
         buttonShare = findViewById(R.id.button_share_activity_test_result);
         buttonShare.setOnClickListener( l -> {
-            takeScreenshot();
+            if (!isScreenSaved) takeScreenshot();
+            shareResultFiles();
         });
         buttonClose = findViewById(R.id.button_close_activity_test_result);
         buttonClose.setOnClickListener( l -> {
-            takeScreenshot();
+            if (!isScreenSaved) takeScreenshot();
+            finish();
         });
 
         textLogId.setText(logId);
+    }
+
+    private void shareResultFiles() {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+        ArrayList<Uri> uriList = new ArrayList<>();
+        File screen = new File(screenPath);
+        Uri screenUri= FileProvider.getUriForFile(
+                this,
+                BuildConfig.APPLICATION_ID + "." + getLocalClassName() + ".provider",
+                screen);
+        File log = new File(logPath);
+        Uri logUri = FileProvider.getUriForFile(
+                this,
+                BuildConfig.APPLICATION_ID + "." + getLocalClassName() + ".provider",
+                log);
+
+        if ( screen.exists() && log.exists()){
+            uriList.add(screenUri);
+            uriList.add(logUri);
+            shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uriList);
+            shareIntent.setType("*/*");
+            Intent sendIntent = Intent.createChooser(shareIntent, "RadioTest");
+            startActivity(sendIntent);
+        }
     }
 
     private void getExtras() {
@@ -234,8 +267,13 @@ public class TestResultActivity extends AppCompatActivity {
         Logger.d("TestResultData " +logId + " " + isTestedYoutube + " " + isTestedDownload + " " + isTestedUpload);
     }
 
-    private void takeScreenshot() {
+    @Override
+    public void onBackPressed() {
+        if (!isScreenSaved)takeScreenshot();
+        super.onBackPressed();
+    }
 
+    private void takeScreenshot() {
         try {
             File folder = new File(Environment.getExternalStorageDirectory(), Constants.LOG_FOLDER);
             if (!folder.exists()) return;
@@ -253,8 +291,12 @@ public class TestResultActivity extends AppCompatActivity {
             bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
             outputStream.flush();
             outputStream.close();
+            isScreenSaved = true;
+            screenPath = mPath;
+            logPath = mPath.replace(".jpg", ".txt");
         } catch (Throwable e) {
             e.printStackTrace();
+            isScreenSaved = false;
         }
     }
 }

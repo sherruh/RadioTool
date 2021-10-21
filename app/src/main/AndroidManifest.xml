@@ -42,6 +42,15 @@
         </activity>
 
         <service android:name=".services.GettingLocationService" />
+        <provider
+            android:authorities="com.example.radiotestapp.test_result.TestResultActivity.provider"
+            android:name="androidx.core.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_path"/>
+        </provider>
     </application>
 
 </manifest>
