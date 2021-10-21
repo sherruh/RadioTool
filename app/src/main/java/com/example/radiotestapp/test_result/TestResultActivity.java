@@ -2,15 +2,22 @@ package com.example.radiotestapp.test_result;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Environment;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.radiotestapp.R;
+import com.example.radiotestapp.core.Constants;
 import com.example.radiotestapp.utils.Logger;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.text.DecimalFormat;
 
 public class TestResultActivity extends AppCompatActivity {
@@ -45,6 +52,7 @@ public class TestResultActivity extends AppCompatActivity {
     private TextView textLteCqi;
     private TextView textRsrq;
     private TextView textUmtsCqi;
+    private TextView textLogId;
 
     private TextView textFirstCell;
     private TextView textSecondCell;
@@ -79,6 +87,9 @@ public class TestResultActivity extends AppCompatActivity {
     private TextView textDownSR;
     private TextView textUploadSR;
     private TextView textUploadThrput;
+
+    private Button buttonShare;
+    private Button buttonClose;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,10 +136,11 @@ public class TestResultActivity extends AppCompatActivity {
 
         viewModel.bufferingTimeLiveData.observe(this, d -> setDoubleValue(textBufferTime,d));
         viewModel.bufferingThroughputLiveData.observe(this, d -> setDoubleValue(textBufferThroughput,d));
-        viewModel.bufferingSuccessRateLiveData.observe(this, d -> setDoubleValue(textBufferSR,d));
+        viewModel.bufferingSuccessRateLiveData.observe(this, d -> {if (isTestedYoutube) setDoubleWithoutChecking(textBufferSR,d);})
+                ;
         viewModel.initTimeLiveData.observe(this, d -> setDoubleValue(textInitTime,d));
-        viewModel.initSuccessRateLiveData.observe(this, d -> setDoubleValue(textInitSR,d));
-        viewModel.youtubeSuccessRateLiveData.observe(this, d -> setDoubleValue(textYoutubeSR,d));
+        viewModel.initSuccessRateLiveData.observe(this, d -> {if (isTestedYoutube) setDoubleWithoutChecking(textInitSR,d);});
+        viewModel.youtubeSuccessRateLiveData.observe(this, d -> {if (isTestedYoutube) setDoubleWithoutChecking(textYoutubeSR,d);});
 
         viewModel.youtubeResolutionList.observe(this, l -> {
             setDoubleValue(textYoutube144,l.get(0));
@@ -141,9 +153,13 @@ public class TestResultActivity extends AppCompatActivity {
 
         viewModel.downThrputLiveData.observe(this, l -> setDoubleValue(textDownThrput, (double) l ));
         viewModel.uploadThrputLiveData.observe(this, l -> setDoubleValue(textUploadThrput, (double) l ));
-        viewModel.downSRLiveData.observe(this, l -> setDoubleValue(textDownSR,  l ));
-        viewModel.uploadSRLiveData.observe(this, l -> setDoubleValue(textUploadSR,  l ));
+        viewModel.downSRLiveData.observe(this, l -> {if (isTestedDownload) setDoubleWithoutChecking(textDownSR,  l );});
+        viewModel.uploadSRLiveData.observe(this, l -> {if (isTestedUpload) setDoubleWithoutChecking(textUploadSR,  l );});
 
+    }
+
+    private void setDoubleWithoutChecking(TextView tv, Double d) {
+        tv.setText(new DecimalFormat("##.0").format(d));
     }
 
     private void setDoubleValue(TextView tv, Double d){
@@ -162,6 +178,7 @@ public class TestResultActivity extends AppCompatActivity {
         textLteCqi = findViewById(R.id.text_cqi_lte_value_result_activity);
         textRsrq = findViewById(R.id.text_rsrq_value_result_activity);
         textUmtsCqi = findViewById(R.id.text_cqi_umts_value_result_activity);
+        textLogId = findViewById(R.id.text_log_id_value_result_activity);
 
         textFirstCell = findViewById(R.id.text_first_cell_activity_result);
         textSecondCell = findViewById(R.id.text_second_cell_activity_result);
@@ -196,6 +213,17 @@ public class TestResultActivity extends AppCompatActivity {
         textUploadSR = findViewById(R.id.text_upload_sr_value_result_activity);
         textDownThrput = findViewById(R.id.text_download_thr_value_result_activity);
         textUploadThrput = findViewById(R.id.text_upload_thr_value_result_activity);
+
+        buttonShare = findViewById(R.id.button_share_activity_test_result);
+        buttonShare.setOnClickListener( l -> {
+            takeScreenshot();
+        });
+        buttonClose = findViewById(R.id.button_close_activity_test_result);
+        buttonClose.setOnClickListener( l -> {
+            takeScreenshot();
+        });
+
+        textLogId.setText(logId);
     }
 
     private void getExtras() {
@@ -204,5 +232,29 @@ public class TestResultActivity extends AppCompatActivity {
         isTestedUpload = getIntent().getBooleanExtra(IS_TESTED_UPLOAD_EXTRA, false);
         logId = getIntent().getStringExtra(LOG_ID);
         Logger.d("TestResultData " +logId + " " + isTestedYoutube + " " + isTestedDownload + " " + isTestedUpload);
+    }
+
+    private void takeScreenshot() {
+
+        try {
+            File folder = new File(Environment.getExternalStorageDirectory(), Constants.LOG_FOLDER);
+            if (!folder.exists()) return;
+
+            String mPath = folder.getPath() + "/" + logId + ".jpg";
+
+            View v1 = getWindow().getDecorView().getRootView();
+            v1.setDrawingCacheEnabled(true);
+            Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
+            v1.setDrawingCacheEnabled(false);
+
+            File imageFile = new File(mPath);
+            FileOutputStream outputStream = new FileOutputStream(imageFile);
+            int quality = 100;
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
+            outputStream.flush();
+            outputStream.close();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
     }
 }

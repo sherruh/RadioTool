@@ -32,6 +32,7 @@ public class LogFileWriter implements ILocalLogRepository {
             log.setLogId(event.getLogId());
             log.setDate(event.getEventTime());
             log.setLogState(event.getState());
+            log.setEventDescription(event.getParameter2());
             PrintStream printstream = new PrintStream(fileOutputStream);
             printstream.println(log);
         }
