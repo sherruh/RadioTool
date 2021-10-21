@@ -146,7 +146,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     private EYoutubeState youtubeState;
     private boolean isNeedYoutubeTest = true;
     private boolean isNeedDownloadTest = false;
-    private boolean isNeedUploadTest = true;
+    private boolean isNeedUploadTest = false;
     private boolean isNeedPingTest = true;
     Timer timerYouTubeBuffering = new Timer();
     Timer timerYouTubeInitial = new Timer();

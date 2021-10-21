@@ -253,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         viewModel.uploadErrorEvent.observe(this, s -> Toaster.showLong(MainActivity.this,s));
         viewModel.downloadTestFailedEvent.observe(this, s -> Toaster.showLong(MainActivity.this,s));
         viewModel.logSavedEvent.observe(this, s -> {
-            Toaster.showLong(App.context,s);
+            Toaster.showShort(App.context,s);
         });
         viewModel.isProgressStartBarShowLiveData.observe(this, b ->{
             if (b) progressBar.setVisibility(View.VISIBLE);
