@@ -53,7 +53,9 @@ public class YoutubePlayerFragment extends Fragment {
         initYoutubeListener();
         youTubePlayerView = getActivity().findViewById(R.id.youtube_player_advanced_youtube_player_fragment);
         youTubePlayerView.initialize(youtubePlayerListener);
+        //youTubePlayerView.initializeWithWebUi(youtubePlayerListener,true);
         mViewModel.youTubePlayerInitializing();
+
 
         youTubePlayerView.getYouTubePlayerWhenReady(new YouTubePlayerCallback() {
             @Override

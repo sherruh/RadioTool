@@ -137,7 +137,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     private long startBufferingKbits;
     private long finishBufferingTime;
     private long finishBufferingKbits;
-    private final long TIMEOUT_DELAY = 30000L;
+    private final long TIMEOUT_DELAY = 900000L;
     private final long UPLOAD_DURATION = 30000L;
     private int countOfRepeats = 1;
     public MutableLiveData<Integer> currentNumberOfRepeatsLiveData = new MutableLiveData<>();
