@@ -25,6 +25,7 @@
         app:layout_constraintStart_toStartOf="@id/view_youtube_settings_frame_settings_activity"
         style="@style/CheckBox"/>
     <TextView
+        android:id="@+id/text_youtube_test_activity_settings"
         android:text="Youtube Test"
         app:layout_constraintStart_toEndOf="@id/check_youtube_activity_settings"
         app:layout_constraintTop_toTopOf="@id/check_youtube_activity_settings"
@@ -57,10 +58,52 @@
         app:layout_constraintTop_toTopOf="@id/edit_youtube_start_url"
         style="@style/UrlEditText"
         />
+
+    <TextView
+        android:id="@+id/text_youtube_init_activity_settings"
+        style="@style/CheckBoxTitle"
+        android:layout_width="78dp"
+        android:lines="2"
+        android:text="Init time out, s"
+        android:layout_marginTop="0dp"
+        app:layout_constraintStart_toEndOf="@id/edit_init_time_out_activity_settings"
+        app:layout_constraintTop_toTopOf="@id/edit_init_time_out_activity_settings" />
+
+    <EditText
+        android:id="@+id/edit_init_time_out_activity_settings"
+        app:layout_constraintStart_toStartOf="@id/text_youtube_url"
+        app:layout_constraintTop_toBottomOf="@+id/edit_youtube_start_url"
+        android:layout_width="35dp"
+        android:layout_marginTop="10dp"
+        tools:text="999"
+        android:inputType="number"
+        style="@style/UrlEditText"/>
+
+    <TextView
+        style="@style/CheckBoxTitle"
+        android:layout_width="78dp"
+        android:lines="2"
+        android:text="Buffering time out, s"
+        android:layout_marginTop="0dp"
+        app:layout_constraintStart_toEndOf="@id/edit_buffer_time_out_activity_settings"
+        app:layout_constraintTop_toTopOf="@id/edit_buffer_time_out_activity_settings" />
+
+    <EditText
+        android:id="@+id/edit_buffer_time_out_activity_settings"
+        app:layout_constraintStart_toEndOf="@id/text_youtube_init_activity_settings"
+        app:layout_constraintTop_toBottomOf="@+id/edit_youtube_start_url"
+        android:layout_width="35dp"
+        android:layout_marginTop="10dp"
+        android:inputType="number"
+        tools:text="999"
+        style="@style/UrlEditText"/>
+
     <CheckBox
         android:id="@+id/check_use_default_youtube_activity_settings"
-        app:layout_constraintStart_toStartOf="@id/edit_youtube_start_url"
-        app:layout_constraintTop_toBottomOf="@id/edit_youtube_start_url"
+        app:layout_constraintStart_toEndOf="@id/text_youtube_test_activity_settings"
+        app:layout_constraintTop_toTopOf="@id/check_youtube_activity_settings"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="10dp"
         style="@style/CheckBox"/>
     <TextView
         android:text="Use default url"
@@ -112,6 +155,25 @@
         style="@style/UrlEditText"
         />
 
+    <TextView
+        style="@style/CheckBoxTitle"
+        android:layout_width="wrap_content"
+        android:text="Duration time, s"
+        android:layout_marginTop="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/edit_download_duration_time_activity_settings"
+        app:layout_constraintStart_toEndOf="@id/edit_download_duration_time_activity_settings"
+        app:layout_constraintTop_toTopOf="@id/edit_download_duration_time_activity_settings" />
+
+    <EditText
+        android:id="@+id/edit_download_duration_time_activity_settings"
+        app:layout_constraintStart_toStartOf="@id/edit_download_start_url"
+        app:layout_constraintTop_toBottomOf="@+id/edit_download_start_url"
+        android:layout_width="35dp"
+        android:layout_marginTop="10dp"
+        tools:text="999"
+        android:inputType="number"
+        style="@style/UrlEditText"/>
+
     <View
         android:id="@+id/view_upload_settings_frame_settings_activity"
         style="@style/ParametersFrameStyle"
@@ -154,6 +216,25 @@
         app:layout_constraintTop_toBottomOf="@id/text_upload_url"
         style="@style/UrlEditText"
         />
+
+    <TextView
+        style="@style/CheckBoxTitle"
+        android:layout_width="wrap_content"
+        android:text="Duration time, s"
+        android:layout_marginTop="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/edit_upload_duration_time_activity_settings"
+        app:layout_constraintStart_toEndOf="@id/edit_upload_duration_time_activity_settings"
+        app:layout_constraintTop_toTopOf="@id/edit_upload_duration_time_activity_settings" />
+
+    <EditText
+        android:id="@+id/edit_upload_duration_time_activity_settings"
+        app:layout_constraintStart_toStartOf="@id/edit_upload_start_url"
+        app:layout_constraintTop_toBottomOf="@+id/edit_upload_start_url"
+        android:layout_width="35dp"
+        android:layout_marginTop="10dp"
+        tools:text="999"
+        android:inputType="number"
+        style="@style/UrlEditText"/>
 
     <Button
         android:id="@+id/button_save_activity_settings"

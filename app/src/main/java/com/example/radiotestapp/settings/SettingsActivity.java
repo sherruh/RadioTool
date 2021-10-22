@@ -28,6 +28,10 @@ public class SettingsActivity extends AppCompatActivity {
     private EditText editDownloadUrl;
     private EditText editUploadUrl;
     private EditText editLogId;
+    private EditText editInitTimeout;
+    private EditText editBufferTimeout;
+    private EditText editDownDuration;
+    private EditText editUploadDuration;
     private Button buttonSave;
     private Button buttonCancel;
     private Button buttonShowLog;
@@ -105,6 +109,10 @@ public class SettingsActivity extends AppCompatActivity {
         buttonCancel = findViewById(R.id.button_cancel_activity_settings);
         buttonCancel.setOnClickListener( l -> { finish(); });
         editLogId = findViewById(R.id.edit_log_activity_settings);
+        editInitTimeout = findViewById(R.id.edit_init_time_out_activity_settings);
+        editBufferTimeout = findViewById(R.id.edit_buffer_time_out_activity_settings);
+        editDownDuration = findViewById(R.id.edit_download_duration_time_activity_settings);
+        editUploadDuration = findViewById(R.id.edit_upload_duration_time_activity_settings);
         buttonShowLog = findViewById(R.id.button_show_activity_settings);
         buttonShowLog.setOnClickListener( l -> {
             TestResultActivity.startActivity(true,true,true,
