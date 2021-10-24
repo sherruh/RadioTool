@@ -8,6 +8,9 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 
+import com.example.radiotestapp.App;
+import com.example.radiotestapp.core.Constants;
+import com.example.radiotestapp.model.SettingsParameter;
 import com.example.radiotestapp.utils.Logger;
 
 import java.util.Timer;
@@ -16,7 +19,7 @@ import java.util.TimerTask;
 public class Downloader {
 
     private final int DOWNLOAD_TIMEOUT = 10000;
-    private final int DOWNLOAD_DURATION_TIMEOUT = 30000;
+    private long downloadDuration = 30000L;
     private Context mContext;
     private DownloadListener downloadListener;
     private Timer timerForDuration;
@@ -74,6 +77,7 @@ public class Downloader {
     private void startTimerForDownloading() {
         if (timerForDuration != null) return;
         timerForDuration = new Timer();
+        downloadDuration = getDownloadDuration();
         timerForDuration.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -81,7 +85,18 @@ public class Downloader {
                 isNeedStart = false;
                 timerForDuration.cancel();
             }
-        }, DOWNLOAD_DURATION_TIMEOUT);
+        }, downloadDuration);
+    }
+
+    private long getDownloadDuration() {
+        long l = 30000L;
+        SettingsParameter downloadDurationSettings = App.localStorage.getSettingsParameter(Constants.DOWNLOAD_DURATION);
+        if (downloadDurationSettings != null){
+            try{
+                l = Long.parseLong(downloadDurationSettings.getValue()) * 1000L;
+            }catch (Exception e){}
+        }
+        return l;
     }
 
     private void registrOnCompleteReceiver(long downloadId ){

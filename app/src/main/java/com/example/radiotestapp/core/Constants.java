@@ -12,4 +12,8 @@ public class Constants {
     public static final String UPLOAD_URL = "UPLOAD_URL";
     public static final String YES = "YES";
     public static final String NO = "NO";
+    public static final String INIT_TIMEOUT = "INIT_TIMEOUT";
+    public static final String BUFFER_TIMEOUT = "BUFFER_TIMEOUT";
+    public static final String DOWNLOAD_DURATION = "DOWNLOAD_DURATION";
+    public static final String UPLOAD_DURATION = "UPLOAD_DURATION";
 }
