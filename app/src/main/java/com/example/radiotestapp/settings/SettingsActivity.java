@@ -86,6 +86,10 @@ public class SettingsActivity extends AppCompatActivity {
         viewModel.uploadUrlLiveData.observe(this, s-> {
             if (s.length() > 1) editUploadUrl.setText(s);
         });
+        viewModel.initTImeOutLiveDataLiveData.observe(this, i -> editInitTimeout.setText(i.toString()));
+        viewModel.bufferTImeOutLiveData.observe(this, i -> editBufferTimeout.setText(i.toString()));
+        viewModel.downloadDurationLiveData.observe(this, i -> editDownDuration.setText(i.toString()));
+        viewModel.uploadDurationLiveData.observe(this, i -> editUploadDuration.setText(i.toString()));
         viewModel.settingsSavedEvent.observe(this, v ->{finish();});
     }
 
@@ -134,10 +138,62 @@ public class SettingsActivity extends AppCompatActivity {
             Toaster.showLong(this,"Fill Upload url");
             return;
         }
+        if (editInitTimeout.getText().toString() == null || editInitTimeout.getText().toString().equals("")
+                || editInitTimeout.getText().toString().equals("0")){
+            Toaster.showLong(this,"Fill init timeout");
+            return;
+        }
+        if (editBufferTimeout.getText().toString() == null || editBufferTimeout.getText().toString().equals("")
+                || editBufferTimeout.getText().toString().equals("0")){
+            Toaster.showLong(this,"Fill buffer timeout");
+            return;
+        }
+        if (editDownDuration.getText().toString() == null || editDownDuration.getText().toString().equals("")
+                || editDownDuration.getText().toString().equals("0")){
+            Toaster.showLong(this,"Fill download duration time");
+            return;
+        }
+        if (editUploadDuration.getText().toString() == null || editUploadDuration.getText().toString().equals("")
+                || editUploadDuration.getText().toString().equals("0")){
+            Toaster.showLong(this,"Fill upload duration time");
+            return;
+        }
+
+        try {
+            Integer.parseInt(editInitTimeout.getText().toString());
+        } catch (Exception e){
+            Toaster.showLong(this,"Fill init timeout");
+            return;
+        }
+
+        try {
+            Integer.parseInt(editBufferTimeout.getText().toString());
+        } catch (Exception e){
+            Toaster.showLong(this,"Fill buffer timeout");
+            return;
+        }
+
+        try {
+            Integer.parseInt(editDownDuration.getText().toString());
+        } catch (Exception e){
+            Toaster.showLong(this,"Fill download duration time");
+            return;
+        }
+
+        try {
+            Integer.parseInt(editUploadDuration.getText().toString());
+        } catch (Exception e){
+            Toaster.showLong(this,"Fill upload duration time");
+            return;
+        }
+
         viewModel.saveSettings(checkYoutubeNeed.isChecked(),editYoutubeVideoId.getText().toString()
                 ,checkYoutubeDefault.isChecked(),checkDownloadNeed.isChecked()
                 ,editDownloadUrl.getText().toString(),checkUploadNeed.isChecked()
                 ,editUploadUrl.getText().toString());
+
+        viewModel.saveTimeSettings(editInitTimeout.getText().toString(), editBufferTimeout.getText().toString(),
+                editDownDuration.getText().toString(),editUploadDuration.getText().toString());
     }
 
 }

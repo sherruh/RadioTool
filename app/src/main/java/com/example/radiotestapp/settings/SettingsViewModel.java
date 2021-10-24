@@ -18,6 +18,10 @@ public class SettingsViewModel extends ViewModel {
     public MutableLiveData<Boolean> isUploadNeedLiveData = new MutableLiveData<>();
     public MutableLiveData<String> uploadUrlLiveData = new MutableLiveData<>();
     public SingleLiveEvent<Void> settingsSavedEvent = new SingleLiveEvent<>();
+    public MutableLiveData<Integer> initTImeOutLiveDataLiveData = new MutableLiveData<>();
+    public MutableLiveData<Integer> bufferTImeOutLiveData = new MutableLiveData<>();
+    public MutableLiveData<Integer> downloadDurationLiveData = new MutableLiveData<>();
+    public MutableLiveData<Integer> uploadDurationLiveData = new MutableLiveData<>();
 
     public void start() {
         SettingsParameter settingsIsYoutubeNeed = App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_NEED);
@@ -62,6 +66,34 @@ public class SettingsViewModel extends ViewModel {
 
         SettingsParameter settingsUploadUrl = App.localStorage.getSettingsParameter(Constants.UPLOAD_URL);
         if (settingsUploadUrl != null) uploadUrlLiveData.setValue(settingsUploadUrl.getValue());
+
+        SettingsParameter settingsInitTimeOut = App.localStorage.getSettingsParameter(Constants.INIT_TIMEOUT);
+        if (settingsInitTimeOut == null) initTImeOutLiveDataLiveData.setValue(90);
+        else {
+            int i = Integer.parseInt(settingsInitTimeOut.getValue());
+            initTImeOutLiveDataLiveData.setValue(i);
+        }
+
+        SettingsParameter settingsBufferTimeOut = App.localStorage.getSettingsParameter(Constants.BUFFER_TIMEOUT);
+        if (settingsBufferTimeOut == null) bufferTImeOutLiveData.setValue(90);
+        else {
+            int i = Integer.parseInt(settingsBufferTimeOut.getValue());
+            bufferTImeOutLiveData.setValue(i);
+        }
+
+        SettingsParameter settingDownloadDuration = App.localStorage.getSettingsParameter(Constants.DOWNLOAD_DURATION);
+        if (settingDownloadDuration == null) downloadDurationLiveData.setValue(60);
+        else {
+            int i = Integer.parseInt(settingDownloadDuration.getValue());
+            downloadDurationLiveData.setValue(i);
+        }
+
+        SettingsParameter settingUploadDuration = App.localStorage.getSettingsParameter(Constants.UPLOAD_DURATION);
+        if (settingUploadDuration == null) uploadDurationLiveData.setValue(60);
+        else {
+            int i = Integer.parseInt(settingUploadDuration.getValue());
+            uploadDurationLiveData.setValue(i);
+        }
     }
 
     public void saveSettings(boolean checkedIsYoutubeNeed, String youtubeUrl,
@@ -83,6 +115,14 @@ public class SettingsViewModel extends ViewModel {
         else s = Constants.NO;
         App.localStorage.saveSettingsParameter(new SettingsParameter(Constants.IS_UPLOAD_NEED,s));
         App.localStorage.saveSettingsParameter(new SettingsParameter(Constants.UPLOAD_URL,uploadUrl));
+    }
+
+    public void saveTimeSettings(String initTimeOut, String bufferTimeOut, String downloadDuration,
+                                 String uploadDuration) {
+        App.localStorage.saveSettingsParameter(new SettingsParameter(Constants.INIT_TIMEOUT, initTimeOut));
+        App.localStorage.saveSettingsParameter(new SettingsParameter(Constants.BUFFER_TIMEOUT, bufferTimeOut));
+        App.localStorage.saveSettingsParameter(new SettingsParameter(Constants.DOWNLOAD_DURATION, downloadDuration));
+        App.localStorage.saveSettingsParameter(new SettingsParameter(Constants.UPLOAD_DURATION, uploadDuration));
         settingsSavedEvent.call();
     }
 }
