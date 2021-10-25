@@ -84,55 +84,60 @@ public class TestResultViewModel extends ViewModel {
     }
 
     private void createLogResult(boolean isTestedYoutube, boolean isTestedDownload, boolean isTestedUpload) {
-        LogResult logResult = new LogResult();
-        logResult.setYoutubeTested(isTestedYoutube);
-        logResult.setDownloadTested(isTestedDownload);
-        logResult.setUploadTested(isTestedUpload);
-        logResult.setBufferSR(String.valueOf(bufferingSuccessRateLiveData.getValue()));
-        logResult.setBufferThroughput(String.valueOf(bufferingThroughputLiveData.getValue()));
-        logResult.setBufferTime(String.valueOf(bufferingTimeLiveData.getValue()));
-        logResult.setCI(String.valueOf(ciLiveData.getValue()));
-        logResult.setDownSR(String.valueOf(downSRLiveData.getValue()));
-        logResult.setDownThrput(String.valueOf(downThrputLiveData.getValue()));
-        logResult.setEcN0(String.valueOf(ecN0LiveData.getValue()));
-        logResult.setFirstCid(firstCID.getValue());
-        logResult.setFirstENodeB(firstENodeB.getValue());
-        logResult.setFirstRatio(String.valueOf(firstRateLiveData.getValue()));
-        logResult.setFirstTacLac(firstTacLac.getValue());
-        logResult.setFirstTech(firstTech.getValue());
-        logResult.setId(logId);
-        logResult.setInitSR(String.valueOf(initSuccessRateLiveData.getValue()));
-        logResult.setInitTime(String.valueOf(initTimeLiveData.getValue()));
-        logResult.setLteCqi(String.valueOf(cqiLteLiveData.getValue()));
-        logResult.setResolution144(String.valueOf(youtubeResolutionList.getValue().get(0)));
-        logResult.setResolution240(String.valueOf(youtubeResolutionList.getValue().get(1)));
-        logResult.setResolution360(String.valueOf(youtubeResolutionList.getValue().get(2)));
-        logResult.setResolution480(String.valueOf(youtubeResolutionList.getValue().get(3)));
-        logResult.setResolution720(String.valueOf(youtubeResolutionList.getValue().get(4)));
-        logResult.setResolution1080(String.valueOf(youtubeResolutionList.getValue().get(5)));
-        logResult.setRscp(String.valueOf(rscpLiveData.getValue()));
-        logResult.setRsrp(String.valueOf(rsrpLiveData.getValue()));
-        logResult.setRsrq(String.valueOf(rsrqLiveData.getValue()));
-        logResult.setRxLvl(String.valueOf(rxLevelLiveData.getValue()));
-        logResult.setSecondCid(secondCID.getValue());
-        logResult.setSecondENodeB(secondENodeB.getValue());
-        logResult.setSecondRatio(String.valueOf(secondRateLiveData.getValue()));
-        logResult.setSecondTacLac(secondTacLac.getValue());
-        logResult.setSecondTech(secondTech.getValue());
-        logResult.setSnr(String.valueOf(snrLiveData.getValue()));
-        logResult.setThirdCid(thirdCID.getValue());
-        logResult.setThirdENodeB(thirdENodeB.getValue());
-        logResult.setThirdRatio(String.valueOf(thirdRateLiveData.getValue()));
-        logResult.setThirdTacLac(thirdTacLac.getValue());
-        logResult.setThirdTech(thirdTech.getValue());
-        logResult.setUmtsCqi(String.valueOf(cqiUmtsLiveData.getValue()));
-        logResult.setUploadSR(String.valueOf(uploadSRLiveData.getValue()));
-        logResult.setUploadThrput(String.valueOf(uploadThrputLiveData.getValue()));
-        logResult.setYoutubeSR(String.valueOf(youtubeSuccessRateLiveData.getValue()));
-        App.localStorage.saveLogResult(logResult);
-        Logger.d("LogResult: " + logResult);
-        LogResult logResult1 = App.localStorage.getLogResultById(logId);
-        Logger.d("LogResult: " + logResult1);
+        try{
+
+            LogResult logResult = new LogResult();
+            logResult.setYoutubeTested(isTestedYoutube);
+            logResult.setDownloadTested(isTestedDownload);
+            logResult.setUploadTested(isTestedUpload);
+            logResult.setBufferSR(String.valueOf(bufferingSuccessRateLiveData.getValue()));
+            logResult.setBufferThroughput(String.valueOf(bufferingThroughputLiveData.getValue()));
+            logResult.setBufferTime(String.valueOf(bufferingTimeLiveData.getValue()));
+            logResult.setCI(String.valueOf(ciLiveData.getValue()));
+            logResult.setDownSR(String.valueOf(downSRLiveData.getValue()));
+            logResult.setDownThrput(String.valueOf(downThrputLiveData.getValue()));
+            logResult.setEcN0(String.valueOf(ecN0LiveData.getValue()));
+            logResult.setFirstCid(firstCID.getValue());
+            logResult.setFirstENodeB(firstENodeB.getValue());
+            logResult.setFirstRatio(String.valueOf(firstRateLiveData.getValue()));
+            logResult.setFirstTacLac(firstTacLac.getValue());
+            logResult.setFirstTech(firstTech.getValue());
+            logResult.setId(logId);
+            logResult.setInitSR(String.valueOf(initSuccessRateLiveData.getValue()));
+            logResult.setInitTime(String.valueOf(initTimeLiveData.getValue()));
+            logResult.setLteCqi(String.valueOf(cqiLteLiveData.getValue()));
+            if (isTestedYoutube){
+                logResult.setResolution144(String.valueOf(youtubeResolutionList.getValue().get(0)));
+                logResult.setResolution240(String.valueOf(youtubeResolutionList.getValue().get(1)));
+                logResult.setResolution360(String.valueOf(youtubeResolutionList.getValue().get(2)));
+                logResult.setResolution480(String.valueOf(youtubeResolutionList.getValue().get(3)));
+                logResult.setResolution720(String.valueOf(youtubeResolutionList.getValue().get(4)));
+                logResult.setResolution1080(String.valueOf(youtubeResolutionList.getValue().get(5)));
+            }
+            logResult.setRscp(String.valueOf(rscpLiveData.getValue()));
+            logResult.setRsrp(String.valueOf(rsrpLiveData.getValue()));
+            logResult.setRsrq(String.valueOf(rsrqLiveData.getValue()));
+            logResult.setRxLvl(String.valueOf(rxLevelLiveData.getValue()));
+            logResult.setSecondCid(secondCID.getValue());
+            logResult.setSecondENodeB(secondENodeB.getValue());
+            logResult.setSecondRatio(String.valueOf(secondRateLiveData.getValue()));
+            logResult.setSecondTacLac(secondTacLac.getValue());
+            logResult.setSecondTech(secondTech.getValue());
+            logResult.setSnr(String.valueOf(snrLiveData.getValue()));
+            logResult.setThirdCid(thirdCID.getValue());
+            logResult.setThirdENodeB(thirdENodeB.getValue());
+            logResult.setThirdRatio(String.valueOf(thirdRateLiveData.getValue()));
+            logResult.setThirdTacLac(thirdTacLac.getValue());
+            logResult.setThirdTech(thirdTech.getValue());
+            logResult.setUmtsCqi(String.valueOf(cqiUmtsLiveData.getValue()));
+            logResult.setUploadSR(String.valueOf(uploadSRLiveData.getValue()));
+            logResult.setUploadThrput(String.valueOf(uploadThrputLiveData.getValue()));
+            logResult.setYoutubeSR(String.valueOf(youtubeSuccessRateLiveData.getValue()));
+            App.localStorage.saveLogResult(logResult);
+            Logger.d("LogResult: " + logResult);
+            LogResult logResult1 = App.localStorage.getLogResultById(logId);
+            Logger.d("LogResult: " + logResult1);
+        }catch (Exception e){}
     }
 
     private void calculateQualities() {
