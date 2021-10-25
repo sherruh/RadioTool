@@ -2,6 +2,7 @@ package com.example.radiotestapp.repository.local;
 
 import com.example.radiotestapp.model.Event;
 import com.example.radiotestapp.model.Log;
+import com.example.radiotestapp.model.LogResult;
 import com.example.radiotestapp.model.SettingsParameter;
 import com.example.radiotestapp.repository.Callback;
 import com.example.radiotestapp.repository.local.db.Dao;
@@ -61,5 +62,15 @@ public class LocalStorage implements ILocalStorage {
     @Override
     public List<Event> getEventsByLogId(String logId) {
         return dao.getEventsByLogId(logId);
+    }
+
+    @Override
+    public Long saveLogResult(LogResult logResult) {
+        return dao.saveLogResult(logResult);
+    }
+
+    @Override
+    public LogResult getLogResultById(String id) {
+        return dao.getLogResultById(id);
     }
 }

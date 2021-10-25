@@ -473,6 +473,8 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, geoLocationRequest, this);
     }
 
+
+
     //endregion
 
 

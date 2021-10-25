@@ -160,28 +160,44 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         try {
-            Integer.parseInt(editInitTimeout.getText().toString());
+            int i = Integer.parseInt(editInitTimeout.getText().toString());
+            if ( i == 0 ){
+                Toaster.showLong(this,"Fill init timeout");
+                return;
+            }
         } catch (Exception e){
             Toaster.showLong(this,"Fill init timeout");
             return;
         }
 
         try {
-            Integer.parseInt(editBufferTimeout.getText().toString());
+            int i = Integer.parseInt(editBufferTimeout.getText().toString());
+            if ( i == 0 ){
+                Toaster.showLong(this,"Fill buffer timeout");
+                return;
+            }
         } catch (Exception e){
             Toaster.showLong(this,"Fill buffer timeout");
             return;
         }
 
         try {
-            Integer.parseInt(editDownDuration.getText().toString());
+            int i = Integer.parseInt(editDownDuration.getText().toString());
+            if ( i == 0 ){
+                Toaster.showLong(this,"Fill download duration time");
+                return;
+            }
         } catch (Exception e){
             Toaster.showLong(this,"Fill download duration time");
             return;
         }
 
         try {
-            Integer.parseInt(editUploadDuration.getText().toString());
+            int i = Integer.parseInt(editUploadDuration.getText().toString());
+            if ( i == 0 ){
+                Toaster.showLong(this,"Fill upload duration time");
+                return;
+            }
         } catch (Exception e){
             Toaster.showLong(this,"Fill upload duration time");
             return;

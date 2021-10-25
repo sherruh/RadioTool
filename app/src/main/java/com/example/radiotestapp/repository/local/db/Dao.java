@@ -6,6 +6,7 @@ import androidx.room.Query;
 
 import com.example.radiotestapp.model.Event;
 import com.example.radiotestapp.model.Log;
+import com.example.radiotestapp.model.LogResult;
 import com.example.radiotestapp.model.SettingsParameter;
 
 import java.util.List;
@@ -14,6 +15,12 @@ import java.util.List;
 public interface Dao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long saveSettingsParameter(SettingsParameter settingsParameter);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long saveLogResult(LogResult logResult);
+
+    @Query("SELECT * FROM log_result WHERE id = :id")
+    LogResult getLogResultById(String id);
 
     @Query("SELECT * FROM settings_parameter WHERE name = :name")
     SettingsParameter getSettingParameter(String name);

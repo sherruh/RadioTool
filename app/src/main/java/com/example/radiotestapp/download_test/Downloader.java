@@ -18,7 +18,6 @@ import java.util.TimerTask;
 
 public class Downloader {
 
-    private final int DOWNLOAD_TIMEOUT = 10000;
     private long downloadDuration = 30000L;
     private Context mContext;
     private DownloadListener downloadListener;
@@ -31,6 +30,7 @@ public class Downloader {
     public void download(String url, Context context, DownloadListener downloadListener ) {
         if (downloadReceiver != null) mContext.unregisterReceiver(downloadReceiver);
         mContext = context;
+        timerForDuration = null;
         this.downloadListener = downloadListener;
         manager = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
         this.url = url;
@@ -44,7 +44,7 @@ public class Downloader {
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
         long downloadId = manager.enqueue(request);
         Cursor cursor = manager.query(new DownloadManager.Query().setFilterById(downloadId));
-
+        downloadDuration = getDownloadDuration();
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -57,27 +57,24 @@ public class Downloader {
                 int downloadedBytes = 0;
                 if (c.moveToFirst()) {
                    downloadedBytes = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
-                   Logger.d("DownloadedBytes " + downloadedBytes);
                 }
                 if (downloadedBytes == 0) {
                     if (timerForDuration != null) timerForDuration.cancel();
                     downloadListener.onFailure("Time out");
-                    Logger.d("DownloadManager " + "Download failed " + downloadId + status);
                     isNeedStart = false;
                     timer.cancel();
                 } else {
-                    startTimerForDownloading();
+                    startTimerForDownloading(timer.purge());
                     registrOnCompleteReceiver(downloadId);
                 }
                 timer.cancel();
             }
-        }, DOWNLOAD_TIMEOUT);
+        }, downloadDuration);
     }
 
-    private void startTimerForDownloading() {
+    private void startTimerForDownloading(int purge) {
         if (timerForDuration != null) return;
         timerForDuration = new Timer();
-        downloadDuration = getDownloadDuration();
         timerForDuration.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -85,7 +82,7 @@ public class Downloader {
                 isNeedStart = false;
                 timerForDuration.cancel();
             }
-        }, downloadDuration);
+        }, purge);
     }
 
     private long getDownloadDuration() {
@@ -100,7 +97,6 @@ public class Downloader {
     }
 
     private void registrOnCompleteReceiver(long downloadId ){
-        Logger.d("DownloadManager " + "Downloaded test started " + downloadId);
         IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         downloadReceiver = new BroadcastReceiver() {
             @Override
@@ -112,7 +108,6 @@ public class Downloader {
                 if (cursor.moveToFirst()) {
                     int status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
                     if(status == DownloadManager.STATUS_SUCCESSFUL){
-                        Logger.d("DownloadManager " + "Downloaded test file " + downloadId);
                         if (isNeedStart)download(url,mContext,downloadListener);
                     }
                     else {

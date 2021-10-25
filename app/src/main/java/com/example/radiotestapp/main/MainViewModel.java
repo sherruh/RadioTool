@@ -712,13 +712,14 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
 
     private void checkWhetherToStartYoutubePlayback() {
         if (countOfRepeats > 0 && isLogging.getValue()){
-            Logger.d("checkWhetherToStartYoutubePlayback " + countOfRepeats + " " + isLogging.getValue());
             countOfRepeats--;
             currentNumberOfRepeatsLiveData.setValue(countOfRepeats);
             if (App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_NEED) != null &&
                     App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_NEED).getValue().equals(Constants.NO)){
-            checkWhetherToStartDownloadTest();
+                isNeedYoutubeTest = false;
+                checkWhetherToStartDownloadTest();
             }else{
+                isNeedYoutubeTest = true;
                 isProgressStartBarShowLiveData.postValue(false);
                 onStartYoutubeClickedEvent.call();
             }
