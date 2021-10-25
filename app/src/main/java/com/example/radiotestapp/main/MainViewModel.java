@@ -713,7 +713,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     private void checkWhetherToStartYoutubePlayback() {
         if (countOfRepeats > 0 && isLogging.getValue()){
             countOfRepeats--;
-            currentNumberOfRepeatsLiveData.setValue(countOfRepeats);
+            currentNumberOfRepeatsLiveData.postValue(countOfRepeats);
             if (App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_NEED) != null &&
                     App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_NEED).getValue().equals(Constants.NO)){
                 isNeedYoutubeTest = false;
