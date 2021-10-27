@@ -11,6 +11,7 @@ import com.example.radiotestapp.model.Event;
 import com.example.radiotestapp.model.Log;
 import com.example.radiotestapp.model.LogResult;
 import com.example.radiotestapp.utils.Logger;
+import com.example.radiotestapp.utils.SingleLiveEvent;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -62,6 +63,9 @@ public class TestResultViewModel extends ViewModel {
     public MutableLiveData<Double> downSRLiveData = new MutableLiveData<>();
     public MutableLiveData<Long> uploadThrputLiveData = new MutableLiveData<>();
     public MutableLiveData<Double> uploadSRLiveData = new MutableLiveData<>();
+
+    public SingleLiveEvent<Void> calculationsFinishedLiveEvent = new SingleLiveEvent<>();
+
     private String logId;
 
     public void getLogsAndEventsByLogId(String logId, boolean isTestedYoutube,
@@ -81,11 +85,11 @@ public class TestResultViewModel extends ViewModel {
         calculateLevels();
         calculateQualities();
         createLogResult(isTestedYoutube, isTestedDownload, isTestedUpload);
+        calculationsFinishedLiveEvent.call();
     }
 
     private void createLogResult(boolean isTestedYoutube, boolean isTestedDownload, boolean isTestedUpload) {
         try{
-
             LogResult logResult = new LogResult();
             logResult.setYoutubeTested(isTestedYoutube);
             logResult.setDownloadTested(isTestedDownload);

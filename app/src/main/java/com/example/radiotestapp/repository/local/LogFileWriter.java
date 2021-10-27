@@ -2,9 +2,11 @@ package com.example.radiotestapp.repository.local;
 
 import android.os.Environment;
 
+import com.example.radiotestapp.App;
 import com.example.radiotestapp.core.Constants;
 import com.example.radiotestapp.model.Event;
 import com.example.radiotestapp.model.Log;
+import com.example.radiotestapp.model.SettingsParameter;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -49,6 +51,8 @@ public class LogFileWriter implements ILocalLogRepository {
 
     @Override
     public void createLogFile(String logId){
+        SettingsParameter settingsParameter = App.localStorage.getSettingsParameter(Constants.IS_ALLOWED_SAVING_LOGS);
+        if (settingsParameter == null || settingsParameter.getValue().equals(Constants.NO)) return;
         logName = logId;
         if (folder.exists());
         else {

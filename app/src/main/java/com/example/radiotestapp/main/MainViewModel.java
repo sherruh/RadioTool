@@ -167,6 +167,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         initService();
         startThreadForRadioParamsUpdating();
         createFileForUpload();
+        App.localStorage.saveSettingsParameter(new SettingsParameter(Constants.IS_ALLOWED_SAVING_LOGS,Constants.YES));
     }
 
 
@@ -245,7 +246,10 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
                 isProgressStartBarShowLiveData.postValue(false);
             }
         });
-        logSavedEvent.postValue("Log saved: " + Constants.LOG_FOLDER + "/" + logId + ".txt");
+        SettingsParameter settingsParameter = App.localStorage.getSettingsParameter(Constants.IS_ALLOWED_SAVING_LOGS);
+        if (settingsParameter != null && settingsParameter.getValue().equals(Constants.YES)){
+            logSavedEvent.postValue("Log saved: " + Constants.LOG_FOLDER + "/" + logId + ".txt");
+        }
         loggingStoppedEvent.call();
         DownloadManagerDisabler.disableAllDownloadings(mContext);
     }
