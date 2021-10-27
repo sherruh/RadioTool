@@ -163,6 +163,10 @@ public class TestResultActivity extends AppCompatActivity {
         viewModel.downSRLiveData.observe(this, l -> {if (isTestedDownload) setDoubleWithoutChecking(textDownSR,  l );});
         viewModel.uploadSRLiveData.observe(this, l -> {if (isTestedUpload) setDoubleWithoutChecking(textUploadSR,  l );});
 
+        viewModel.calculationsFinishedLiveEvent.observe(this, v -> {
+            takeScreenshot();
+            Logger.d("Screenshot: here");
+        });
     }
 
     private void setDoubleWithoutChecking(TextView tv, Double d) {

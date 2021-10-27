@@ -16,4 +16,6 @@ public class Constants {
     public static final String BUFFER_TIMEOUT = "BUFFER_TIMEOUT";
     public static final String DOWNLOAD_DURATION = "DOWNLOAD_DURATION";
     public static final String UPLOAD_DURATION = "UPLOAD_DURATION";
+    public static final String IS_ALLOWED_SAVING_LOGS = "IS_ALLOWED_SAVING_LOGS";
+
 }
