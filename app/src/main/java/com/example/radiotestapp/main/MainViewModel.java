@@ -141,6 +141,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     private long youtubeBufferTimeOut = 90000L;
     private long uploadDuration = 30000L;
     private int countOfRepeats = 1;
+    private int timerDelay = 1;
     public MutableLiveData<Integer> currentNumberOfRepeatsLiveData = new MutableLiveData<>();
     public MutableLiveData<Integer> initialNumberOfRepeatsLiveData = new MutableLiveData<>();
     private int initialNumberOfRepeats = 1;
@@ -152,6 +153,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     Timer timerYouTubeBuffering = new Timer();
     Timer timerYouTubeInitial = new Timer();
     Timer timerUpload = new Timer();
+    Timer timerDelayBeforeRestart = new Timer();
 
 
     public void onViewCreated(Context context, CustomPhoneStateListener.OnSignalStrengthChangedListener onSignalStrengthChangedListener,
@@ -193,9 +195,10 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         threadForRadioParamsUpdate.start();
     }
 
-    public void start(String mSignalStrength, int value) {
+    public void start(String mSignalStrength, int value, int numberPickerDelayValue) {
         countOfRepeats = value;
         initialNumberOfRepeats = value;
+        timerDelay = numberPickerDelayValue;
         currentNumberOfRepeatsLiveData.setValue(countOfRepeats);
         currentLog = new Log();
         Date date = new Date(System.currentTimeMillis());
@@ -217,6 +220,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         if(timerUpload != null) timerUpload.cancel();
         if(timerYouTubeBuffering != null) timerYouTubeBuffering.cancel();
         if(timerYouTubeInitial != null) timerYouTubeInitial.cancel();
+        if(timerDelayBeforeRestart != null) timerDelayBeforeRestart.cancel();
         if (uploader != null) {
             uploader.setUploadAgain(false);
             uploader.cancelUpload();
@@ -715,22 +719,29 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
 
 
     private void checkWhetherToStartYoutubePlayback() {
-        if (countOfRepeats > 0 && isLogging.getValue()){
-            countOfRepeats--;
-            currentNumberOfRepeatsLiveData.postValue(countOfRepeats);
-            if (App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_NEED) != null &&
-                    App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_NEED).getValue().equals(Constants.NO)){
-                isNeedYoutubeTest = false;
-                checkWhetherToStartDownloadTest();
-            }else{
-                isNeedYoutubeTest = true;
-                isProgressStartBarShowLiveData.postValue(false);
-                onStartYoutubeClickedEvent.call();
+        timerDelayBeforeRestart = new Timer();
+        timerDelayBeforeRestart.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                timerDelayBeforeRestart = null;
+                if (countOfRepeats > 0 && isLogging.getValue()){
+                    countOfRepeats--;
+                    currentNumberOfRepeatsLiveData.postValue(countOfRepeats);
+                    if (App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_NEED) != null &&
+                            App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_NEED).getValue().equals(Constants.NO)){
+                        isNeedYoutubeTest = false;
+                        checkWhetherToStartDownloadTest();
+                    }else{
+                        isNeedYoutubeTest = true;
+                        isProgressStartBarShowLiveData.postValue(false);
+                        onStartYoutubeClickedEvent.call();
+                    }
+                }else{
+                    isProgressStartBarShowLiveData.postValue(false);
+                    stop();
+                }
             }
-        }else{
-            isProgressStartBarShowLiveData.postValue(false);
-            stop();
-        }
+        }, timerDelay * 1000);
     }
 
     private boolean isNetworkConnected() {

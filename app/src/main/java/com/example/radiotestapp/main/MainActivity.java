@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     private TextView textSnr;
     private TextView textCqi;
     private NumberPicker numberPickerCountOfRepeats;
+    private NumberPicker numberPickerDelay;
     private ProgressBar progressBar;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +129,11 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         numberPickerCountOfRepeats = findViewById(R.id.number_picker_count_of_repeats_main_activity);
         numberPickerCountOfRepeats.setMaxValue(9999);
         numberPickerCountOfRepeats.setMinValue(1);
+
+        numberPickerDelay = findViewById(R.id.number_picker_delay_setter_main_activity);
+        numberPickerDelay.setMaxValue(9999);
+        numberPickerDelay.setMinValue(1);
+
         progressBar = findViewById(R.id.progress_main_activity);
     }
 
@@ -419,7 +425,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     }
 
     public void onButtonStartClick(View view) {
-        viewModel.start(mSignalStrength,numberPickerCountOfRepeats.getValue());
+        viewModel.start(mSignalStrength,numberPickerCountOfRepeats.getValue(),numberPickerDelay.getValue());
         buttonStop.setVisibility(View.VISIBLE);
         buttonStart.setVisibility(View.GONE);
         numberPickerCountOfRepeats.setEnabled(false);
