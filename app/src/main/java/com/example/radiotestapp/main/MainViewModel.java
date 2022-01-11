@@ -142,6 +142,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     private long uploadDuration = 30000L;
     private int countOfRepeats = 1;
     private int timerDelay = 1;
+    private boolean isNeverEnding = false;
     public MutableLiveData<Integer> currentNumberOfRepeatsLiveData = new MutableLiveData<>();
     public MutableLiveData<Integer> initialNumberOfRepeatsLiveData = new MutableLiveData<>();
     private int initialNumberOfRepeats = 1;
@@ -195,10 +196,11 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         threadForRadioParamsUpdate.start();
     }
 
-    public void start(String mSignalStrength, int value, int numberPickerDelayValue) {
+    public void start(String mSignalStrength, int value, int numberPickerDelayValue, boolean checkedNeverEnding) {
         countOfRepeats = value;
         initialNumberOfRepeats = value;
         timerDelay = numberPickerDelayValue;
+        isNeverEnding = checkedNeverEnding;
         currentNumberOfRepeatsLiveData.setValue(countOfRepeats);
         currentLog = new Log();
         Date date = new Date(System.currentTimeMillis());
@@ -725,8 +727,10 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
             public void run() {
                 timerDelayBeforeRestart = null;
                 if (countOfRepeats > 0 && isLogging.getValue()){
-                    countOfRepeats--;
-                    currentNumberOfRepeatsLiveData.postValue(countOfRepeats);
+                    if (!isNeverEnding){
+                        countOfRepeats--;
+                        currentNumberOfRepeatsLiveData.postValue(countOfRepeats);
+                    }
                     if (App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_NEED) != null &&
                             App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_NEED).getValue().equals(Constants.NO)){
                         isNeedYoutubeTest = false;

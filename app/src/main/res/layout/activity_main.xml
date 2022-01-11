@@ -559,5 +559,18 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
+    <CheckBox
+        android:id="@+id/check_never_ending_main_activity"
+        app:layout_constraintBottom_toTopOf="@id/button_start_main_activity"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintStart_toStartOf="@id/button_start_main_activity"
+        style="@style/CheckBox"/>
+    <TextView
+        android:text="Never ending"
+        app:layout_constraintStart_toEndOf="@id/check_never_ending_main_activity"
+        app:layout_constraintTop_toTopOf="@id/check_never_ending_main_activity"
+        style="@style/CheckBoxTitle"
+        />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

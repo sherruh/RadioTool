@@ -10,6 +10,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
@@ -93,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     private TextView textCqi;
     private NumberPicker numberPickerCountOfRepeats;
     private NumberPicker numberPickerDelay;
+    private CheckBox checkNeverEnding;
     private ProgressBar progressBar;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
         numberPickerDelay.setMinValue(1);
 
         progressBar = findViewById(R.id.progress_main_activity);
+        checkNeverEnding = findViewById(R.id.check_never_ending_main_activity);
     }
 
     private void initImageSettings() {
@@ -425,7 +428,8 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     }
 
     public void onButtonStartClick(View view) {
-        viewModel.start(mSignalStrength,numberPickerCountOfRepeats.getValue(),numberPickerDelay.getValue());
+        viewModel.start(mSignalStrength,numberPickerCountOfRepeats.getValue(),
+                numberPickerDelay.getValue(), checkNeverEnding.isChecked());
         buttonStop.setVisibility(View.VISIBLE);
         buttonStart.setVisibility(View.GONE);
         numberPickerCountOfRepeats.setEnabled(false);
