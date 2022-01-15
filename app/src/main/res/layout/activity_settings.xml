@@ -284,6 +284,21 @@
         android:background="@color/colorParametersFrame"
         app:layout_constraintTop_toTopOf="@id/edit_log_activity_settings"
         app:layout_constraintStart_toEndOf="@id/edit_log_activity_settings" />
+    <LinearLayout
+        app:layout_constraintTop_toTopOf="@id/view_youtube_settings_frame_settings_activity"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_centerInParent="true"
+        android:background="@drawable/border_spinner"
+        android:layout_width="wrap_content" android:layout_height="wrap_content" tools:ignore="UselessParent">
 
+        <Spinner
+            android:id="@+id/spinner1"
+            android:layout_width="wrap_content"
+            android:backgroundTint="#ff0000"
+            android:overlapAnchor="false"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown"/>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
