@@ -3,16 +3,21 @@ package com.example.radiotestapp.settings;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.radiotestapp.R;
+import com.example.radiotestapp.core.Constants;
 import com.example.radiotestapp.test_result.TestResultActivity;
 import com.example.radiotestapp.utils.Toaster;
+
+import java.util.ArrayList;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -35,6 +40,7 @@ public class SettingsActivity extends AppCompatActivity {
     private Button buttonSave;
     private Button buttonCancel;
     private Button buttonShowLog;
+    private Spinner spinnerYoutubeQuality;
 
     private SettingsViewModel viewModel;
 
@@ -86,6 +92,31 @@ public class SettingsActivity extends AppCompatActivity {
         viewModel.uploadUrlLiveData.observe(this, s-> {
             if (s.length() > 1) editUploadUrl.setText(s);
         });
+        viewModel.youtubeQualityLiveData.observe(this,s -> {
+            switch (s){
+                case Constants.YOUTUBE_QUALITY_AUTO:
+                    spinnerYoutubeQuality.setSelection(0);
+                    break;
+                case Constants.YOUTUBE_QUALITY_144p:
+                    spinnerYoutubeQuality.setSelection(1);
+                    break;
+                case Constants.YOUTUBE_QUALITY_240p:
+                    spinnerYoutubeQuality.setSelection(2);
+                    break;
+                case Constants.YOUTUBE_QUALITY_360p:
+                    spinnerYoutubeQuality.setSelection(3);
+                    break;
+                case Constants.YOUTUBE_QUALITY_480p:
+                    spinnerYoutubeQuality.setSelection(4);
+                    break;
+                case Constants.YOUTUBE_QUALITY_720p:
+                    spinnerYoutubeQuality.setSelection(5);
+                    break;
+                case Constants.YOUTUBE_QUALITY_1080p:
+                    spinnerYoutubeQuality.setSelection(6);
+                    break;
+            }
+        });
         viewModel.initTImeOutLiveDataLiveData.observe(this, i -> editInitTimeout.setText(i.toString()));
         viewModel.bufferTImeOutLiveData.observe(this, i -> editBufferTimeout.setText(i.toString()));
         viewModel.downloadDurationLiveData.observe(this, i -> editDownDuration.setText(i.toString()));
@@ -122,6 +153,22 @@ public class SettingsActivity extends AppCompatActivity {
             TestResultActivity.startActivity(true,true,true,
                     editLogId.getText().toString(),this);
         });
+        initSpinner();
+    }
+
+    private void initSpinner() {
+        spinnerYoutubeQuality = findViewById(R.id.spinner_youtube_quality_activity_settings);
+        ArrayList<String> spinnerItems =  new ArrayList<>();
+        spinnerItems.add(Constants.YOUTUBE_QUALITY_AUTO);
+        spinnerItems.add(Constants.YOUTUBE_QUALITY_144p);
+        spinnerItems.add(Constants.YOUTUBE_QUALITY_240p);
+        spinnerItems.add(Constants.YOUTUBE_QUALITY_360p);
+        spinnerItems.add(Constants.YOUTUBE_QUALITY_480p);
+        spinnerItems.add(Constants.YOUTUBE_QUALITY_720p);
+        spinnerItems.add(Constants.YOUTUBE_QUALITY_1080p);
+        ArrayAdapter arrayAdapter = new ArrayAdapter(this,
+                android.R.layout.simple_spinner_dropdown_item,spinnerItems);
+        spinnerYoutubeQuality.setAdapter(arrayAdapter);
     }
 
     private void saveSettings() {
@@ -203,10 +250,10 @@ public class SettingsActivity extends AppCompatActivity {
             return;
         }
 
-        viewModel.saveSettings(checkYoutubeNeed.isChecked(),editYoutubeVideoId.getText().toString()
+        viewModel.saveSettings(true,editYoutubeVideoId.getText().toString()
                 ,checkYoutubeDefault.isChecked(),checkDownloadNeed.isChecked()
                 ,editDownloadUrl.getText().toString(),checkUploadNeed.isChecked()
-                ,editUploadUrl.getText().toString());
+                ,editUploadUrl.getText().toString(), spinnerYoutubeQuality.getSelectedItem().toString());
 
         viewModel.saveTimeSettings(editInitTimeout.getText().toString(), editBufferTimeout.getText().toString(),
                 editDownDuration.getText().toString(),editUploadDuration.getText().toString());

@@ -13,7 +13,6 @@ import com.example.radiotestapp.App;
 import com.example.radiotestapp.R;
 import com.example.radiotestapp.core.Constants;
 import com.example.radiotestapp.main.MainViewModel;
-import com.example.radiotestapp.model.SettingsParameter;
 import com.example.radiotestapp.utils.Toaster;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
@@ -70,13 +69,38 @@ public class YoutubePlayerFragment extends Fragment {
     }
 
     private String getVideoId() {
-        if (App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_DEFAULT) == null ||
+        /*if (App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_DEFAULT) == null ||
                 App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_DEFAULT).getValue().equals(Constants.YES))
-            return "fimmQNc6_uI";
-        String videoId;
-        SettingsParameter settingsParameter = App.localStorage.getSettingsParameter(Constants.YOUTUBE_URL);
+            return "fimmQNc6_uI";*/
+        String videoId = "fimmQNc6_uI";
+        /*SettingsParameter settingsParameter = App.localStorage.getSettingsParameter(Constants.YOUTUBE_URL);
         if (settingsParameter != null) videoId = settingsParameter.getValue();
-        else videoId = "fimmQNc6_uI";
+        else videoId = "fimmQNc6_uI";*/
+        if (App.localStorage.getSettingsParameter(Constants.YOUTUBE_QUALITY).getValue() == null)
+            return videoId;
+        switch (App.localStorage.getSettingsParameter(Constants.YOUTUBE_QUALITY).getValue()){
+            case Constants.YOUTUBE_QUALITY_AUTO:
+                videoId = Constants.YOUTUBE_VIDEOID_AUTO;
+                break;
+            case Constants.YOUTUBE_QUALITY_144p:
+                videoId = Constants.YOUTUBE_VIDEOID_144p;
+                break;
+            case Constants.YOUTUBE_QUALITY_240p:
+                videoId = Constants.YOUTUBE_VIDEOID_240p;
+                break;
+            case Constants.YOUTUBE_QUALITY_360p:
+                videoId = Constants.YOUTUBE_VIDEOID_360p;
+                break;
+            case Constants.YOUTUBE_QUALITY_480p:
+                videoId = Constants.YOUTUBE_VIDEOID_480p;
+                break;
+            case Constants.YOUTUBE_QUALITY_720p:
+                videoId = Constants.YOUTUBE_VIDEOID_720p;
+                break;
+            case Constants.YOUTUBE_QUALITY_1080p:
+                videoId = Constants.YOUTUBE_VIDEOID_1080p;
+                break;
+        }
         return videoId;
     }
 

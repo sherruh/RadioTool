@@ -23,10 +23,12 @@
         android:id="@+id/check_youtube_activity_settings"
         app:layout_constraintTop_toTopOf="@id/view_youtube_settings_frame_settings_activity"
         app:layout_constraintStart_toStartOf="@id/view_youtube_settings_frame_settings_activity"
+        android:visibility="gone"
         style="@style/CheckBox"/>
     <TextView
         android:id="@+id/text_youtube_test_activity_settings"
         android:text="Youtube Test"
+        android:visibility="gone"
         app:layout_constraintStart_toEndOf="@id/check_youtube_activity_settings"
         app:layout_constraintTop_toTopOf="@id/check_youtube_activity_settings"
         style="@style/CheckBoxTitle"
@@ -38,6 +40,7 @@
         app:layout_constraintTop_toBottomOf="@id/check_youtube_activity_settings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         style="@style/EditTextTitle"
         />
     <EditText
@@ -46,6 +49,7 @@
         android:inputType="none"
         android:enabled="false"
         android:freezesText="true"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@id/text_youtube_url"
         app:layout_constraintTop_toBottomOf="@id/text_youtube_url"
         style="@style/UrlEditText"
@@ -56,6 +60,7 @@
         android:layout_width="100dp"
         app:layout_constraintStart_toEndOf="@id/edit_youtube_start_url"
         app:layout_constraintTop_toTopOf="@id/edit_youtube_start_url"
+        android:visibility="gone"
         style="@style/UrlEditText"
         />
 
@@ -71,8 +76,8 @@
 
     <EditText
         android:id="@+id/edit_init_time_out_activity_settings"
-        app:layout_constraintStart_toStartOf="@id/text_youtube_url"
-        app:layout_constraintTop_toBottomOf="@+id/edit_youtube_start_url"
+        app:layout_constraintStart_toStartOf="@id/view_youtube_settings_frame_settings_activity"
+        app:layout_constraintTop_toTopOf="@+id/view_youtube_settings_frame_settings_activity"
         android:layout_width="35dp"
         android:layout_marginTop="10dp"
         tools:text="999"
@@ -104,11 +109,13 @@
         app:layout_constraintTop_toTopOf="@id/check_youtube_activity_settings"
         android:layout_marginTop="0dp"
         android:layout_marginStart="10dp"
+        android:visibility="gone"
         style="@style/CheckBox"/>
     <TextView
         android:text="Use default url"
         app:layout_constraintStart_toEndOf="@id/check_use_default_youtube_activity_settings"
         app:layout_constraintTop_toTopOf="@id/check_use_default_youtube_activity_settings"
+        android:visibility="gone"
         style="@style/CheckBoxTitle"
         />
 
@@ -285,16 +292,16 @@
         app:layout_constraintTop_toTopOf="@id/edit_log_activity_settings"
         app:layout_constraintStart_toEndOf="@id/edit_log_activity_settings" />
     <LinearLayout
-        app:layout_constraintTop_toTopOf="@id/view_youtube_settings_frame_settings_activity"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_centerInParent="true"
+        app:layout_constraintTop_toBottomOf="@id/edit_init_time_out_activity_settings"
+        app:layout_constraintStart_toStartOf="@id/edit_init_time_out_activity_settings"
         android:background="@drawable/border_spinner"
+        android:layout_marginTop="20dp"
         android:layout_width="wrap_content" android:layout_height="wrap_content" tools:ignore="UselessParent">
 
         <Spinner
-            android:id="@+id/spinner1"
+            android:id="@+id/spinner_youtube_quality_activity_settings"
             android:layout_width="wrap_content"
-            android:backgroundTint="#ff0000"
+            android:backgroundTint="@color/colorWhiteGrey"
             android:overlapAnchor="false"
             android:layout_height="wrap_content"
             android:spinnerMode="dropdown"/>

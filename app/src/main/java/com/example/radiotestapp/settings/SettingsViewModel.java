@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.radiotestapp.App;
 import com.example.radiotestapp.core.Constants;
 import com.example.radiotestapp.model.SettingsParameter;
+import com.example.radiotestapp.utils.Logger;
 import com.example.radiotestapp.utils.SingleLiveEvent;
 
 public class SettingsViewModel extends ViewModel {
@@ -22,6 +23,7 @@ public class SettingsViewModel extends ViewModel {
     public MutableLiveData<Integer> bufferTImeOutLiveData = new MutableLiveData<>();
     public MutableLiveData<Integer> downloadDurationLiveData = new MutableLiveData<>();
     public MutableLiveData<Integer> uploadDurationLiveData = new MutableLiveData<>();
+    public MutableLiveData<String> youtubeQualityLiveData = new MutableLiveData<>();
 
     public void start() {
         SettingsParameter settingsIsYoutubeNeed = App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_NEED);
@@ -94,11 +96,16 @@ public class SettingsViewModel extends ViewModel {
             int i = Integer.parseInt(settingUploadDuration.getValue());
             uploadDurationLiveData.setValue(i);
         }
+
+        SettingsParameter settingsYoutubeQuality = App.localStorage.getSettingsParameter(Constants.YOUTUBE_QUALITY);
+        if (settingsYoutubeQuality == null) youtubeQualityLiveData.setValue(Constants.YOUTUBE_QUALITY_AUTO);
+        else youtubeQualityLiveData.setValue(settingsYoutubeQuality.getValue());
     }
 
     public void saveSettings(boolean checkedIsYoutubeNeed, String youtubeUrl,
                              boolean checkedIsYoutubeDefault, boolean checkedIsDownloadNeed,
-                             String downloadUrl, boolean checkedIsUploadNeed, String uploadUrl) {
+                             String downloadUrl, boolean checkedIsUploadNeed, String uploadUrl,
+                             String youtubeQuality) {
         String s;
         if (checkedIsYoutubeNeed) s = Constants.YES;
         else s = Constants.NO;
@@ -115,6 +122,8 @@ public class SettingsViewModel extends ViewModel {
         else s = Constants.NO;
         App.localStorage.saveSettingsParameter(new SettingsParameter(Constants.IS_UPLOAD_NEED,s));
         App.localStorage.saveSettingsParameter(new SettingsParameter(Constants.UPLOAD_URL,uploadUrl));
+        Logger.d("YOUTUBE_QUALITY: " + youtubeQuality);
+        App.localStorage.saveSettingsParameter(new SettingsParameter(Constants.YOUTUBE_QUALITY,youtubeQuality));
     }
 
     public void saveTimeSettings(String initTimeOut, String bufferTimeOut, String downloadDuration,

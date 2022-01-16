@@ -17,5 +17,20 @@ public class Constants {
     public static final String DOWNLOAD_DURATION = "DOWNLOAD_DURATION";
     public static final String UPLOAD_DURATION = "UPLOAD_DURATION";
     public static final String IS_ALLOWED_SAVING_LOGS = "IS_ALLOWED_SAVING_LOGS";
+    public static final String YOUTUBE_QUALITY = "YOUTUBE_QUALITY";
+    public static final String YOUTUBE_QUALITY_AUTO = "Auto";
+    public static final String YOUTUBE_QUALITY_144p = "144p";
+    public static final String YOUTUBE_QUALITY_240p = "240p";
+    public static final String YOUTUBE_QUALITY_360p = "360p";
+    public static final String YOUTUBE_QUALITY_480p = "480p";
+    public static final String YOUTUBE_QUALITY_720p = "720p";
+    public static final String YOUTUBE_QUALITY_1080p = "1080p";
+    public static final String YOUTUBE_VIDEOID_AUTO = "fimmQNc6_uI";
+    public static final String YOUTUBE_VIDEOID_144p = "YT-M9X6MCsk";
+    public static final String YOUTUBE_VIDEOID_240p = "m7PMRSM1TGo";
+    public static final String YOUTUBE_VIDEOID_360p = "JT_NB-N5fjA";
+    public static final String YOUTUBE_VIDEOID_480p = "kEaEUFxTzSA";
+    public static final String YOUTUBE_VIDEOID_720p = "1Kt33c_gdWw";
+    public static final String YOUTUBE_VIDEOID_1080p = "2CbEF5_GlWQ";
 
 }
