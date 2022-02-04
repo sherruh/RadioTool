@@ -5,7 +5,8 @@ public enum EEvents {
     YFI,//Youtube init finish
     YEI,//Youtube init error
     YSB,//Youtube buffering start
-    YFB,//Youtube buffering finished
+    YFB,//Youtube buffering finished. Triggers when video begin to play
+    YFL,//Youtube loading finished
     YEB,//Youtube buffering error
     YSP,//Youtube start playing
     US,//Uploading Started

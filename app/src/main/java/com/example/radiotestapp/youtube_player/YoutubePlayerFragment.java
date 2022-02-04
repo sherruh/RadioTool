@@ -13,6 +13,7 @@ import com.example.radiotestapp.App;
 import com.example.radiotestapp.R;
 import com.example.radiotestapp.core.Constants;
 import com.example.radiotestapp.main.MainViewModel;
+import com.example.radiotestapp.utils.Logger;
 import com.example.radiotestapp.utils.Toaster;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
@@ -26,6 +27,7 @@ public class YoutubePlayerFragment extends Fragment {
     private YoutubePlayerListener youtubePlayerListener;
     private YouTubePlayerView youTubePlayerView;
     private YouTubePlayer mYouTubePlayer;
+    private boolean isLoadedYet;
 
     public YoutubePlayerFragment(MainViewModel mainViewModel) {
         mViewModel = mainViewModel;
@@ -120,6 +122,15 @@ public class YoutubePlayerFragment extends Fragment {
             @Override
             public void onPlaybackQualityChange(YouTubePlayer youTubePlayer, PlayerConstants.PlaybackQuality playbackQuality) {
                 mViewModel.youtubeQualityChanged(playbackQuality);
+            }
+
+            @Override
+            public void onVideoLoadedFraction(YouTubePlayer youTubePlayer, float v) {
+                Logger.d("Loaded percent" + v);
+                if (v == 1.0 && !isLoadedYet){
+                    mViewModel.youtubeVideoLoaded();
+                    isLoadedYet = true;
+                }
             }
 
             @Override

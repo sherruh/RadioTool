@@ -137,6 +137,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     private long startBufferingKbits;
     private long finishBufferingTime;
     private long finishBufferingKbits;
+    private long finishYoutubeVideoLoadingTime;
     private long youtubeInitTimeOut = 90000L;
     private long youtubeBufferTimeOut = 90000L;
     private long uploadDuration = 30000L;
@@ -552,6 +553,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         if (initialBuffering) {
             finishBufferingTime = System.currentTimeMillis();
             finishBufferingKbits = TrafficStats.getTotalRxBytes() / 1024 * 8;
+            Logger.d("Loaded bits " + String.valueOf(finishBufferingKbits - startBufferingKbits));
             eventLogs.add(new Event( logId,EEvents.YFB,finishBufferingTime,
                     String.valueOf(finishBufferingTime - startBufferingTime),
                     String.valueOf(1000 * (finishBufferingKbits - startBufferingKbits)/((finishBufferingTime - startBufferingTime))),
@@ -801,5 +803,13 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         exitClickEvent.call();
         int pid = android.os.Process.myPid();
         android.os.Process.killProcess(pid);
+    }
+
+    public void youtubeVideoLoaded() {
+        finishYoutubeVideoLoadingTime = System.currentTimeMillis();
+        eventLogs.add(new Event( logId,EEvents.YFL,finishYoutubeVideoLoadingTime,
+                String.valueOf(finishYoutubeVideoLoadingTime - startBufferingTime),EState.YOUTUBE_TEST));
+        App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
+        Logger.d("Loaded percent " + String.valueOf(finishYoutubeVideoLoadingTime - startBufferingTime));
     }
 }
