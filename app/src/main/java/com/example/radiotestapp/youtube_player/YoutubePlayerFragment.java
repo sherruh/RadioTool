@@ -56,7 +56,7 @@ public class YoutubePlayerFragment extends Fragment {
         youTubePlayerView.initialize(youtubePlayerListener);
         //youTubePlayerView.initializeWithWebUi(youtubePlayerListener,true);
         mViewModel.youTubePlayerInitializing();
-
+        youTubePlayerView.enterFullScreen();
 
         youTubePlayerView.getYouTubePlayerWhenReady(new YouTubePlayerCallback() {
             @Override

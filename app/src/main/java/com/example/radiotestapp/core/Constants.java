@@ -30,7 +30,7 @@ public class Constants {
     public static final String YOUTUBE_VIDEOID_240p = "m7PMRSM1TGo";
     public static final String YOUTUBE_VIDEOID_360p = "JT_NB-N5fjA";
     public static final String YOUTUBE_VIDEOID_480p = "kEaEUFxTzSA";
-    public static final String YOUTUBE_VIDEOID_720p = "1Kt33c_gdWw";
-    public static final String YOUTUBE_VIDEOID_1080p = "2CbEF5_GlWQ";
+    public static final String YOUTUBE_VIDEOID_720p = "D55dMO6MH0o";
+    public static final String YOUTUBE_VIDEOID_1080p = "FqN1Mhah3IM";
 
 }
