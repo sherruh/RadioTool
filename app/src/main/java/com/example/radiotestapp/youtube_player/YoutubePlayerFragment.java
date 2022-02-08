@@ -67,6 +67,7 @@ public class YoutubePlayerFragment extends Fragment {
                 youTubePlayer.play();*/
             }
         });
+
     }
 
     private String getVideoId() {
