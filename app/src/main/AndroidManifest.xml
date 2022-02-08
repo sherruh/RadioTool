@@ -33,7 +33,7 @@
         <activity android:name=".settings.SettingsActivity" />
         <activity
             android:name=".main.MainActivity"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape" android:configChanges="orientation|keyboardHidden"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

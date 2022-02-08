@@ -1,0 +1,581 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_main_selecor"
+    tools:context=".main.MainActivity">
+
+    <ImageView
+        android:id="@+id/image_settings_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/check_never_ending_main_activity"
+        app:layout_constraintTop_toTopOf="@id/check_never_ending_main_activity"
+        style="@style/SettingsButton"
+        android:layout_marginTop="0dp"
+        />
+
+
+    <View
+        android:id="@+id/view_main_parameters_frame_main_activity"
+        style="@style/ParametersFrameStyle"
+        android:layout_height="170dp"
+        android:layout_marginTop="0dp"
+        android:background="@drawable/bg_parameters_frame"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="164dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/view_main_parameters_frame_main_activity"
+        app:layout_constraintTop_toTopOf="@id/view_main_parameters_frame_main_activity"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="7dp"
+        android:text="Details"
+        style="@style/SubTitle"
+        />
+
+    <View
+        style="@style/SeparateLineHorizontal"
+        android:background="@drawable/bg_separate_lines"
+        app:layout_constraintTop_toTopOf="@id/view_main_parameters_frame_main_activity"
+        app:layout_constraintStart_toStartOf="@id/view_main_parameters_frame_main_activity"
+        android:layout_marginTop="27dp"
+        />
+    <View
+        style="@style/SeparateLineVertical"
+        app:layout_constraintTop_toTopOf="@id/view_main_parameters_frame_main_activity"
+        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toStartOf="@id/view_main_parameters_frame_main_activity"
+        android:layout_marginLeft="94dp"
+        />
+    <View
+        style="@style/SeparateLineVertical"
+        app:layout_constraintTop_toTopOf="@id/view_main_parameters_frame_main_activity"
+        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toStartOf="@id/view_main_parameters_frame_main_activity"
+        android:layout_marginLeft="188dp"
+        />
+
+    <View
+        style="@style/SeparateLineVertical"
+        app:layout_constraintTop_toTopOf="@id/view_main_parameters_frame_main_activity"
+        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toStartOf="@id/view_main_parameters_frame_main_activity"
+        android:layout_marginLeft="282dp"
+        />
+
+    <View
+        style="@style/SeparateLineHorizontal"
+        android:background="@drawable/bg_separate_lines"
+        app:layout_constraintTop_toTopOf="@id/view_main_parameters_frame_main_activity"
+        app:layout_constraintStart_toStartOf="@id/view_main_parameters_frame_main_activity"
+        android:layout_marginTop="70dp"/>
+
+    <View
+        style="@style/SeparateLineHorizontal"
+        android:background="@drawable/bg_separate_lines"
+        app:layout_constraintTop_toTopOf="@id/view_main_parameters_frame_main_activity"
+        app:layout_constraintStart_toStartOf="@id/view_main_parameters_frame_main_activity"
+        android:layout_marginTop="113dp"/>
+
+    <View
+        style="@style/SeparateLineHorizontal"
+        android:background="@drawable/bg_separate_lines"
+        app:layout_constraintTop_toTopOf="@id/view_main_parameters_frame_main_activity"
+        app:layout_constraintStart_toStartOf="@id/view_main_parameters_frame_main_activity"
+        android:layout_marginTop="156dp"/>
+
+    <TextView
+        android:id="@+id/text_mcc_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/view_main_parameters_frame_main_activity"
+        app:layout_constraintStart_toStartOf="@id/view_main_parameters_frame_main_activity"
+        android:layout_marginTop="35dp"
+        android:text="MCC:"
+        style="@style/ParamName"
+        />
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintStart_toEndOf="@id/text_mcc_main_activity"
+        app:layout_constraintTop_toTopOf="@id/text_mcc_main_activity"
+        android:layout_marginStart="30dp"
+        android:src="@drawable/ic_mcc"
+        />
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="30dp"
+        android:src="@drawable/ic_mnc"
+        app:layout_constraintStart_toEndOf="@id/text_mnc_main_activity"
+        app:layout_constraintTop_toTopOf="@id/text_mnc_main_activity" />
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintStart_toEndOf="@id/text_tech_main_activity"
+        app:layout_constraintTop_toTopOf="@id/text_tech_main_activity"
+        android:layout_marginStart="30dp"
+        android:src="@drawable/ic_tech"
+        />
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintStart_toEndOf="@id/text_tac_main_activity"
+        app:layout_constraintTop_toTopOf="@id/text_tac_main_activity"
+        android:layout_marginStart="17dp"
+        android:src="@drawable/ic_tac"
+        />
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintStart_toEndOf="@id/text_cid_main_activity"
+        app:layout_constraintTop_toTopOf="@id/text_cid_main_activity"
+        android:layout_marginStart="35dp"
+        android:src="@drawable/ic_cid"
+        />
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintStart_toEndOf="@id/text_enodeb_main_activity"
+        app:layout_constraintTop_toTopOf="@id/text_enodeb_main_activity"
+        android:layout_marginStart="20dp"
+        android:src="@drawable/ic_enodeb"
+        />
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintStart_toEndOf="@id/text_channel_main_activity"
+        app:layout_constraintTop_toTopOf="@id/text_channel_main_activity"
+        android:layout_marginStart="35dp"
+        android:src="@drawable/ic_channel"
+        />
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintStart_toEndOf="@id/text_psc_main_activity"
+        app:layout_constraintTop_toTopOf="@id/text_psc_main_activity"
+        android:layout_marginStart="5dp"
+        android:src="@drawable/ic_psc"
+        />
+
+
+    <ImageView
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginStart="24dp"
+        android:src="@drawable/ic_level"
+        app:layout_constraintStart_toEndOf="@id/text_enodeb_main_activity"
+        app:layout_constraintTop_toTopOf="@id/text_level_main_activity" />
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintStart_toEndOf="@id/text_cid_main_activity"
+        app:layout_constraintTop_toTopOf="@id/text_rsrq_main_activity"
+        android:layout_marginStart="35dp"
+        android:src="@drawable/ic_rsrq"
+        />
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintStart_toEndOf="@id/text_snr_main_activity"
+        app:layout_constraintTop_toTopOf="@id/text_snr_main_activity"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/ic_snr"
+        />
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintStart_toEndOf="@id/text_cqi_main_activity"
+        app:layout_constraintTop_toTopOf="@id/text_cqi_main_activity"
+        android:layout_marginStart="33dp"
+        android:src="@drawable/ic_cqi"
+        />
+
+    <TextView
+        android:id="@+id/text_mcc_value_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_mcc_main_activity"
+        app:layout_constraintStart_toStartOf="@id/text_mcc_main_activity"
+        android:text="--"
+        style="@style/ParamValue"
+        />
+
+    <TextView
+        android:id="@+id/text_mnc_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/text_mcc_main_activity"
+        app:layout_constraintStart_toStartOf="@id/view_main_parameters_frame_main_activity"
+        android:layout_marginStart="101dp"
+        android:text="MNC:"
+        style="@style/ParamName"
+        />
+    <TextView
+        android:id="@+id/text_mnc_value_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_mnc_main_activity"
+        app:layout_constraintStart_toStartOf="@id/text_mnc_main_activity"
+        android:text="--"
+        style="@style/ParamValue"
+        />
+
+    <TextView
+        android:id="@+id/text_tech_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/text_mcc_main_activity"
+        app:layout_constraintStart_toStartOf="@id/view_main_parameters_frame_main_activity"
+        android:layout_marginStart="195dp"
+        android:text="Tech:"
+        style="@style/ParamName"
+        />
+    <TextView
+        android:id="@+id/text_tech_value_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_tech_main_activity"
+        app:layout_constraintStart_toStartOf="@id/text_tech_main_activity"
+        android:text="--"
+        style="@style/ParamValue"
+        />
+
+    <TextView
+        android:id="@+id/text_tac_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/text_mcc_main_activity"
+        app:layout_constraintStart_toStartOf="@id/view_main_parameters_frame_main_activity"
+        android:text="TAC/LAC:"
+        android:layout_marginStart="289dp"
+        style="@style/ParamName"
+        />
+    <TextView
+        android:id="@+id/text_tac_value_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_tac_main_activity"
+        app:layout_constraintStart_toStartOf="@id/text_tac_main_activity"
+        android:text="--"
+        style="@style/ParamValue"
+        />
+
+    <TextView
+        android:id="@+id/text_enodeb_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/view_main_parameters_frame_main_activity"
+        app:layout_constraintStart_toStartOf="@id/text_mcc_main_activity"
+        android:text="ENodeB:"
+        style="@style/ParamName"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="77dp"
+        />
+    <TextView
+        android:id="@+id/text_enodeb_value_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_enodeb_main_activity"
+        app:layout_constraintStart_toStartOf="@id/text_enodeb_main_activity"
+        android:text="--"
+        style="@style/ParamValue"
+        />
+
+    <TextView
+        android:id="@+id/text_cid_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/view_main_parameters_frame_main_activity"
+        app:layout_constraintStart_toStartOf="@id/text_mnc_main_activity"
+        android:text="CID:"
+        style="@style/ParamName"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="77dp"
+        />
+    <TextView
+        android:id="@+id/text_cid_value_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_cid_main_activity"
+        app:layout_constraintStart_toStartOf="@id/text_cid_main_activity"
+        android:text="--"
+        style="@style/ParamValue"
+        />
+
+    <TextView
+        android:id="@+id/text_channel_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/text_cid_main_activity"
+        app:layout_constraintStart_toStartOf="@id/text_tech_main_activity"
+        android:text="CH:"
+        style="@style/ParamName"
+        android:layout_marginStart="0dp"
+        />
+    <TextView
+        android:id="@+id/text_channel_value_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_channel_main_activity"
+        app:layout_constraintStart_toStartOf="@id/text_channel_main_activity"
+        android:text="--"
+        style="@style/ParamValue"
+        />
+
+    <TextView
+        android:id="@+id/text_psc_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/text_channel_main_activity"
+        app:layout_constraintStart_toStartOf="@id/text_tac_main_activity"
+        android:text="PCI/PSC/BSIC:"
+        style="@style/ParamName"
+        android:textSize="7sp"
+        android:layout_marginStart="0dp"
+        />
+    <TextView
+        android:id="@+id/text_psc_value_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_psc_main_activity"
+        app:layout_constraintStart_toStartOf="@id/text_psc_main_activity"
+        android:text="--"
+        style="@style/ParamValue"
+        />
+
+    <TextView
+        android:id="@+id/text_level_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/view_main_parameters_frame_main_activity"
+        app:layout_constraintStart_toStartOf="@id/text_enodeb_main_activity"
+        android:text="RxLvl(dBm):"
+        style="@style/ParamName"
+        android:layout_marginTop="120dp"
+        android:layout_marginStart="0dp"
+        />
+
+    <TextView
+        android:id="@+id/text_level_value_main_activity"
+        style="@style/ParamValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="--"
+        app:layout_constraintStart_toStartOf="@id/text_level_main_activity"
+        app:layout_constraintTop_toBottomOf="@id/text_level_main_activity"/>
+
+    <TextView
+        android:id="@+id/text_rsrq_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/text_level_main_activity"
+        app:layout_constraintStart_toStartOf="@id/text_cid_main_activity"
+        android:text="C/I (dB):"
+        style="@style/ParamName"
+        android:layout_marginStart="0dp"
+        />
+    <TextView
+        android:id="@+id/text_rsrq_value_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_rsrq_main_activity"
+        app:layout_constraintStart_toStartOf="@id/text_rsrq_main_activity"
+        android:text="--"
+        style="@style/ParamValue"
+        />
+    <TextView
+        android:id="@+id/text_snr_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/text_rsrq_main_activity"
+        app:layout_constraintStart_toStartOf="@id/text_channel_main_activity"
+        android:text="SNR (dB):"
+        style="@style/ParamName"
+        android:layout_marginStart="0dp"
+        />
+    <TextView
+        android:id="@+id/text_snr_value_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_snr_main_activity"
+        app:layout_constraintStart_toStartOf="@id/text_snr_main_activity"
+        android:text="--"
+        style="@style/ParamValue"
+        />
+
+    <TextView
+        android:id="@+id/text_cqi_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/text_snr_main_activity"
+        app:layout_constraintStart_toStartOf="@id/text_psc_main_activity"
+        android:text="CQI:"
+        style="@style/ParamName"
+        android:layout_marginStart="0dp"
+        />
+    <TextView
+        android:id="@+id/text_cqi_value_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_cqi_main_activity"
+        app:layout_constraintStart_toStartOf="@id/text_cqi_main_activity"
+        android:text="--"
+        style="@style/ParamValue"
+        />
+
+    <Button
+        android:id="@+id/button_start_main_activity"
+        android:layout_width="94dp"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_button_start"
+        android:onClick="onButtonStartClick"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/check_never_ending_main_activity"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="25dp"
+        />
+
+    <Button
+        android:id="@+id/button_stop_main_activity"
+        android:layout_width="94dp"
+        android:layout_height="48dp"
+        android:onClick="onButtonStopClick"
+        android:visibility="gone"
+        android:background="@drawable/bg_button_stop"
+        app:layout_constraintTop_toBottomOf="@id/check_never_ending_main_activity"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="25dp"/>
+
+    <FrameLayout
+        android:id="@+id/frame_main_activity"
+        android:layout_width="613dp"
+        android:layout_height="380dp"
+        android:layout_marginTop="14dp"
+        android:background="@drawable/bg_rect_rounded"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/number_picker_delay_setter_main_activity"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progress_main_activity"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/frame_main_activity"
+        app:layout_constraintStart_toStartOf="@id/frame_main_activity"
+        app:layout_constraintEnd_toEndOf="@id/frame_main_activity"
+        app:layout_constraintBottom_toBottomOf="@id/frame_main_activity"/>
+
+    <ImageView
+        android:id="@+id/image_youtube_main_activity"
+        app:layout_constraintTop_toTopOf="@id/frame_main_activity"
+        app:layout_constraintStart_toStartOf="@id/frame_main_activity"
+        android:layout_width="375dp"
+        android:layout_height="210dp"
+        android:background="@drawable/bg_rect_rounded"
+        android:visibility="gone"
+        />
+    
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_additional_params_main_activity"
+        android:layout_width="375dp"
+        android:layout_height="140dp"
+        app:layout_constraintTop_toBottomOf="@id/frame_main_activity"
+        app:layout_constraintStart_toStartOf="@id/frame_main_activity"
+        android:layout_marginTop="14dp"
+        app:cardBackgroundColor="@color/colorParametersFrame"
+        app:cardElevation="0dp"
+        app:cardCornerRadius="6dp"
+        >
+
+        <FrameLayout
+            android:id="@+id/frame_additional_params_main_activity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/text_count_of_repeats_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Count of repeats"
+        style="@style/ParamName"
+        android:textSize="10sp"
+        android:layout_marginStart="-10dp"
+        app:layout_constraintStart_toStartOf="@id/number_picker_count_of_repeats_main_activity"
+        app:layout_constraintBottom_toTopOf="@id/number_picker_count_of_repeats_main_activity"
+        />
+
+    <NumberPicker
+        android:id="@+id/number_picker_count_of_repeats_main_activity"
+        android:theme="@style/NumberPickerText"
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/text_delay_main_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Timer delay, s"
+        style="@style/ParamName"
+        android:textSize="10sp"
+        android:layout_marginStart="-10dp"
+        app:layout_constraintStart_toStartOf="@id/number_picker_delay_setter_main_activity"
+        app:layout_constraintBottom_toTopOf="@id/number_picker_delay_setter_main_activity"
+        />
+    <NumberPicker
+        android:id="@+id/number_picker_delay_setter_main_activity"
+        android:theme="@style/NumberPickerText"
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
+        android:scaleY="1"
+        android:layout_marginBottom="20dp"
+        android:layout_marginStart="5dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <CheckBox
+        android:id="@+id/check_never_ending_main_activity"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        app:layout_constraintTop_toBottomOf="@id/number_picker_count_of_repeats_main_activity"
+        style="@style/CheckBox"/>
+
+    <TextView
+        style="@style/CheckBoxTitle"
+        android:layout_marginTop="40dp"
+        android:textSize="8sp"
+        android:text="Never ending"
+        app:layout_constraintTop_toBottomOf="@id/number_picker_count_of_repeats_main_activity"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
