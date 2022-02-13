@@ -1,13 +1,13 @@
 package com.example.radiotestapp.main;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.CellLocation;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -21,8 +21,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.ListPopupWindow;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
@@ -308,6 +306,16 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
     @Override
     public void onBackPressed() {
 
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+            int x = (int)event.getX();
+            int y = (int)event.getY();
+            Logger.d("Touched " + x + " " + y);
+
+        return super.onTouchEvent(event);
     }
 
     private void initYoutube() {

@@ -466,7 +466,7 @@
     <FrameLayout
         android:id="@+id/frame_main_activity"
         android:layout_width="613dp"
-        android:layout_height="380dp"
+        android:layout_height="350dp"
         android:layout_marginTop="14dp"
         android:background="@drawable/bg_rect_rounded"
         app:layout_constraintBottom_toBottomOf="parent"

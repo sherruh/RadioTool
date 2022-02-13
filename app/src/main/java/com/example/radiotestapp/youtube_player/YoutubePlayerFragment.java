@@ -1,9 +1,11 @@
 package com.example.radiotestapp.youtube_player;
 
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,6 +22,10 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerCallback;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
+import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 public class YoutubePlayerFragment extends Fragment {
 
@@ -28,6 +34,13 @@ public class YoutubePlayerFragment extends Fragment {
     private YouTubePlayerView youTubePlayerView;
     private YouTubePlayer mYouTubePlayer;
     private boolean isLoadedYet;
+    private boolean isQualitySet;
+    private int xSettings;
+    private int ySettings;
+    private int xQuality;
+    private int yQuality;
+    private int x1080;
+    private int y1080;
 
     public YoutubePlayerFragment(MainViewModel mainViewModel) {
         mViewModel = mainViewModel;
@@ -51,9 +64,37 @@ public class YoutubePlayerFragment extends Fragment {
     }
 
     private void playYoutube(){
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int height = displayMetrics.heightPixels;
+        int width = displayMetrics.widthPixels;
+
+
         initYoutubeListener();
         youTubePlayerView = getActivity().findViewById(R.id.youtube_player_advanced_youtube_player_fragment);
-        youTubePlayerView.initialize(youtubePlayerListener);
+        //youTubePlayerView.initialize(youtubePlayerListener);
+        int[] location = new int[2];
+        youTubePlayerView.getLocationOnScreen(location);
+        Logger.d("Touched window " + width + " " + height);
+        Logger.d("Touched window " + location[0] + " " + location[1]);
+        youTubePlayerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                youTubePlayerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                Logger.d("Touched width " + youTubePlayerView.getWidth());  ; //height is ready
+                Logger.d("Touched height " + youTubePlayerView.getHeight());
+                xSettings = (int)((double)location[0] + (double)youTubePlayerView.getWidth() * 0.94);
+                xQuality = (int)((double)location[0] + (double)youTubePlayerView.getWidth() * 0.78);
+                x1080 = (int)((double)location[0] + (double)youTubePlayerView.getWidth() * 0.78);
+                ySettings = (int)((double)location[1] + (double)youTubePlayerView.getHeight() * 0.9);
+                yQuality = (int)((double)location[1] + (double)youTubePlayerView.getHeight() * 0.78);
+                y1080 = (int)((double)location[1] + (double)youTubePlayerView.getHeight() * 0.43);
+
+            }
+        });
+
+
+        youTubePlayerView.addYouTubePlayerListener(youtubePlayerListener);
         //youTubePlayerView.initializeWithWebUi(youtubePlayerListener,true);
         mViewModel.youTubePlayerInitializing();
 
@@ -116,20 +157,23 @@ public class YoutubePlayerFragment extends Fragment {
 
             @Override
             public void onCurrentSecond(YouTubePlayer youTubePlayer, float v) {
-                if (v > 0.0) setInitialBuffering(false);
+                if (isQualitySet && v > 0.0) setInitialBuffering(false);
             }
 
             @Override
             public void onPlaybackQualityChange(YouTubePlayer youTubePlayer, PlayerConstants.PlaybackQuality playbackQuality) {
-                mViewModel.youtubeQualityChanged(playbackQuality);
+                if (isQualitySet) mViewModel.youtubeQualityChanged(playbackQuality);
             }
 
             @Override
             public void onVideoLoadedFraction(YouTubePlayer youTubePlayer, float v) {
                 Logger.d("Loaded percent" + v);
                 if (v == 1.0 && !isLoadedYet){
-                    mViewModel.youtubeVideoLoaded();
-                    isLoadedYet = true;
+                    if (isQualitySet){
+                        mViewModel.youtubeVideoLoaded();
+                        isLoadedYet = true;
+                    }
+
                 }
             }
 
@@ -137,22 +181,36 @@ public class YoutubePlayerFragment extends Fragment {
             public void onStateChange(YouTubePlayer youTubePlayer, PlayerConstants.PlayerState playerState) {
                 switch (playerState){
                     case ENDED:{
-                        mViewModel.youtubePlaybackEnded();
-                        onDestroy();
+                        if (isQualitySet){
+                            mViewModel.youtubePlaybackEnded();
+                            onDestroy();
+                        }
                         break;
                     }
                     case BUFFERING:{
-                        mViewModel.startBuffering(isInitialBuffering());
-                        break;
+                        Logger.d("Buffering now system " + System.currentTimeMillis());
+                        if (isQualitySet){
+                            //mViewModel.startBuffering(isInitialBuffering());
+                            break;
+                        }
                     }
                     case PLAYING:{
-                        mViewModel.startPlayingVideo(isInitialBuffering());
+                        if (isQualitySet){
+                            mViewModel.startPlayingVideo(isInitialBuffering());
+                        }else {
+                            youTubePlayer.pause();
+                            youTubePlayer.seekTo(0L);
+                            isQualitySet = true;
+                            touchSettings();
+                        }
+
                         break;
                     }
                     case VIDEO_CUED:{
                         mViewModel.videoCued();
                         youTubePlayer.play();
                         break;
+
                     }
                     case UNKNOWN:{
                         Toaster.showShort(getContext(), "UNKNOWN!");
@@ -163,6 +221,62 @@ public class YoutubePlayerFragment extends Fragment {
 
         };
     }
+
+    private void touchSettings() {
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    Runtime.getRuntime().exec("/system/bin/input tap" + " " + xSettings + " " + ySettings);
+                    touchQuality();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        },3000L);
+    }
+
+    private void touchQuality() {
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    Runtime.getRuntime().exec("/system/bin/input tap " + xQuality + " " + yQuality);
+                    touch1080();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        },3000L);
+    }
+
+    private void touch1080() {
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    Runtime.getRuntime().exec("/system/bin/input tap " + x1080 +" " + y1080);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                startPlayWithSetQuality();
+            }
+        },3000L);
+
+    }
+
+    private void startPlayWithSetQuality() {
+        new Timer().schedule(new TimerTask() {
+
+            @Override
+            public void run() {
+                Logger.d("Buffering now " + System.currentTimeMillis());
+                mViewModel.startBuffering(true);
+                mYouTubePlayer.play();
+            }
+        },100L);
+    }
+
 
     @Override
     public void onDestroy() {

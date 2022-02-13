@@ -545,7 +545,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
                 String.valueOf(finishInitYoutubeTime - startInitYoutubeTime),EState.YOUTUBE_TEST));
         App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
         initTimeLiveData.setValue(finishInitYoutubeTime - startInitYoutubeTime);
-        timerYouTubeBuffering.cancel();
+        //timerYouTubeBuffering.cancel();
         timerYouTubeInitial.cancel();
     }
 
