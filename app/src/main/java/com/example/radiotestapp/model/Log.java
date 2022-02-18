@@ -46,6 +46,16 @@ public class Log implements Cloneable {
     private EState logState;
     private EYoutubeState youtubeState;
 
+    private boolean isUploaded;
+
+    public boolean isUploaded() {
+        return isUploaded;
+    }
+
+    public void setUploaded(boolean uploaded) {
+        isUploaded = uploaded;
+    }
+
     public void setLogId(String logId) {
         this.logId = logId;
     }

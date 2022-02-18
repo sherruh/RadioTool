@@ -119,7 +119,8 @@ public class YoutubePlayerFragment extends Fragment {
         /*SettingsParameter settingsParameter = App.localStorage.getSettingsParameter(Constants.YOUTUBE_URL);
         if (settingsParameter != null) videoId = settingsParameter.getValue();
         else videoId = "fimmQNc6_uI";*/
-        if (App.localStorage.getSettingsParameter(Constants.YOUTUBE_QUALITY).getValue() == null)
+        if (App.localStorage.getSettingsParameter(Constants.YOUTUBE_QUALITY) == null ||
+                App.localStorage.getSettingsParameter(Constants.YOUTUBE_QUALITY).getValue() == null)
             return videoId;
         switch (App.localStorage.getSettingsParameter(Constants.YOUTUBE_QUALITY).getValue()){
             case Constants.YOUTUBE_QUALITY_AUTO:

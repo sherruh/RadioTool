@@ -73,4 +73,14 @@ public class LocalStorage implements ILocalStorage {
     public LogResult getLogResultById(String id) {
         return dao.getLogResultById(id);
     }
+
+    @Override
+    public void getUnUploadedLogs(Callback<List<Log>> callback) {
+        callback.onSuccess(dao.getUnUploadedLogs());
+    }
+
+    @Override
+    public void getUnUploadedEvents(Callback<List<Event>> callback) {
+        callback.onSuccess(dao.getUnUploadedEvents());
+    }
 }

@@ -25,10 +25,10 @@ public interface Dao {
     @Query("SELECT * FROM settings_parameter WHERE name = :name")
     SettingsParameter getSettingParameter(String name);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     List<Long> saveLogs(List<Log> logs);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     List<Long> saveEvents(List<Event> events);
 
     @Query("SELECT * FROM log WHERE id = :id")
@@ -39,4 +39,10 @@ public interface Dao {
 
     @Query("SELECT * FROM event WHERE logId = :logId")
     List<Event> getEventsByLogId(String logId);
+
+    @Query("SELECT * FROM log WHERE isUploaded = 0")
+    List<Log> getUnUploadedLogs();
+
+    @Query("SELECT * FROM event WHERE isUploaded = 0")
+    List<Event> getUnUploadedEvents();
 }

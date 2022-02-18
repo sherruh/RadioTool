@@ -748,6 +748,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
                 }
             }
         }, timerDelay * 1000);
+        App.logRepository.saveLogListsForCurrentSession();
     }
 
     private boolean isNetworkConnected() {

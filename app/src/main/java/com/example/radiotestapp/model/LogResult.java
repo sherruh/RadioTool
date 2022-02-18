@@ -458,5 +458,14 @@ public class LogResult {
     private String downSR;
     private String uploadThrput;
     private String uploadSR;
+    private boolean isUploaded;
 
+
+    public boolean isUploaded() {
+        return isUploaded;
+    }
+
+    public void setUploaded(boolean uploaded) {
+        isUploaded = uploaded;
+    }
 }

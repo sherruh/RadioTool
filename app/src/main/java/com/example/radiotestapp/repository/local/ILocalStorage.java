@@ -18,4 +18,6 @@ public interface ILocalStorage {
     List<Event> getEventsByLogId(String logId);
     Long saveLogResult(LogResult logResult);
     LogResult getLogResultById(String id);
+    void getUnUploadedLogs(Callback<List<Log>> callback);
+    void getUnUploadedEvents(Callback<List<Event>> callback);
 }

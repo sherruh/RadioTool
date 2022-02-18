@@ -16,6 +16,7 @@ import com.example.radiotestapp.repository.local.ILocalLogRepository;
 import com.example.radiotestapp.repository.local.LogFileWriter;
 import com.example.radiotestapp.utils.Logger;
 import com.example.radiotestapp.utils.SingleLiveEvent;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -27,7 +28,9 @@ public class LogRepository {
     private ILocalLogRepository localLogRepository = new LogFileWriter();
 
     private List<Log> logList = new ArrayList();
+    private List<Log> logListForCurrentSession = new ArrayList();
     private List<Event> eventList = new ArrayList();
+    private List<Event> eventListForCurrentSession = new ArrayList();
     public SingleLiveEvent<Void> updateLevelListEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> updateUploadThroughputListEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> updateDownloadThroughputListEvent = new SingleLiveEvent<>();
@@ -308,6 +311,7 @@ public class LogRepository {
                 e.printStackTrace();
             }
             eventList.add(currentEvent);
+            eventListForCurrentSession.add(currentEvent);
         }
     }
 
@@ -322,6 +326,7 @@ public class LogRepository {
                 e.printStackTrace();
             }
             logList.add(currentLog);
+            logListForCurrentSession.add(currentLog);
         }
     }
 
@@ -329,6 +334,38 @@ public class LogRepository {
         localLogRepository.createLogFile(logId);
         logList.clear();
         eventList.clear();
+        clearLogListForCurrentSession();
+    }
+
+    private void clearLogListForCurrentSession(){
+        logListForCurrentSession.clear();
+        eventListForCurrentSession.clear();
+    }
+
+    public void saveLogListsForCurrentSession(){
+        App.localStorage.saveEvents(eventListForCurrentSession, new Callback<List<Long>>() {
+            @Override
+            public void onSuccess(List<Long> longs) {
+                eventListForCurrentSession.clear();
+                uploadToServerLogs();
+            }
+
+            @Override
+            public void onFailure(String s) {
+
+            }
+        });
+        App.localStorage.saveLogs(logListForCurrentSession, new Callback<List<Long>>() {
+            @Override
+            public void onSuccess(List<Long> longs) {
+                logListForCurrentSession.clear();
+            }
+
+            @Override
+            public void onFailure(String s) {
+
+            }
+        });
     }
 
     public void closeLogFile(Callback<List<Long>> callback){
@@ -378,5 +415,37 @@ public class LogRepository {
             uploadThroughputLiveData.postValue(ulThroughput);
             addToUploadThroughputList(ulThroughput);
         }
+    }
+
+    public void uploadToServerLogs() {
+        List<Log> unUploadedLogs = new ArrayList<>();
+        List<Event> unUploadedEvents = new ArrayList<>();
+        App.localStorage.getUnUploadedLogs(new Callback<List<Log>>() {
+            @Override
+            public void onSuccess(List<Log> logs) {
+                unUploadedLogs.addAll(logs);
+                Logger.d("UnUploaded logs " + unUploadedLogs.size());
+                Gson f = new Gson();
+                Logger.d("UnUploaded " + f.toJson(unUploadedLogs.get(unUploadedLogs.size() - 1)));
+            }
+
+            @Override
+            public void onFailure(String s) {
+
+            }
+        });
+        App.localStorage.getUnUploadedEvents(new Callback<List<Event>>() {
+            @Override
+            public void onSuccess(List<Event> events) {
+                unUploadedEvents.addAll(events);
+                Gson f = new Gson();
+                Logger.d("UnUploaded " + f.toJson(unUploadedEvents.get(unUploadedEvents.size() - 1)));
+            }
+
+            @Override
+            public void onFailure(String s) {
+
+            }
+        });
     }
 }

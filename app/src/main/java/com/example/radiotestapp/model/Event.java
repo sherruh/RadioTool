@@ -31,6 +31,16 @@ public class Event implements Cloneable {
     private String parameter;
     private String parameter2;
 
+    private boolean isUploaded;
+
+    public boolean isUploaded() {
+        return isUploaded;
+    }
+
+    public void setUploaded(boolean uploaded) {
+        isUploaded = uploaded;
+    }
+
     public String getParameter2() {
         return parameter2;
     }
