@@ -8,6 +8,7 @@ android {
         applicationId "com.example.radiotestapp"
         minSdkVersion 19
         targetSdkVersion 28
+        multiDexEnabled true
         versionCode 1
         versionName "1.0"
 
@@ -73,4 +74,16 @@ dependencies {
 
     //GSON
     implementation 'com.google.code.gson:gson:2.9.0'
+
+    //Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.8.1'
+    implementation 'com.squareup.retrofit2:converter-gson:2.8.1'
+    implementation 'com.squareup.okhttp:okhttp:2.7.5'
+
+    //okhttp
+    implementation 'com.squareup.okhttp3:okhttp:4.9.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.4.1'
+    implementation 'com.squareup.okhttp3:okhttp-urlconnection:4.4.1'
+
+    implementation 'com.android.support:multidex:1.0.3'
 }

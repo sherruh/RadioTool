@@ -14,6 +14,8 @@ import com.example.radiotestapp.model.Event;
 import com.example.radiotestapp.model.Log;
 import com.example.radiotestapp.repository.local.ILocalLogRepository;
 import com.example.radiotestapp.repository.local.LogFileWriter;
+import com.example.radiotestapp.repository.remote.ApiClient;
+import com.example.radiotestapp.repository.remote.IApiClient;
 import com.example.radiotestapp.utils.Logger;
 import com.example.radiotestapp.utils.SingleLiveEvent;
 import com.google.gson.Gson;
@@ -26,6 +28,7 @@ import java.util.List;
 public class LogRepository {
 
     private ILocalLogRepository localLogRepository = new LogFileWriter();
+    private IApiClient apiClient = new ApiClient();
 
     private List<Log> logList = new ArrayList();
     private List<Log> logListForCurrentSession = new ArrayList();
@@ -427,6 +430,17 @@ public class LogRepository {
                 Logger.d("UnUploaded logs " + unUploadedLogs.size());
                 Gson f = new Gson();
                 Logger.d("UnUploaded " + f.toJson(unUploadedLogs.get(unUploadedLogs.size() - 1)));
+                apiClient.sendLog(unUploadedLogs.get(unUploadedLogs.size() - 1), new Callback<String>() {
+                    @Override
+                    public void onSuccess(String s) {
+
+                    }
+
+                    @Override
+                    public void onFailure(String s) {
+
+                    }
+                });
             }
 
             @Override
