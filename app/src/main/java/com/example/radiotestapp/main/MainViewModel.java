@@ -808,9 +808,12 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
 
     public void youtubeVideoLoaded() {
         finishYoutubeVideoLoadingTime = System.currentTimeMillis();
+        long loadedKbits = TrafficStats.getTotalRxBytes() / 1024 * 8;
         eventLogs.add(new Event( logId,EEvents.YFL,finishYoutubeVideoLoadingTime,
-                String.valueOf(finishYoutubeVideoLoadingTime - startBufferingTime),EState.YOUTUBE_TEST));
+                String.valueOf(finishYoutubeVideoLoadingTime - startBufferingTime)
+                ,String.valueOf(loadedKbits - startBufferingKbits),EState.YOUTUBE_TEST));
         App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
         Logger.d("Loaded percent " + String.valueOf(finishYoutubeVideoLoadingTime - startBufferingTime));
+        Logger.d("Loaded percent " + String.valueOf(loadedKbits - startBufferingKbits));
     }
 }
