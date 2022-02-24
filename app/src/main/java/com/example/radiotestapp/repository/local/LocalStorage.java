@@ -6,6 +6,7 @@ import com.example.radiotestapp.model.LogResult;
 import com.example.radiotestapp.model.SettingsParameter;
 import com.example.radiotestapp.repository.Callback;
 import com.example.radiotestapp.repository.local.db.Dao;
+import com.example.radiotestapp.utils.Logger;
 
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -33,6 +34,7 @@ public class LocalStorage implements ILocalStorage {
     public void saveLogs(List<Log> logs, Callback<List<Long>> callback) {
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
+            Logger.d("DaoHere " + System.currentTimeMillis() );
             List<Long> l = dao.saveLogs(logs);
             if (l.size() > 0) callback.onSuccess(l);
             else callback.onFailure("Didn't save to database");

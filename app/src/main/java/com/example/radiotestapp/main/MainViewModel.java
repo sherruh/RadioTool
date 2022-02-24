@@ -728,6 +728,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
             @Override
             public void run() {
                 timerDelayBeforeRestart = null;
+                Logger.d("checkWhetherToStartYoutubePlayback here " + countOfRepeats);
                 if (countOfRepeats > 0 && isLogging.getValue()){
                     if (!isNeverEnding){
                         countOfRepeats--;

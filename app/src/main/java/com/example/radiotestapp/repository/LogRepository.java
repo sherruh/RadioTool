@@ -23,6 +23,8 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 
 public class LogRepository {
@@ -350,7 +352,7 @@ public class LogRepository {
             @Override
             public void onSuccess(List<Long> longs) {
                 eventListForCurrentSession.clear();
-                uploadToServerLogs();
+
             }
 
             @Override
@@ -362,6 +364,10 @@ public class LogRepository {
             @Override
             public void onSuccess(List<Long> longs) {
                 logListForCurrentSession.clear();
+                Executor executor = Executors.newSingleThreadExecutor();
+                executor.execute(() -> {
+                    uploadToServerLogs();
+                });
             }
 
             @Override
@@ -384,7 +390,7 @@ public class LogRepository {
 
             }
         });
-        App.localStorage.saveLogs(logList,callback);
+        //App.localStorage.saveLogs(logList,callback);
     }
 
     public void addToLevelList(String level) {
@@ -422,7 +428,6 @@ public class LogRepository {
 
     public void uploadToServerLogs() {
         List<Log> unUploadedLogs = new ArrayList<>();
-        List<Event> unUploadedEvents = new ArrayList<>();
         App.localStorage.getUnUploadedLogs(new Callback<List<Log>>() {
             @Override
             public void onSuccess(List<Log> logs) {
@@ -448,6 +453,11 @@ public class LogRepository {
 
             }
         });
+
+    }
+
+    public void uploadToServerEvents(){
+        List<Event> unUploadedEvents = new ArrayList<>();
         App.localStorage.getUnUploadedEvents(new Callback<List<Event>>() {
             @Override
             public void onSuccess(List<Event> events) {

@@ -233,6 +233,7 @@ public class MainActivity extends AppCompatActivity implements CustomPhoneStateL
             }
             buttonStop.setVisibility(View.GONE);
             buttonStart.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
             initGraphParamsFragment();
         });
         viewModel.exitClickEvent.observe(this,v -> this.finish());

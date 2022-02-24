@@ -13,7 +13,8 @@ import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.GET;
+import retrofit2.http.Body;
+import retrofit2.http.POST;
 
 public class ApiClient implements IApiClient {
 
@@ -42,7 +43,7 @@ public class ApiClient implements IApiClient {
 
     @Override
     public void sendLog(Log log, Callback<String> callback) {
-        Call<String> call = client.sendLog(log.getLogId());
+        Call<String> call = client.sendLog(log);
         call.enqueue(new retrofit2.Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -60,6 +61,7 @@ public class ApiClient implements IApiClient {
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 Logger.d("ResponseServer Failure" + t.getMessage());
+                callback.onFailure(t.getMessage());
             }
         });
     }
@@ -71,7 +73,7 @@ public class ApiClient implements IApiClient {
 
     private interface RadioTestOnlineClient {
 
-        @GET("save/Batken")
-        Call<String> sendLog(String logId);
+        @POST("save/Batken")
+        Call<String> sendLog(@Body Log log);
     }
 }
