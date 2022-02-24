@@ -434,11 +434,14 @@ public class LogRepository {
                 unUploadedLogs.addAll(logs);
                 Logger.d("UnUploaded logs " + unUploadedLogs.size());
                 Gson f = new Gson();
-                Logger.d("UnUploaded " + f.toJson(unUploadedLogs.get(unUploadedLogs.size() - 1)));
+                //Logger.d("UnUploaded " + f.toJson(unUploadedLogs.get(unUploadedLogs.size() - 1)));
+                Logger.d("UnUploaded" + String.valueOf(unUploadedLogs.get(unUploadedLogs.size() - 1).isUploaded()));
                 apiClient.sendLog(unUploadedLogs.get(unUploadedLogs.size() - 1), new Callback<String>() {
                     @Override
                     public void onSuccess(String s) {
-
+                        /*App.localStorage.setLogUploaded(unUploadedLogs.get(unUploadedLogs.size() - 1).getId());
+                        Log currentLog = App.localStorage.getLogById(unUploadedLogs.get(unUploadedLogs.size() - 1).getId());
+                        Logger.d("UnUploaded" + String.valueOf(currentLog.isUploaded()));*/
                     }
 
                     @Override

@@ -85,4 +85,9 @@ public class LocalStorage implements ILocalStorage {
     public void getUnUploadedEvents(Callback<List<Event>> callback) {
         callback.onSuccess(dao.getUnUploadedEvents());
     }
+
+    @Override
+    public void setLogUploaded(long id) {
+        dao.setLogUploaded(id);
+    }
 }

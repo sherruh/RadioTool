@@ -20,4 +20,5 @@ public interface ILocalStorage {
     LogResult getLogResultById(String id);
     void getUnUploadedLogs(Callback<List<Log>> callback);
     void getUnUploadedEvents(Callback<List<Event>> callback);
+    void setLogUploaded(long id);
 }
