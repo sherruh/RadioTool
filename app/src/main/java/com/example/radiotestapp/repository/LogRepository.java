@@ -18,7 +18,6 @@ import com.example.radiotestapp.repository.remote.ApiClient;
 import com.example.radiotestapp.repository.remote.IApiClient;
 import com.example.radiotestapp.utils.Logger;
 import com.example.radiotestapp.utils.SingleLiveEvent;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -29,13 +28,13 @@ import java.util.concurrent.Executors;
 
 public class LogRepository {
 
-    private ILocalLogRepository localLogRepository = new LogFileWriter();
-    private IApiClient apiClient = new ApiClient();
+    private final ILocalLogRepository localLogRepository = new LogFileWriter();
+    private final IApiClient apiClient = new ApiClient();
 
-    private List<Log> logList = new ArrayList();
-    private List<Log> logListForCurrentSession = new ArrayList();
-    private List<Event> eventList = new ArrayList();
-    private List<Event> eventListForCurrentSession = new ArrayList();
+    private final List<Log> logList = new ArrayList();
+    private final List<Log> logListForCurrentSession = new ArrayList();
+    private final List<Event> eventList = new ArrayList();
+    private final List<Event> eventListForCurrentSession = new ArrayList();
     public SingleLiveEvent<Void> updateLevelListEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> updateUploadThroughputListEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> updateDownloadThroughputListEvent = new SingleLiveEvent<>();
@@ -352,7 +351,6 @@ public class LogRepository {
             @Override
             public void onSuccess(List<Long> longs) {
                 eventListForCurrentSession.clear();
-
             }
 
             @Override
@@ -433,22 +431,21 @@ public class LogRepository {
             public void onSuccess(List<Log> logs) {
                 unUploadedLogs.addAll(logs);
                 Logger.d("UnUploaded logs " + unUploadedLogs.size());
-                Gson f = new Gson();
-                //Logger.d("UnUploaded " + f.toJson(unUploadedLogs.get(unUploadedLogs.size() - 1)));
-                Logger.d("UnUploaded" + String.valueOf(unUploadedLogs.get(unUploadedLogs.size() - 1).isUploaded()));
-                apiClient.sendLog(unUploadedLogs.get(unUploadedLogs.size() - 1), new Callback<String>() {
-                    @Override
-                    public void onSuccess(String s) {
-                        /*App.localStorage.setLogUploaded(unUploadedLogs.get(unUploadedLogs.size() - 1).getId());
-                        Log currentLog = App.localStorage.getLogById(unUploadedLogs.get(unUploadedLogs.size() - 1).getId());
-                        Logger.d("UnUploaded" + String.valueOf(currentLog.isUploaded()));*/
-                    }
+                for (Log log : unUploadedLogs){
+                    apiClient.sendLog(log, new Callback<String>() {
+                        @Override
+                        public void onSuccess(String s) {
+                            App.localStorage.setLogUploaded(log.getId());
+                            Logger.d("UnUploaded " + log.getLogId() + " " + log.getId());
+                        }
 
-                    @Override
-                    public void onFailure(String s) {
+                        @Override
+                        public void onFailure(String s) {
 
-                    }
-                });
+                        }
+                    });
+                }
+                uploadToServerEvents();
             }
 
             @Override
@@ -465,8 +462,18 @@ public class LogRepository {
             @Override
             public void onSuccess(List<Event> events) {
                 unUploadedEvents.addAll(events);
-                Gson f = new Gson();
-                Logger.d("UnUploaded " + f.toJson(unUploadedEvents.get(unUploadedEvents.size() - 1)));
+                Event event = unUploadedEvents.get(unUploadedEvents.size() - 1);
+                apiClient.sendEvent(event, new Callback<String>() {
+                    @Override
+                    public void onSuccess(String s) {
+
+                    }
+
+                    @Override
+                    public void onFailure(String s) {
+
+                    }
+                });
             }
 
             @Override

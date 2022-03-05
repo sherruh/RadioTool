@@ -7,14 +7,24 @@ import com.example.radiotestapp.enums.EEvents;
 import com.example.radiotestapp.enums.EState;
 import com.example.radiotestapp.enums.EYoutubeState;
 import com.example.radiotestapp.utils.DateConverter;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 @Entity(tableName = "log")
 public class Log implements Cloneable {
+    @SerializedName("id")
+    @Expose
     @PrimaryKey
     private long id;
 
+    @SerializedName("logId")
+    @Expose
     private String logId;
+    @SerializedName("date")
+    @Expose
     private long date;
+    @SerializedName("longitude")
+    @Expose
     private double longitude;
     private double latitude;
     private int altitude;

@@ -4,7 +4,11 @@ import com.example.radiotestapp.model.Event;
 import com.example.radiotestapp.model.Log;
 import com.example.radiotestapp.repository.Callback;
 import com.example.radiotestapp.utils.Logger;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -13,16 +17,18 @@ import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 import retrofit2.http.Body;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 public class ApiClient implements IApiClient {
 
-    private final String BASE_URL = "https://172.27.160.83";
+    private final String BASE_URL = "https://r-mediation.o.kg/";
 
     private OkHttpClient okHttpClient = new OkHttpClient()
             .newBuilder()
-            .addInterceptor(provideLoggingInterceptor())
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
@@ -33,9 +39,14 @@ public class ApiClient implements IApiClient {
         return httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
     }
 
+    Gson gson = new GsonBuilder()
+            .setLenient()
+            .create();
+
     Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl(BASE_URL + "/")
-            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(BASE_URL /*+ "/"*/)
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .client(okHttpClient)
             .build();
 
@@ -43,18 +54,57 @@ public class ApiClient implements IApiClient {
 
     @Override
     public void sendLog(Log log, Callback<String> callback) {
-        Call<String> call = client.sendLog(log);
+        HashMap<String,String> logMap = new HashMap<>();
+        logMap.put("altitude", String.valueOf(log.getAltitude()));
+        logMap.put("ber", String.valueOf(log.getBer()));
+        logMap.put("bsic", String.valueOf(log.getBsic()));
+        logMap.put("cellId", String.valueOf(log.getCellId()));
+        logMap.put("channel", String.valueOf(log.getChannel()));
+        logMap.put("cqi", String.valueOf(log.getCqi()));
+        logMap.put("date", String.valueOf(log.getDate()));
+        logMap.put("dlThrput", String.valueOf(log.getDlThrput()));
+        logMap.put("eNodeB", String.valueOf(log.getENodeB()));
+        logMap.put("ecNO", String.valueOf(log.getEcNO()));
+        logMap.put("id", String.valueOf(log.getId()));
+        logMap.put("isUploaded", String.valueOf(log.isUploaded()));
+        logMap.put("latitude", String.valueOf(log.getLatitude()));
+        logMap.put("logId", String.valueOf(log.getLogId()));
+        logMap.put("logState", String.valueOf(log.getLogState()));
+        logMap.put("longitude", String.valueOf(log.getLongitude()));
+        logMap.put("mcc", String.valueOf(log.getMcc()));
+        logMap.put("mnc", String.valueOf(log.getMnc()));
+        logMap.put("pci", String.valueOf(log.getPci()));
+        logMap.put("ping", String.valueOf(log.getPing()));
+        logMap.put("psc", String.valueOf(log.getPsc()));
+        logMap.put("rscp", String.valueOf(log.getRscp()));
+        logMap.put("rsrp", String.valueOf(log.getRsrp()));
+        logMap.put("rsrq", String.valueOf(log.getRsrq()));
+        logMap.put("rxLevel", String.valueOf(log.getRxLevel()));
+        logMap.put("snr", String.valueOf(log.getSnr()));
+        logMap.put("tacLac", String.valueOf(log.getTacLac()));
+        logMap.put("technology", String.valueOf(log.getTechnology()));
+        logMap.put("ulThrput", String.valueOf(log.getUlThrput()));
+        logMap.put("youtubeState", String.valueOf(log.getYoutubeState()));
+        logMap.put("youtubeQuality", String.valueOf(log.getYoutubeResolution()));
+
+        Logger.d("ResponseServer " + logMap.toString());
+
+        ArrayList<HashMap<String, String>> logMaps = new ArrayList<>();
+        logMaps.add(logMap);
+
+        Call<String> call = client.sendLog("Sherruh",logMap);
         call.enqueue(new retrofit2.Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()){
                     if (response.body() !=null){
                         Logger.d("ResponseServer not null" + response.body());
+                        callback.onSuccess("");
                     }else {
-                        Logger.d("ResponseServer is null" + response.body());
+                        Logger.d("ResponseServer is null" + response.message());
                     }
                 }else {
-                    Logger.d("ResponseServer erroe" + response.code());
+                    Logger.d("ResponseServer error " + response.code());
                 }
             }
 
@@ -68,12 +118,74 @@ public class ApiClient implements IApiClient {
 
     @Override
     public void sendEvent(Event event, Callback<String> callback) {
+        HashMap<String,String> eventMap = new HashMap<>();
 
+        eventMap.put("altitude", "true");//Event indicator
+        eventMap.put("ber", String.valueOf(event.getEventTime()));
+        eventMap.put("bsic", String.valueOf(event.getEvent()));
+        eventMap.put("cellId", String.valueOf(event.getParameter()));
+        eventMap.put("channel", String.valueOf(event.getParameter2()));
+        eventMap.put("cqi", "");
+        eventMap.put("date", "");
+        eventMap.put("dlThrput", "");
+        eventMap.put("eNodeB", "");
+        eventMap.put("ecNO", "");
+        eventMap.put("id", String.valueOf(event.getId()));
+        eventMap.put("isUploaded", String.valueOf(event.isUploaded()));
+        eventMap.put("latitude", "");
+        eventMap.put("logId", String.valueOf(event.getLogId()));
+        eventMap.put("logState", String.valueOf(event.getState()));
+        eventMap.put("longitude", "");
+        eventMap.put("mcc", "");
+        eventMap.put("mnc", "");
+        eventMap.put("pci", "");
+        eventMap.put("ping", "");
+        eventMap.put("psc", "");
+        eventMap.put("rscp", "");
+        eventMap.put("rsrp", "");
+        eventMap.put("rsrq", "");
+        eventMap.put("rxLevel", "");
+        eventMap.put("snr", "");
+        eventMap.put("tacLac", "");
+        eventMap.put("technology", "");
+        eventMap.put("ulThrput", "");
+        eventMap.put("youtubeState", "");
+        eventMap.put("youtubeQuality", "");
+
+        Logger.d("ResponseServer Event " + eventMap.toString());
+
+        ArrayList<HashMap<String,String>> eventMaps = new ArrayList<>();
+        eventMaps.add(eventMap);
+
+        Call<String> call = client.sendLog("Sherruh",eventMap);
+        call.enqueue(new retrofit2.Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()){
+                    if (response.body() !=null){
+                        Logger.d("ResponseServer Event not null" + response.body());
+                    }else {
+                        Logger.d("ResponseServer Event is null" + response.message());
+                    }
+                }else {
+                    Logger.d("ResponseServer Event error " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Logger.d("ResponseServer Event Failure" + t.getMessage());
+                callback.onFailure(t.getMessage());
+            }
+        });
     }
 
     private interface RadioTestOnlineClient {
 
-        @POST("save/Batken")
-        Call<String> sendLog(@Body Log log);
+        @POST("save")
+        @Headers({ "Content-Type: application/json;charset=UTF-8"})
+        Call<String> sendLog(
+                @Query("keyCommand") String zipCode,
+                @Body HashMap<String, String> logMap);
     }
 }
