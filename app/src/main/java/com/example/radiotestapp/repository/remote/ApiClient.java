@@ -164,6 +164,7 @@ public class ApiClient implements IApiClient {
                 if (response.isSuccessful()){
                     if (response.body() !=null){
                         Logger.d("ResponseServer Event not null" + response.body());
+                        callback.onSuccess("");
                     }else {
                         Logger.d("ResponseServer Event is null" + response.message());
                     }

@@ -49,4 +49,7 @@ public interface Dao {
     @Query("UPDATE log SET isUploaded = 1  WHERE id = :id")
     void setLogUploaded(long id);
 
+    @Query("UPDATE event SET isUploaded = 1  WHERE id = :id")
+    void setEventUploaded(long id);
+
 }

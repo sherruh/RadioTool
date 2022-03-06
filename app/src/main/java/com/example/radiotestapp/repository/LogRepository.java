@@ -457,29 +457,35 @@ public class LogRepository {
     }
 
     public void uploadToServerEvents(){
-        List<Event> unUploadedEvents = new ArrayList<>();
-        App.localStorage.getUnUploadedEvents(new Callback<List<Event>>() {
-            @Override
-            public void onSuccess(List<Event> events) {
-                unUploadedEvents.addAll(events);
-                Event event = unUploadedEvents.get(unUploadedEvents.size() - 1);
-                apiClient.sendEvent(event, new Callback<String>() {
-                    @Override
-                    public void onSuccess(String s) {
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            List<Event> unUploadedEvents = new ArrayList<>();
+            App.localStorage.getUnUploadedEvents(new Callback<List<Event>>() {
+                @Override
+                public void onSuccess(List<Event> events) {
+                    unUploadedEvents.addAll(events);
+                    for (Event event : unUploadedEvents) {
+                        apiClient.sendEvent(event, new Callback<String>() {
+                            @Override
+                            public void onSuccess(String s) {
+                                App.localStorage.setEventUploaded(event.getId());
+                                Logger.d("UnUploaded Event " + event.getLogId() + " " + event.getId());
+                            }
 
+                            @Override
+                            public void onFailure(String s) {
+
+                            }
+                        });
                     }
 
-                    @Override
-                    public void onFailure(String s) {
+                }
 
-                    }
-                });
-            }
+                @Override
+                public void onFailure(String s) {
 
-            @Override
-            public void onFailure(String s) {
-
-            }
+                }
+            });
         });
     }
 }
