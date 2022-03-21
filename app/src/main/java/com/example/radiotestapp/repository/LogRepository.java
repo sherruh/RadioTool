@@ -426,7 +426,7 @@ public class LogRepository {
 
     public void uploadToServerLogs() {
         List<Log> unUploadedLogs = new ArrayList<>();
-        App.localStorage.getUnUploadedLogs(new Callback<List<Log>>() {
+        /*App.localStorage.getUnUploadedLogs(new Callback<List<Log>>() {
             @Override
             public void onSuccess(List<Log> logs) {
                 unUploadedLogs.addAll(logs);
@@ -452,7 +452,8 @@ public class LogRepository {
             public void onFailure(String s) {
 
             }
-        });
+        });*/
+        uploadToServerEvents();
 
     }
 

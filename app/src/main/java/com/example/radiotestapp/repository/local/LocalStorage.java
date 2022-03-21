@@ -6,8 +6,8 @@ import com.example.radiotestapp.model.LogResult;
 import com.example.radiotestapp.model.SettingsParameter;
 import com.example.radiotestapp.repository.Callback;
 import com.example.radiotestapp.repository.local.db.Dao;
-import com.example.radiotestapp.utils.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -32,13 +32,19 @@ public class LocalStorage implements ILocalStorage {
 
     @Override
     public void saveLogs(List<Log> logs, Callback<List<Long>> callback) {
-        Executor executor = Executors.newSingleThreadExecutor();
+        List<Log> logList = new ArrayList<>();
+        logList.addAll(logs);
+
+        List longList = new ArrayList();
+        callback.onSuccess(longList);
+
+        /*Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             Logger.d("DaoHere " + System.currentTimeMillis() );
-            List<Long> l = dao.saveLogs(logs);
+            List<Long> l = dao.saveLogs(logList);
             if (l.size() > 0) callback.onSuccess(l);
             else callback.onFailure("Didn't save to database");
-        });
+        });*/
     }
 
     @Override

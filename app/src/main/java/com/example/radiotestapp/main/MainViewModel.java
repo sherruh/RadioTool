@@ -152,6 +152,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     private boolean isNeedDownloadTest = false;
     private boolean isNeedUploadTest = false;
     private boolean isNeedPingTest = true;
+    private boolean isFirstStart = false;
     Timer timerYouTubeBuffering = new Timer();
     Timer timerYouTubeInitial = new Timer();
     Timer timerUpload = new Timer();
@@ -198,6 +199,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     }
 
     public void start(String mSignalStrength, int value, int numberPickerDelayValue, boolean checkedNeverEnding) {
+        isFirstStart = true;
         countOfRepeats = value;
         initialNumberOfRepeats = value;
         timerDelay = numberPickerDelayValue;
@@ -728,6 +730,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
             @Override
             public void run() {
                 timerDelayBeforeRestart = null;
+                isFirstStart = false;
                 Logger.d("checkWhetherToStartYoutubePlayback here " + countOfRepeats);
                 if (countOfRepeats > 0 && isLogging.getValue()){
                     if (!isNeverEnding){
@@ -748,8 +751,12 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
                     stop();
                 }
             }
-        }, timerDelay * 1000);
+        }, getTimer());
         App.logRepository.saveLogListsForCurrentSession();
+    }
+
+    private long getTimer() {
+        return isFirstStart ? 2000 : timerDelay * 1000;
     }
 
     private boolean isNetworkConnected() {
