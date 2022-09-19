@@ -8,6 +8,11 @@ import com.example.radiotestapp.core.Constants;
 import com.example.radiotestapp.model.SettingsParameter;
 import com.example.radiotestapp.utils.SingleLiveEvent;
 
+import static com.example.radiotestapp.core.Constants.DEFAULT_DOWNLOAD_URL;
+import static com.example.radiotestapp.core.Constants.DEFAULT_UPLOAD_URL;
+import static com.example.radiotestapp.core.Constants.IS_YOUTUBE_NEED;
+import static com.example.radiotestapp.core.Constants.NO;
+
 public class SettingsViewModel extends ViewModel {
 
     public MutableLiveData<Boolean> isYouTubeNeedLiveData = new MutableLiveData<>();
@@ -23,11 +28,14 @@ public class SettingsViewModel extends ViewModel {
     public MutableLiveData<Integer> downloadDurationLiveData = new MutableLiveData<>();
     public MutableLiveData<Integer> uploadDurationLiveData = new MutableLiveData<>();
 
+
+
     public void start() {
         SettingsParameter settingsIsYoutubeNeed = App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_NEED);
         if (settingsIsYoutubeNeed == null) {
-            isYouTubeNeedLiveData.setValue(true);
-            isYouTubeDefaultUrlLiveData.setValue(true);
+            isYouTubeNeedLiveData.setValue(false);
+            isYouTubeDefaultUrlLiveData.setValue(false);
+            App.localStorage.saveSettingsParameter(new SettingsParameter(IS_YOUTUBE_NEED,NO));
         } else {
             if (settingsIsYoutubeNeed.getValue().equals(Constants.YES)) isYouTubeNeedLiveData.setValue(true);
             if (settingsIsYoutubeNeed.getValue().equals(Constants.NO)) isYouTubeNeedLiveData.setValue(false);
@@ -53,10 +61,14 @@ public class SettingsViewModel extends ViewModel {
         if (settingsIsDownloadNeed != null){
             if (settingsIsDownloadNeed.getValue().equals( Constants.YES)) isDownloadNeedLiveData.setValue(true);
             else isDownloadNeedLiveData.setValue(false);
-        } else isDownloadNeedLiveData.setValue(false);
+        } else isDownloadNeedLiveData.setValue(true);
 
         SettingsParameter settingsDownloadUrl = App.localStorage.getSettingsParameter(Constants.DOWNLOAD_URL);
         if (settingsDownloadUrl != null) downloadUrlLiveData.setValue(settingsDownloadUrl.getValue());
+        else {
+            downloadUrlLiveData.setValue(DEFAULT_DOWNLOAD_URL);
+            App.localStorage.saveSettingsParameter(new SettingsParameter(Constants.DOWNLOAD_URL,DEFAULT_DOWNLOAD_URL));
+        }
 
         SettingsParameter settingsIsUploadNeed = App.localStorage.getSettingsParameter(Constants.IS_UPLOAD_NEED);
         if (settingsIsUploadNeed != null){
@@ -66,6 +78,10 @@ public class SettingsViewModel extends ViewModel {
 
         SettingsParameter settingsUploadUrl = App.localStorage.getSettingsParameter(Constants.UPLOAD_URL);
         if (settingsUploadUrl != null) uploadUrlLiveData.setValue(settingsUploadUrl.getValue());
+        else {
+            uploadUrlLiveData.setValue(DEFAULT_UPLOAD_URL);
+            App.localStorage.saveSettingsParameter(new SettingsParameter(Constants.UPLOAD_URL,DEFAULT_UPLOAD_URL));
+        }
 
         SettingsParameter settingsInitTimeOut = App.localStorage.getSettingsParameter(Constants.INIT_TIMEOUT);
         if (settingsInitTimeOut == null) initTImeOutLiveDataLiveData.setValue(90);
@@ -82,14 +98,14 @@ public class SettingsViewModel extends ViewModel {
         }
 
         SettingsParameter settingDownloadDuration = App.localStorage.getSettingsParameter(Constants.DOWNLOAD_DURATION);
-        if (settingDownloadDuration == null) downloadDurationLiveData.setValue(60);
+        if (settingDownloadDuration == null) downloadDurationLiveData.setValue(10);
         else {
             int i = Integer.parseInt(settingDownloadDuration.getValue());
             downloadDurationLiveData.setValue(i);
         }
 
         SettingsParameter settingUploadDuration = App.localStorage.getSettingsParameter(Constants.UPLOAD_DURATION);
-        if (settingUploadDuration == null) uploadDurationLiveData.setValue(60);
+        if (settingUploadDuration == null) uploadDurationLiveData.setValue(10);
         else {
             int i = Integer.parseInt(settingUploadDuration.getValue());
             uploadDurationLiveData.setValue(i);

@@ -11,14 +11,13 @@ import android.net.Uri;
 import com.example.radiotestapp.App;
 import com.example.radiotestapp.core.Constants;
 import com.example.radiotestapp.model.SettingsParameter;
-import com.example.radiotestapp.utils.Logger;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class Downloader {
 
-    private long downloadDuration = 30000L;
+    private long downloadDuration = 10000L;
     private Context mContext;
     private DownloadListener downloadListener;
     private Timer timerForDuration;
@@ -86,7 +85,7 @@ public class Downloader {
     }
 
     private long getDownloadDuration() {
-        long l = 30000L;
+        long l = 10000L;
         SettingsParameter downloadDurationSettings = App.localStorage.getSettingsParameter(Constants.DOWNLOAD_DURATION);
         if (downloadDurationSettings != null){
             try{
