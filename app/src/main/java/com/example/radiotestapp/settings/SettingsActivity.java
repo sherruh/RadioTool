@@ -125,6 +125,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void saveSettings() {
+
         if ( checkYoutubeNeed.isChecked() && !checkYoutubeDefault.isChecked()
                 && editYoutubeVideoId.getText().toString().isEmpty()){
             Toaster.showLong(this,"Fill Youtube url");

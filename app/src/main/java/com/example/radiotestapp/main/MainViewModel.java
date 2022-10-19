@@ -72,6 +72,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static com.example.radiotestapp.core.Constants.DEFAULT_DOWNLOAD_URL;
+import static com.example.radiotestapp.core.Constants.DEFAULT_UPLOAD_URL;
+import static com.example.radiotestapp.core.Constants.IS_YOUTUBE_NEED;
 
 public class MainViewModel extends ViewModel implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -573,6 +576,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         isNeedDownloadTest = App.localStorage.getSettingsParameter(Constants.IS_DOWNLOAD_NEED) != null &&
                 (App.localStorage.getSettingsParameter(Constants.IS_DOWNLOAD_NEED)
                 .getValue().equals(Constants.YES));
+        if (App.localStorage.getSettingsParameter(Constants.IS_DOWNLOAD_NEED) == null) isNeedDownloadTest = true;
         isProgressStartBarShowLiveData.postValue(false);
         if (isNeedDownloadTest && isLogging.getValue()){
             downloadTestStart();
@@ -718,8 +722,9 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         if (countOfRepeats > 0 && isLogging.getValue()){
             countOfRepeats--;
             currentNumberOfRepeatsLiveData.postValue(countOfRepeats);
-            if (App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_NEED) != null &&
-                    App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_NEED).getValue().equals(Constants.NO)){
+            if (App.localStorage.getSettingsParameter(IS_YOUTUBE_NEED) == null ||
+                    (App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_NEED) != null &&
+                    App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_NEED).getValue().equals(Constants.NO))){
                 isNeedYoutubeTest = false;
                 checkWhetherToStartDownloadTest();
             }else{

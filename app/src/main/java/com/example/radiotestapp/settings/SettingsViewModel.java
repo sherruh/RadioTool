@@ -1,5 +1,10 @@
 package com.example.radiotestapp.settings;
 
+import static com.example.radiotestapp.core.Constants.DEFAULT_DOWNLOAD_URL;
+import static com.example.radiotestapp.core.Constants.DEFAULT_UPLOAD_URL;
+import static com.example.radiotestapp.core.Constants.IS_YOUTUBE_NEED;
+import static com.example.radiotestapp.core.Constants.NO;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -26,8 +31,9 @@ public class SettingsViewModel extends ViewModel {
     public void start() {
         SettingsParameter settingsIsYoutubeNeed = App.localStorage.getSettingsParameter(Constants.IS_YOUTUBE_NEED);
         if (settingsIsYoutubeNeed == null) {
-            isYouTubeNeedLiveData.setValue(true);
-            isYouTubeDefaultUrlLiveData.setValue(true);
+            isYouTubeNeedLiveData.setValue(false);
+            isYouTubeDefaultUrlLiveData.setValue(false);
+            App.localStorage.saveSettingsParameter(new SettingsParameter(IS_YOUTUBE_NEED,NO));
         } else {
             if (settingsIsYoutubeNeed.getValue().equals(Constants.YES)) isYouTubeNeedLiveData.setValue(true);
             if (settingsIsYoutubeNeed.getValue().equals(Constants.NO)) isYouTubeNeedLiveData.setValue(false);
@@ -57,6 +63,10 @@ public class SettingsViewModel extends ViewModel {
 
         SettingsParameter settingsDownloadUrl = App.localStorage.getSettingsParameter(Constants.DOWNLOAD_URL);
         if (settingsDownloadUrl != null) downloadUrlLiveData.setValue(settingsDownloadUrl.getValue());
+        else {
+            downloadUrlLiveData.setValue(DEFAULT_DOWNLOAD_URL);
+            App.localStorage.saveSettingsParameter(new SettingsParameter(Constants.DOWNLOAD_URL,DEFAULT_DOWNLOAD_URL));
+        }
 
         SettingsParameter settingsIsUploadNeed = App.localStorage.getSettingsParameter(Constants.IS_UPLOAD_NEED);
         if (settingsIsUploadNeed != null){
@@ -66,6 +76,10 @@ public class SettingsViewModel extends ViewModel {
 
         SettingsParameter settingsUploadUrl = App.localStorage.getSettingsParameter(Constants.UPLOAD_URL);
         if (settingsUploadUrl != null) uploadUrlLiveData.setValue(settingsUploadUrl.getValue());
+        else {
+            uploadUrlLiveData.setValue(DEFAULT_UPLOAD_URL);
+            App.localStorage.saveSettingsParameter(new SettingsParameter(Constants.UPLOAD_URL,DEFAULT_UPLOAD_URL));
+        }
 
         SettingsParameter settingsInitTimeOut = App.localStorage.getSettingsParameter(Constants.INIT_TIMEOUT);
         if (settingsInitTimeOut == null) initTImeOutLiveDataLiveData.setValue(90);
