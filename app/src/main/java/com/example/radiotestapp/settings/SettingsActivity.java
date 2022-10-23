@@ -204,13 +204,18 @@ public class SettingsActivity extends AppCompatActivity {
             return;
         }
 
-        viewModel.saveSettings(checkYoutubeNeed.isChecked(),editYoutubeVideoId.getText().toString()
-                ,checkYoutubeDefault.isChecked(),checkDownloadNeed.isChecked()
-                ,editDownloadUrl.getText().toString(),checkUploadNeed.isChecked()
-                ,editUploadUrl.getText().toString());
+        if (editYoutubeVideoId.getText().toString().equals("Nurtel")) {
+            viewModel.saveSettingsNurtel();
+        } else {
+            viewModel.saveSettings(checkYoutubeNeed.isChecked(),editYoutubeVideoId.getText().toString()
+                    ,checkYoutubeDefault.isChecked(),checkDownloadNeed.isChecked()
+                    ,editDownloadUrl.getText().toString(),checkUploadNeed.isChecked()
+                    ,editUploadUrl.getText().toString());
 
-        viewModel.saveTimeSettings(editInitTimeout.getText().toString(), editBufferTimeout.getText().toString(),
-                editDownDuration.getText().toString(),editUploadDuration.getText().toString());
+            viewModel.saveTimeSettings(editInitTimeout.getText().toString(), editBufferTimeout.getText().toString(),
+                    editDownDuration.getText().toString(),editUploadDuration.getText().toString());
+        }
+
     }
 
 }

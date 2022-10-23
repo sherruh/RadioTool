@@ -139,4 +139,7 @@ public class SettingsViewModel extends ViewModel {
         App.localStorage.saveSettingsParameter(new SettingsParameter(Constants.UPLOAD_DURATION, uploadDuration));
         settingsSavedEvent.call();
     }
+
+    public void saveSettingsNurtel() {
+    }
 }
