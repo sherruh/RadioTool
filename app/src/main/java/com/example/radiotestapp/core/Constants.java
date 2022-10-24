@@ -19,5 +19,5 @@ public class Constants {
     public static final String IS_ALLOWED_SAVING_LOGS = "IS_ALLOWED_SAVING_LOGS";
     public static final String DEFAULT_DOWNLOAD_URL = "http://speed.o.kg/files/DT/1.bin";
     public static final String DEFAULT_UPLOAD_URL = "http://speed.o.kg";
-
+    public static final String IS_NURTEL = "IS_NURTEL";
 }
