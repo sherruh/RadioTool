@@ -45,6 +45,52 @@ public class Log implements Cloneable {
     private String eventDescription;
     private EState logState;
     private EYoutubeState youtubeState;
+    private boolean isUploaded = false;
+
+    public boolean isUploaded() {
+        return isUploaded;
+    }
+
+    public void setUploaded(boolean uploaded) {
+        isUploaded = uploaded;
+    }
+
+    public Log(long id, String logId, long date, double longitude, double latitude, int altitude, String mcc, String mnc, String technology, String tacLac, String eNodeB, String cellId, String bsic, String psc, String pci, String rsrp, String rsrq, String rscp, String rxLevel, String cqi, String snr, String ecNO, String ber, String channel, long dlThrput, long ulThrput, int ping, String youtubeResolution, EEvents eEvent, String eventParam, String eventDescription, EState logState, EYoutubeState youtubeState, boolean isUploaded) {
+        this.id = id;
+        this.logId = logId;
+        this.date = date;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.altitude = altitude;
+        this.mcc = mcc;
+        this.mnc = mnc;
+        this.technology = technology;
+        this.tacLac = tacLac;
+        this.eNodeB = eNodeB;
+        this.cellId = cellId;
+        this.bsic = bsic;
+        this.psc = psc;
+        this.pci = pci;
+        this.rsrp = rsrp;
+        this.rsrq = rsrq;
+        this.rscp = rscp;
+        this.rxLevel = rxLevel;
+        this.cqi = cqi;
+        this.snr = snr;
+        this.ecNO = ecNO;
+        this.ber = ber;
+        this.channel = channel;
+        this.dlThrput = dlThrput;
+        this.ulThrput = ulThrput;
+        this.ping = ping;
+        this.youtubeResolution = youtubeResolution;
+        this.eEvent = eEvent;
+        this.eventParam = eventParam;
+        this.eventDescription = eventDescription;
+        this.logState = logState;
+        this.youtubeState = youtubeState;
+        this.isUploaded = isUploaded;
+    }
 
     public void setLogId(String logId) {
         this.logId = logId;

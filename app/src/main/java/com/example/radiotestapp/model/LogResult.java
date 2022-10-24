@@ -12,6 +12,63 @@ public class LogResult {
 
     private boolean isYoutubeTested;
     private boolean isDownloadTested;
+    private boolean isUploaded = false;
+
+    public LogResult(@NonNull String id, boolean isYoutubeTested, boolean isDownloadTested, boolean isUploaded, boolean isUploadTested, String rsrp, String rscp, String rxLvl, String snr, String ecN0, String cI, String lteCqi, String rsrq, String umtsCqi, String firstRatio, String firstTech, String firstTacLac, String firstENodeB, String firstCid, String secondRatio, String secondTech, String secondTacLac, String secondENodeB, String secondCid, String thirdRatio, String thirdTech, String thirdTacLac, String thirdENodeB, String thirdCid, String bufferTime, String bufferThroughput, String bufferSR, String initTime, String initSR, String youtubeSR, String resolution144, String resolution240, String resolution360, String resolution480, String resolution720, String resolution1080, String downThrput, String downSR, String uploadThrput, String uploadSR) {
+        this.id = id;
+        this.isYoutubeTested = isYoutubeTested;
+        this.isDownloadTested = isDownloadTested;
+        this.isUploaded = isUploaded;
+        this.isUploadTested = isUploadTested;
+        this.rsrp = rsrp;
+        this.rscp = rscp;
+        this.rxLvl = rxLvl;
+        this.snr = snr;
+        this.ecN0 = ecN0;
+        this.cI = cI;
+        this.lteCqi = lteCqi;
+        this.rsrq = rsrq;
+        this.umtsCqi = umtsCqi;
+        this.firstRatio = firstRatio;
+        this.firstTech = firstTech;
+        this.firstTacLac = firstTacLac;
+        this.firstENodeB = firstENodeB;
+        this.firstCid = firstCid;
+        this.secondRatio = secondRatio;
+        this.secondTech = secondTech;
+        this.secondTacLac = secondTacLac;
+        this.secondENodeB = secondENodeB;
+        this.secondCid = secondCid;
+        this.thirdRatio = thirdRatio;
+        this.thirdTech = thirdTech;
+        this.thirdTacLac = thirdTacLac;
+        this.thirdENodeB = thirdENodeB;
+        this.thirdCid = thirdCid;
+        this.bufferTime = bufferTime;
+        this.bufferThroughput = bufferThroughput;
+        this.bufferSR = bufferSR;
+        this.initTime = initTime;
+        this.initSR = initSR;
+        this.youtubeSR = youtubeSR;
+        this.resolution144 = resolution144;
+        this.resolution240 = resolution240;
+        this.resolution360 = resolution360;
+        this.resolution480 = resolution480;
+        this.resolution720 = resolution720;
+        this.resolution1080 = resolution1080;
+        this.downThrput = downThrput;
+        this.downSR = downSR;
+        this.uploadThrput = uploadThrput;
+        this.uploadSR = uploadSR;
+    }
+
+    public boolean isUploaded() {
+        return isUploaded;
+    }
+
+    public void setUploaded(boolean uploaded) {
+        isUploaded = uploaded;
+    }
 
     public LogResult() {
 

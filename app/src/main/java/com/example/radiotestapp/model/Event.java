@@ -30,6 +30,26 @@ public class Event implements Cloneable {
     private long eventTime;
     private String parameter;
     private String parameter2;
+    private boolean isUploaded = false;
+
+    public boolean isUploaded() {
+        return isUploaded;
+    }
+
+    public Event(long id, EEvents event, long eventTime, String parameter, String parameter2, boolean isUploaded, String logId, EState state) {
+        this.id = id;
+        this.event = event;
+        this.eventTime = eventTime;
+        this.parameter = parameter;
+        this.parameter2 = parameter2;
+        this.isUploaded = isUploaded;
+        this.logId = logId;
+        this.state = state;
+    }
+
+    public void setUploaded(boolean uploaded) {
+        isUploaded = uploaded;
+    }
 
     public String getParameter2() {
         return parameter2;
