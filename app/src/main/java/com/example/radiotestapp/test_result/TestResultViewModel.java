@@ -75,6 +75,7 @@ public class TestResultViewModel extends ViewModel {
         this.logId = logId;
         startCalculations(isTestedYoutube, isTestedDownload, isTestedUpload);
         Logger.d("TestResultData succesR " + logId);
+        App.logRepository.uploadUnUploadedData();
     }
 
     private void startCalculations(boolean isTestedYoutube, boolean isTestedDownload, boolean isTestedUpload) {

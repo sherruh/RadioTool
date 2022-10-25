@@ -8,12 +8,14 @@ import android.telephony.CellIdentityWcdma;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.radiotestapp.App;
+import com.example.radiotestapp.core.Constants;
 import com.example.radiotestapp.enums.EState;
 import com.example.radiotestapp.enums.EYoutubeState;
 import com.example.radiotestapp.model.Event;
 import com.example.radiotestapp.model.Log;
 import com.example.radiotestapp.repository.local.ILocalLogRepository;
 import com.example.radiotestapp.repository.local.LogFileWriter;
+import com.example.radiotestapp.utils.InternetConnectionChecker;
 import com.example.radiotestapp.utils.Logger;
 import com.example.radiotestapp.utils.SingleLiveEvent;
 
@@ -377,6 +379,13 @@ public class LogRepository {
             mLog.setLogState(logState);
             uploadThroughputLiveData.postValue(ulThroughput);
             addToUploadThroughputList(ulThroughput);
+        }
+    }
+
+    public void uploadUnUploadedData() {
+        if (App.localStorage.getSettingsParameter(Constants.IS_NURTEL).getValue()
+                .equals(Constants.YES) && InternetConnectionChecker.isNetworkConnected(App.context)){
+
         }
     }
 }

@@ -468,7 +468,6 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
 
         Intent intent = new Intent(mContext.getApplicationContext(), GettingLocationService.class);
         mContext.getApplicationContext().startService(intent);
-
     }
 
     public void youTubePlayerInitializing() {

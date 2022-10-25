@@ -18,4 +18,7 @@ public interface ILocalStorage {
     List<Event> getEventsByLogId(String logId);
     Long saveLogResult(LogResult logResult);
     LogResult getLogResultById(String id);
+    List<Log> getUnUploadedLogs();
+    List<Event> getUnUploadedEvents();
+    List<LogResult> getUnUploadedLogResults();
 }
