@@ -29,7 +29,13 @@ public interface Dao {
     List<Long> saveLogs(List<Log> logs);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    Long saveLog(Log logs);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     List<Long> saveEvents(List<Event> events);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    Long saveEvent(Event event);
 
     @Query("SELECT * FROM log WHERE id = :id")
     Log getLogById(Long id);

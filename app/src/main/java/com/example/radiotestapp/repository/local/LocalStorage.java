@@ -88,4 +88,20 @@ public class LocalStorage implements ILocalStorage {
     public List<LogResult> getUnUploadedLogResults() {
         return dao.getUnUploadedLogResults();
     }
+
+    @Override
+    public void saveLog(Log log) {
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            dao.saveLog(log);
+        });
+    }
+
+    @Override
+    public void saveEvent(Event event) {
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            dao.saveEvent(event);
+        });
+    }
 }

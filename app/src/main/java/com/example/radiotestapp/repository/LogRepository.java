@@ -310,6 +310,7 @@ public class LogRepository {
                 e.printStackTrace();
             }
             eventList.add(currentEvent);
+            App.localStorage.saveEvent(currentEvent);
         }
     }
 
@@ -324,6 +325,7 @@ public class LogRepository {
                 e.printStackTrace();
             }
             logList.add(currentLog);
+            App.localStorage.saveLog(currentLog);
         }
     }
 
