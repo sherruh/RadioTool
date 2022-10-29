@@ -53,14 +53,14 @@ public interface Dao {
     List<Event> getUnUploadedEvents();
 
     @Query("UPDATE log SET isUploaded = 1  WHERE id = :id")
-    void setLogUploaded(long id);
+    void setLogUploaded(Long id);
 
     @Query("UPDATE event SET isUploaded = 1  WHERE id = :id")
-    void setEventUploaded(long id);
+    void setEventUploaded(Long id);
 
     @Query("SELECT * FROM log_result WHERE isUploaded = 0")
     List<LogResult> getUnUploadedLogResults();
 
     @Query("UPDATE log_result SET isUploaded = 1  WHERE id = :id")
-    void setLogResultUploaded(long id);
+    void setLogResultUploaded(String id);
 }

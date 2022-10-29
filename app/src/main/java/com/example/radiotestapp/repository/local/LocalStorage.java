@@ -104,4 +104,19 @@ public class LocalStorage implements ILocalStorage {
             dao.saveEvent(event);
         });
     }
+
+    @Override
+    public void setLogUploaded(Long id) {
+        dao.setLogUploaded(id);
+    }
+
+    @Override
+    public void setEventUploaded(Long id) {
+        dao.setEventUploaded(id);
+    }
+
+    @Override
+    public void setLogResultUploaded(String id) {
+        dao.setLogResultUploaded(id);
+    }
 }

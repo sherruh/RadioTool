@@ -23,4 +23,9 @@ public interface ILocalStorage {
     List<LogResult> getUnUploadedLogResults();
     void saveLog(Log log);
     void saveEvent(Event event);
+    void setLogUploaded(Long id);
+    void setEventUploaded(Long id);
+    void setLogResultUploaded(String id);
+
+
 }

@@ -13,6 +13,7 @@ import com.example.radiotestapp.enums.EState;
 import com.example.radiotestapp.enums.EYoutubeState;
 import com.example.radiotestapp.model.Event;
 import com.example.radiotestapp.model.Log;
+import com.example.radiotestapp.model.LogResult;
 import com.example.radiotestapp.repository.local.ILocalLogRepository;
 import com.example.radiotestapp.repository.local.LogFileWriter;
 import com.example.radiotestapp.utils.InternetConnectionChecker;
@@ -22,6 +23,8 @@ import com.example.radiotestapp.utils.SingleLiveEvent;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 
 public class LogRepository {
@@ -388,6 +391,112 @@ public class LogRepository {
         if (App.localStorage.getSettingsParameter(Constants.IS_NURTEL).getValue()
                 .equals(Constants.YES) && InternetConnectionChecker.isNetworkConnected(App.context)){
 
+        }
+    }
+
+    public void uploadData(Callback<String> callback){
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            uploadLogs(new Callback<String>() {
+                @Override
+                public void onSuccess(String s) {
+                    uploadEvents(new Callback<String>() {
+                        @Override
+                        public void onSuccess(String s) {
+                            uploadLogResults(new Callback<String>() {
+                                @Override
+                                public void onSuccess(String s) {
+                                    callback.onSuccess("Data has been uploaded!");
+                                }
+
+                                @Override
+                                public void onFailure(String s) {
+                                    callback.onFailure("Data Upload error");
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(String s) {
+                            callback.onFailure("Data Upload error");
+                        }
+                    });
+                }
+
+                @Override
+                public void onFailure(String s) {
+                    callback.onFailure("Data Upload error");
+                }
+            });
+        });
+    }
+
+    private void uploadLogs(Callback<String> callback){
+        List<Log> unUploadedLogs = App.localStorage.getUnUploadedLogs();
+        final int[] i = {-1};
+        if (unUploadedLogs.size() == 0 ) callback.onSuccess("");
+        for (Log log : unUploadedLogs){
+             App.apiClient.sendLog(log, new Callback<String>() {
+                 @Override
+                 public void onSuccess(String s) {
+                     App.localStorage.setLogUploaded(log.getId());
+                     i[0]++;
+                     if (i[0] == unUploadedLogs.size() - 1){
+                         callback.onSuccess(s);
+                     }
+                 }
+
+                 @Override
+                 public void onFailure(String s) {
+                    callback.onFailure(s);
+                 }
+             });
+        }
+    }
+
+    private void uploadEvents(Callback<String> callback){
+        List<Event> unUploadedEvents = App.localStorage.getUnUploadedEvents();
+        final int[] i = {-1};
+        if (unUploadedEvents.size() == 0 ) callback.onSuccess("");
+        for (Event event : unUploadedEvents){
+            App.apiClient.sendEvent(event, new Callback<String>() {
+                @Override
+                public void onSuccess(String s) {
+                    App.localStorage.setEventUploaded(event.getId());
+                    i[0]++;
+                    if (i[0] == unUploadedEvents.size() - 1){
+                        callback.onSuccess(s);
+                    }
+                }
+
+                @Override
+                public void onFailure(String s) {
+                    callback.onFailure(s);
+                }
+            });
+        }
+    }
+
+    private void uploadLogResults(Callback<String> callback){
+        List<LogResult> logResults = App.localStorage.getUnUploadedLogResults();
+        final int[] i = {-1};
+        if (logResults.size() == 0 ) callback.onSuccess("");
+        for (LogResult logResult : logResults){
+            App.apiClient.sendLogResult(logResult, new Callback<String>() {
+                @Override
+                public void onSuccess(String s) {
+                    App.localStorage.setLogResultUploaded(logResult.getId());
+                    i[0]++;
+                    if (i[0] == logResults.size() - 1){
+                        callback.onSuccess(s);
+                    }
+                }
+
+                @Override
+                public void onFailure(String s) {
+                    callback.onFailure(s);
+                }
+            });
         }
     }
 }
