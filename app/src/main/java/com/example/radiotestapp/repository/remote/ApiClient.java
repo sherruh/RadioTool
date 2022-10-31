@@ -8,7 +8,6 @@ import com.example.radiotestapp.utils.Logger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -90,10 +89,7 @@ public class ApiClient implements IApiClient {
 
         Logger.d("ResponseServer " + logMap.toString());
 
-        ArrayList<HashMap<String, String>> logMaps = new ArrayList<>();
-        logMaps.add(logMap);
-
-        Call<String> call = client.sendLog("Sherruh",logMap);
+        Call<String> call = client.sendLog("UE_LOG_POST_CD",logMap);
         call.enqueue(new retrofit2.Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -121,44 +117,40 @@ public class ApiClient implements IApiClient {
     public void sendEvent(Event event, Callback<String> callback) {
         HashMap<String,String> eventMap = new HashMap<>();
 
-        eventMap.put("altitude", "true");//Event indicator
-        eventMap.put("ber", String.valueOf(event.getEventTime()));
-        eventMap.put("bsic", String.valueOf(event.getEvent()));
-        eventMap.put("cellId", String.valueOf(event.getParameter()));
-        eventMap.put("channel", String.valueOf(event.getParameter2()));
-        eventMap.put("cqi", "");
-        eventMap.put("date", "");
-        eventMap.put("dlThrput", "");
-        eventMap.put("eNodeB", "");
-        eventMap.put("ecNO", "");
-        eventMap.put("id", String.valueOf(event.getId()));
-        eventMap.put("isUploaded", String.valueOf(event.isUploaded()));
-        eventMap.put("latitude", "");
-        eventMap.put("logId", String.valueOf(event.getLogId()));
-        eventMap.put("logState", String.valueOf(event.getState()));
-        eventMap.put("longitude", "");
-        eventMap.put("mcc", "");
-        eventMap.put("mnc", "");
-        eventMap.put("pci", "");
-        eventMap.put("ping", "");
-        eventMap.put("psc", "");
-        eventMap.put("rscp", "");
-        eventMap.put("rsrp", "");
-        eventMap.put("rsrq", "");
-        eventMap.put("rxLevel", "");
-        eventMap.put("snr", "");
-        eventMap.put("tacLac", "");
-        eventMap.put("technology", "");
-        eventMap.put("ulThrput", "");
-        eventMap.put("youtubeState", "");
-        eventMap.put("youtubeQuality", "");
+        eventMap.put("altitude", "");//5
+        eventMap.put("BER", "");//20
+        eventMap.put("bsic", "");//11
+        eventMap.put("CID", "");//10
+        eventMap.put("Channel", "");//21
+        eventMap.put("CQI", "");//18
+        eventMap.put("Date", String.valueOf(event.getEventTime()));//2
+        eventMap.put("DlThrput", "");//22
+        eventMap.put("ENodeB", "");//9
+        eventMap.put("EcNO", "");//19
+        eventMap.put("latitude", "");//4
+        eventMap.put("LogId", String.valueOf(event.getLogId()));//1
+        eventMap.put("logState", String.valueOf(event.getState()));//30
+        eventMap.put("longitude", "");//3
+        eventMap.put("MCC", "");//6
+        eventMap.put("MNC", "");//7
+        eventMap.put("PCI", "");//13
+        eventMap.put("ping", "");//24
+        eventMap.put("PSC", "");//12
+        eventMap.put("RSCP", "");//16
+        eventMap.put("RSRP", "");//14
+        eventMap.put("RSRQ", "");//15
+        eventMap.put("RxLevel", "");//16
+        eventMap.put("SNR", "");//17
+        eventMap.put("TACLAC", "");//8
+        eventMap.put("Technology",  "");//7
+        eventMap.put("UlThrput", "");//23
+        eventMap.put("youtubeState", "");//31
+        eventMap.put("YoutubeQuality", "");//25
+        eventMap.put("Event", event.getEvent().toString());//26
+        eventMap.put("EventParameter", event.getParameter());//27
+        eventMap.put("EventDescription", event.getParameter2());//28
 
-        Logger.d("ResponseServer Event " + eventMap.toString());
-
-        ArrayList<HashMap<String,String>> eventMaps = new ArrayList<>();
-        eventMaps.add(eventMap);
-
-        Call<String> call = client.sendLog("Sherruh",eventMap);
+        Call<String> call = client.sendLog("UE_LOG_POST_CD",eventMap);
         call.enqueue(new retrofit2.Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {

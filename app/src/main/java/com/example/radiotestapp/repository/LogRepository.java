@@ -440,7 +440,7 @@ public class LogRepository {
                  @Override
                  public void onSuccess(String s) {
                      App.localStorage.setLogUploaded(log.getId());
-                     i[0]++;
+                     i[0] = i[0] ++;
                      if (i[0] == unUploadedLogs.size() - 1){
                          callback.onSuccess(s);
                      }
@@ -463,7 +463,7 @@ public class LogRepository {
                 @Override
                 public void onSuccess(String s) {
                     App.localStorage.setEventUploaded(event.getId());
-                    i[0]++;
+                    i[0] = i[0] ++;
                     if (i[0] == unUploadedEvents.size() - 1){
                         callback.onSuccess(s);
                     }
@@ -486,7 +486,7 @@ public class LogRepository {
                 @Override
                 public void onSuccess(String s) {
                     App.localStorage.setLogResultUploaded(logResult.getId());
-                    i[0]++;
+                    i[0] = i[0] ++;
                     if (i[0] == logResults.size() - 1){
                         callback.onSuccess(s);
                     }

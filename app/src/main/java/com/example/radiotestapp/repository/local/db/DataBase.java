@@ -8,7 +8,7 @@ import com.example.radiotestapp.model.Log;
 import com.example.radiotestapp.model.LogResult;
 import com.example.radiotestapp.model.SettingsParameter;
 
-@Database(entities = {SettingsParameter.class, Log.class, Event.class, LogResult.class}, exportSchema = true, version = 7)
+@Database(entities = {SettingsParameter.class, Log.class, Event.class, LogResult.class}, exportSchema = true, version = 8)
 public abstract class DataBase extends RoomDatabase {
     public abstract Dao dao();
 }

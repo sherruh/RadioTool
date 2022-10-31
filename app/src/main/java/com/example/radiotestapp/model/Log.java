@@ -55,7 +55,13 @@ public class Log implements Cloneable {
         isUploaded = uploaded;
     }
 
-    public Log(long id, String logId, long date, double longitude, double latitude, int altitude, String mcc, String mnc, String technology, String tacLac, String eNodeB, String cellId, String bsic, String psc, String pci, String rsrp, String rsrq, String rscp, String rxLevel, String cqi, String snr, String ecNO, String ber, String channel, long dlThrput, long ulThrput, int ping, String youtubeResolution, EEvents eEvent, String eventParam, String eventDescription, EState logState, EYoutubeState youtubeState, boolean isUploaded) {
+    public Log(long id, String logId, long date, double longitude, double latitude, int altitude,
+               String mcc, String mnc, String technology, String tacLac, String eNodeB,
+               String cellId, String bsic, String psc, String pci, String rsrp, String rsrq,
+               String rscp, String rxLevel, String cqi, String snr, String ecNO, String ber,
+               String channel, long dlThrput, long ulThrput, int ping, String youtubeResolution,
+               EEvents eEvent, String eventParam, String eventDescription, EState logState,
+               EYoutubeState youtubeState, boolean isUploaded) {
         this.id = id;
         this.logId = logId;
         this.date = date;
