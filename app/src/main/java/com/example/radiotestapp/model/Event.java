@@ -1,6 +1,7 @@
 package com.example.radiotestapp.model;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.example.radiotestapp.enums.EEvents;
@@ -59,6 +60,7 @@ public class Event implements Cloneable {
         this.parameter2 = parameter2;
     }
 
+    @Ignore
     public Event(long id, EEvents event, long eventTime, String parameter, String parameter2, String logId, EState state) {
         this.id = id;
         this.event = event;
@@ -112,6 +114,7 @@ public class Event implements Cloneable {
         this.state = state;
     }
 
+    @Ignore
     public Event(String logId, EEvents event, long eventTime, String parameter, String parameter2, EState eState) {
         this.event = event;
         this.eventTime = eventTime;
@@ -121,6 +124,7 @@ public class Event implements Cloneable {
         this.state = eState;
     }
 
+    @Ignore
     public Event(String logId, EEvents event, long eventTime, String parameter, EState eState) {
         this.event = event;
         this.eventTime = eventTime;
