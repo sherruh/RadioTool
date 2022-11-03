@@ -387,10 +387,10 @@ public class LogRepository {
         }
     }
 
-    public void uploadUnUploadedData() {
+    public void uploadUnUploadedData(Callback<String> callback) {
         if (App.localStorage.getSettingsParameter(Constants.IS_NURTEL).getValue()
                 .equals(Constants.YES) && InternetConnectionChecker.isNetworkConnected(App.context)){
-
+            uploadData(callback);
         }
     }
 

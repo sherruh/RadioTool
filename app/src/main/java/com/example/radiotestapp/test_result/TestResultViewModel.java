@@ -10,6 +10,7 @@ import com.example.radiotestapp.enums.EState;
 import com.example.radiotestapp.model.Event;
 import com.example.radiotestapp.model.Log;
 import com.example.radiotestapp.model.LogResult;
+import com.example.radiotestapp.repository.Callback;
 import com.example.radiotestapp.utils.Logger;
 import com.example.radiotestapp.utils.SingleLiveEvent;
 
@@ -63,6 +64,7 @@ public class TestResultViewModel extends ViewModel {
     public MutableLiveData<Double> downSRLiveData = new MutableLiveData<>();
     public MutableLiveData<Long> uploadThrputLiveData = new MutableLiveData<>();
     public MutableLiveData<Double> uploadSRLiveData = new MutableLiveData<>();
+    public MutableLiveData<String> uploadDataFailedMutableData = new MutableLiveData<>();
 
     public SingleLiveEvent<Void> calculationsFinishedLiveEvent = new SingleLiveEvent<>();
 
@@ -75,7 +77,17 @@ public class TestResultViewModel extends ViewModel {
         this.logId = logId;
         startCalculations(isTestedYoutube, isTestedDownload, isTestedUpload);
         Logger.d("TestResultData succesR " + logId);
-        App.logRepository.uploadUnUploadedData();
+        App.logRepository.uploadUnUploadedData(new Callback<String>() {
+            @Override
+            public void onSuccess(String s) {
+
+            }
+
+            @Override
+            public void onFailure(String s) {
+                uploadDataFailedMutableData.postValue(s);
+            }
+        });
     }
 
     private void startCalculations(boolean isTestedYoutube, boolean isTestedDownload, boolean isTestedUpload) {

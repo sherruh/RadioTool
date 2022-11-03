@@ -55,37 +55,38 @@ public class ApiClient implements IApiClient {
     @Override
     public void sendLog(Log log, Callback<String> callback) {
         HashMap<String,String> logMap = new HashMap<>();
-        logMap.put("altitude", String.valueOf(log.getAltitude()));
-        logMap.put("ber", String.valueOf(log.getBer()));
-        logMap.put("bsic", String.valueOf(log.getBsic()));
-        logMap.put("cellId", String.valueOf(log.getCellId()));
-        logMap.put("channel", String.valueOf(log.getChannel()));
-        logMap.put("cqi", String.valueOf(log.getCqi()));
-        logMap.put("date", String.valueOf(log.getDate()));
-        logMap.put("dlThrput", String.valueOf(log.getDlThrput()));
-        logMap.put("eNodeB", String.valueOf(log.getENodeB()));
-        logMap.put("ecNO", String.valueOf(log.getEcNO()));
-        logMap.put("id", String.valueOf(log.getId()));
-        logMap.put("isUploaded", String.valueOf(log.isUploaded()));
-        logMap.put("latitude", String.valueOf(log.getLatitude()));
-        logMap.put("logId", String.valueOf(log.getLogId()));
-        logMap.put("logState", String.valueOf(log.getLogState()));
-        logMap.put("longitude", String.valueOf(log.getLongitude()));
-        logMap.put("mcc", String.valueOf(log.getMcc()));
-        logMap.put("mnc", String.valueOf(log.getMnc()));
-        logMap.put("pci", String.valueOf(log.getPci()));
-        logMap.put("ping", String.valueOf(log.getPing()));
-        logMap.put("psc", String.valueOf(log.getPsc()));
-        logMap.put("rscp", String.valueOf(log.getRscp()));
-        logMap.put("rsrp", String.valueOf(log.getRsrp()));
-        logMap.put("rsrq", String.valueOf(log.getRsrq()));
-        logMap.put("rxLevel", String.valueOf(log.getRxLevel()));
-        logMap.put("snr", String.valueOf(log.getSnr()));
-        logMap.put("tacLac", String.valueOf(log.getTacLac()));
-        logMap.put("technology", String.valueOf(log.getTechnology()));
-        logMap.put("ulThrput", String.valueOf(log.getUlThrput()));
-        logMap.put("youtubeState", String.valueOf(log.getYoutubeState()));
-        logMap.put("youtubeQuality", String.valueOf(log.getYoutubeResolution()));
+        logMap.put("altitude", String.valueOf(log.getAltitude()));//5
+        logMap.put("BER", String.valueOf(log.getBer()));//20
+        logMap.put("bsic", String.valueOf(log.getBsic()));//11
+        logMap.put("CID", String.valueOf(log.getCellId()));//10
+        logMap.put("Channel", String.valueOf(log.getChannel()));//21
+        logMap.put("CQI", String.valueOf(log.getCqi()));//18
+        logMap.put("Date", String.valueOf(log.getDate()));//2
+        logMap.put("DlThrput", String.valueOf(log.getDlThrput()));//22
+        logMap.put("ENodeB", String.valueOf(log.getENodeB()));//9
+        logMap.put("EcNO", String.valueOf(log.getEcNO()));//19
+        logMap.put("latitude", String.valueOf(log.getLatitude()));//4
+        logMap.put("LogId", String.valueOf(log.getLogId()));//1
+        logMap.put("logState", String.valueOf(log.getLogState()));//30
+        logMap.put("longitude", String.valueOf(log.getLongitude()));//3
+        logMap.put("MCC", String.valueOf(log.getMcc()));//6
+        logMap.put("MNC", String.valueOf(log.getMnc()));//7
+        logMap.put("PCI", String.valueOf(log.getPci()));//13
+        logMap.put("ping", String.valueOf(log.getPing()));//24
+        logMap.put("PSC", String.valueOf(log.getPsc()));//12
+        logMap.put("RSCP", String.valueOf(log.getRscp()));//16
+        logMap.put("RSRP", String.valueOf(log.getRsrp()));//14
+        logMap.put("RSRQ", String.valueOf(log.getRsrq()));//15
+        logMap.put("RxLevel", String.valueOf(log.getRxLevel()));//16
+        logMap.put("SNR", String.valueOf(log.getSnr()));//17
+        logMap.put("TACLAC", String.valueOf(log.getTacLac()));//8
+        logMap.put("Technology", String.valueOf(log.getTechnology()));//7
+        logMap.put("UlThrput", String.valueOf(log.getUlThrput()));//23
+        logMap.put("youtubeState", String.valueOf(log.getYoutubeState()));//31
+        logMap.put("YoutubeQuality", String.valueOf(log.getYoutubeResolution()));//25
+        logMap.put("Event", "");//26
+        logMap.put("EventParameter", "");//27
+        logMap.put("EventDescription", "");//28
 
         Logger.d("ResponseServer " + logMap.toString());
 
@@ -176,7 +177,75 @@ public class ApiClient implements IApiClient {
 
     @Override
     public void sendLogResult(LogResult logResult, Callback<String> callback) {
+        HashMap<String,String> logResultMap = new HashMap<>();
 
+        logResultMap.put("id", logResult.getId());//1
+        logResultMap.put("isYoutubeTested", String.valueOf(logResult.isYoutubeTested()));
+        logResultMap.put("isDownloadTested", String.valueOf(logResult.isDownloadTested()));
+        logResultMap.put("isUploadTested", String.valueOf(logResult.isUploadTested()));
+        logResultMap.put("rsrp", String.valueOf(logResult.getRsrp()));
+        logResultMap.put("rscp", String.valueOf(logResult.getRscp()));
+        logResultMap.put("rxLvl", String.valueOf(logResult.getRxLvl()));
+        logResultMap.put("snr", String.valueOf(logResult.getSnr()));
+        logResultMap.put("ecN0", String.valueOf(logResult.getEcN0()));
+        logResultMap.put("cI", String.valueOf(logResult.getCI()));
+        logResultMap.put("lteCqi", String.valueOf(logResult.getLteCqi()));
+        logResultMap.put("rsrq", String.valueOf(logResult.getRsrq()));
+        logResultMap.put("umtsCqi", String.valueOf(logResult.getUmtsCqi()));
+        logResultMap.put("firstRatio", String.valueOf(logResult.getFirstRatio()));
+        logResultMap.put("firstTech", String.valueOf(logResult.getFirstTech()));
+        logResultMap.put("firstTacLac", String.valueOf(logResult.getFirstTacLac()));
+        logResultMap.put("firstENodeB", String.valueOf(logResult.getFirstENodeB()));
+        logResultMap.put("firstCid", String.valueOf(logResult.getFirstCid()));
+        logResultMap.put("secondRatio", String.valueOf(logResult.getSecondRatio()));
+        logResultMap.put("secondTech", String.valueOf(logResult.getSecondTech()));
+        logResultMap.put("secondTacLac", String.valueOf(logResult.getSecondTacLac()));
+        logResultMap.put("secondENodeB", String.valueOf(logResult.getSecondENodeB()));
+        logResultMap.put("secondCid", String.valueOf(logResult.getSecondCid()));
+        logResultMap.put("thirdRatio", String.valueOf(logResult.getThirdRatio()));
+        logResultMap.put("thirdTech", String.valueOf(logResult.getThirdTech()));
+        logResultMap.put("thirdTacLac", String.valueOf(logResult.getThirdTacLac()));
+        logResultMap.put("thirdENodeB", String.valueOf(logResult.getThirdENodeB()));
+        logResultMap.put("thirdCid", String.valueOf(logResult.getThirdCid()));
+        logResultMap.put("bufferTime", String.valueOf(logResult.getBufferTime()));
+        logResultMap.put("bufferThroughput", String.valueOf(logResult.getBufferThroughput()));
+        logResultMap.put("bufferSR", String.valueOf(logResult.getBufferSR()));
+        logResultMap.put("initTime", String.valueOf(logResult.getInitTime()));
+        logResultMap.put("initSR", String.valueOf(logResult.getInitSR()));
+        logResultMap.put("youtubeSR", String.valueOf(logResult.getYoutubeSR()));
+        logResultMap.put("resolution144", String.valueOf(logResult.getResolution144()));
+        logResultMap.put("resolution240", String.valueOf(logResult.getResolution240()));
+        logResultMap.put("resolution360", String.valueOf(logResult.getResolution360()));
+        logResultMap.put("resolution480", String.valueOf(logResult.getResolution480()));
+        logResultMap.put("resolution720", String.valueOf(logResult.getResolution720()));
+        logResultMap.put("resolution1080", String.valueOf(logResult.getResolution1080()));
+        logResultMap.put("downThrput", String.valueOf(logResult.getDownThrput()));
+        logResultMap.put("downSR", String.valueOf(logResult.getDownSR()));
+        logResultMap.put("uploadThrput", String.valueOf(logResult.getUploadThrput()));
+        logResultMap.put("uploadSR", String.valueOf(logResult.getUploadSR()));
+
+        Call<String> call = client.sendLog("UE_LOG_RESULT_POST_CD",logResultMap);
+        call.enqueue(new retrofit2.Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()){
+                    if (response.body() !=null){
+                        Logger.d("ResponseServer Event not null" + response.body());
+                        callback.onSuccess("");
+                    }else {
+                        Logger.d("ResponseServer Event is null" + response.message());
+                    }
+                }else {
+                    Logger.d("ResponseServer Event error " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Logger.d("ResponseServer Event Failure" + t.getMessage());
+                callback.onFailure(t.getMessage());
+            }
+        });
     }
 
     private interface RadioTestOnlineClient {

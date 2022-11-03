@@ -18,6 +18,7 @@ import com.example.radiotestapp.BuildConfig;
 import com.example.radiotestapp.R;
 import com.example.radiotestapp.core.Constants;
 import com.example.radiotestapp.utils.Logger;
+import com.example.radiotestapp.utils.Toaster;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -166,6 +167,10 @@ public class TestResultActivity extends AppCompatActivity {
         viewModel.calculationsFinishedLiveEvent.observe(this, v -> {
             takeScreenshot();
             Logger.d("Screenshot: here");
+        });
+
+        viewModel.uploadDataFailedMutableData.observe(this, s ->{
+            Toaster.showLong(this,s);
         });
     }
 
