@@ -1,7 +1,6 @@
 package com.example.radiotestapp.upload_test;
 
-import android.os.Environment;
-
+import com.example.radiotestapp.App;
 import com.example.radiotestapp.core.Constants;
 
 import java.io.File;
@@ -28,7 +27,7 @@ public class Uploader {
     private OkHttpClient client;
 
     public void uploadFile(String targetUrl, UploadListener uploadListener){
-        File folder = new File(Environment.getExternalStorageDirectory(), Constants.LOG_FOLDER);
+        File folder = new File(App.context.getExternalFilesDir(null), Constants.LOG_FOLDER);
         File file = new File(folder.getPath(),"/1.bin");
         client = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.SECONDS)

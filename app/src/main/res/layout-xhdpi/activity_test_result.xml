@@ -1323,5 +1323,14 @@
         app:layout_constraintTop_toBottomOf="@id/frame_file_transfer_activity_result"
         app:layout_constraintEnd_toEndOf="@id/frame_file_transfer_activity_result" />
 
+    <Button
+        android:id="@+id/button_share_activity_test_result"
+        android:layout_width="76dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_button_share"
+        app:layout_constraintTop_toBottomOf="@id/frame_file_transfer_activity_result"
+        app:layout_constraintStart_toStartOf="@id/frame_file_transfer_activity_result" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

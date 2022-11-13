@@ -29,7 +29,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".test_result.TestResultActivity"></activity>
+        <activity android:name=".test_result.TestResultActivity" android:screenOrientation="portrait"></activity>
         <activity android:name=".settings.SettingsActivity" />
         <activity
             android:name=".main.MainActivity"

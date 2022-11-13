@@ -14,6 +14,7 @@ import com.example.radiotestapp.R;
 import com.example.radiotestapp.core.Constants;
 import com.example.radiotestapp.main.MainViewModel;
 import com.example.radiotestapp.model.SettingsParameter;
+import com.example.radiotestapp.utils.Logger;
 import com.example.radiotestapp.utils.Toaster;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
@@ -63,7 +64,7 @@ public class YoutubePlayerFragment extends Fragment {
                 mYouTubePlayer = youTubePlayer;
                 String videoId = getVideoId();
                 youTubePlayer.cueVideo(videoId,0);//VBKNoLcj8jA
-                /*Logger.d("YoutubePlayerPlay");
+                Logger.d("YoutubePlayerPlay");/*
                 youTubePlayer.play();*/
             }
         });

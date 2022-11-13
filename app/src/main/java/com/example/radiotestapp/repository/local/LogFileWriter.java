@@ -21,7 +21,7 @@ public class LogFileWriter implements ILocalLogRepository {
             "\tLogState\tYoutubeState";
     private File logFile;
     private String logName = "";
-    private File folder = new File(Environment.getExternalStorageDirectory(), Constants.LOG_FOLDER);
+    private File folder = new File(App.context.getExternalFilesDir(null), Constants.LOG_FOLDER);
     private FileOutputStream fileOutputStream;
 
     @Override

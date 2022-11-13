@@ -175,7 +175,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
 
 
     private void createFileForUpload() {
-        File folder = new File(Environment.getExternalStorageDirectory(), Constants.LOG_FOLDER);
+        File folder = new File(App.context.getExternalFilesDir(null), Constants.LOG_FOLDER);
         if (!folder.exists()){
             folder.mkdir();
         }
@@ -184,9 +184,9 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
             randomAccessFile.setLength(1024*1024*50);
             randomAccessFile.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            Logger.d( e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.d( e.getMessage());
         }
     }
 

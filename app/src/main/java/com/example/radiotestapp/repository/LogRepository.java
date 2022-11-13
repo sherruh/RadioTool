@@ -435,6 +435,7 @@ public class LogRepository {
         List<Log> unUploadedLogs = App.localStorage.getUnUploadedLogs();
         final int[] i = {-1};
         if (unUploadedLogs.size() == 0 ) callback.onSuccess("");
+        Logger.d("ResponseServer count of logs to load " + unUploadedLogs.size() );
         for (Log log : unUploadedLogs){
              App.apiClient.sendLog(log, new Callback<String>() {
                  @Override

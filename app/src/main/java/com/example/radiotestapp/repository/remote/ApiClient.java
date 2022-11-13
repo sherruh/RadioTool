@@ -44,7 +44,7 @@ public class ApiClient implements IApiClient {
             .create();
 
     Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl(BASE_URL /*+ "/"*/)
+            .baseUrl(BASE_URL)
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(okHttpClient)
@@ -61,7 +61,7 @@ public class ApiClient implements IApiClient {
         logMap.put("CID", String.valueOf(log.getCellId()));//10
         logMap.put("Channel", String.valueOf(log.getChannel()));//21
         logMap.put("CQI", String.valueOf(log.getCqi()));//18
-        logMap.put("Date", String.valueOf(log.getDate()));//2
+        logMap.put("date", String.valueOf(log.getDate()));//2
         logMap.put("DlThrput", String.valueOf(log.getDlThrput()));//22
         logMap.put("ENodeB", String.valueOf(log.getENodeB()));//9
         logMap.put("EcNO", String.valueOf(log.getEcNO()));//19
@@ -84,13 +84,13 @@ public class ApiClient implements IApiClient {
         logMap.put("UlThrput", String.valueOf(log.getUlThrput()));//23
         logMap.put("youtubeState", String.valueOf(log.getYoutubeState()));//31
         logMap.put("YoutubeQuality", String.valueOf(log.getYoutubeResolution()));//25
-        logMap.put("Event", "");//26
-        logMap.put("EventParameter", "");//27
-        logMap.put("EventDescription", "");//28
+        logMap.put("Event", " ");//26
+        logMap.put("EventParameter", " ");//27
+        logMap.put("EventDescription", " ");//28
 
-        Logger.d("ResponseServer " + logMap.toString());
+        Logger.d("ResponseServer sending " + logMap.toString());
 
-        Call<String> call = client.sendLog("UE_LOG_POST_CD",logMap);
+        Call<String> call = client.sendLog("UE_LOG_CD_POST",logMap);
         call.enqueue(new retrofit2.Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -151,7 +151,7 @@ public class ApiClient implements IApiClient {
         eventMap.put("EventParameter", event.getParameter());//27
         eventMap.put("EventDescription", event.getParameter2());//28
 
-        Call<String> call = client.sendLog("UE_LOG_POST_CD",eventMap);
+        Call<String> call = client.sendLog("UE_LOG_CD_POST",eventMap);
         call.enqueue(new retrofit2.Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -224,7 +224,7 @@ public class ApiClient implements IApiClient {
         logResultMap.put("uploadThrput", String.valueOf(logResult.getUploadThrput()));
         logResultMap.put("uploadSR", String.valueOf(logResult.getUploadSR()));
 
-        Call<String> call = client.sendLog("UE_LOG_RESULT_POST_CD",logResultMap);
+        Call<String> call = client.sendLog("UE_LOG_RESULT_CD_POST",logResultMap);
         call.enqueue(new retrofit2.Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {

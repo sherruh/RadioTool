@@ -2,11 +2,9 @@ package com.example.radiotestapp.settings;
 
 import static com.example.radiotestapp.core.Constants.DEFAULT_DOWNLOAD_URL;
 import static com.example.radiotestapp.core.Constants.DEFAULT_UPLOAD_URL;
-import static com.example.radiotestapp.core.Constants.DOWNLOAD_URL;
 import static com.example.radiotestapp.core.Constants.IS_NURTEL;
 import static com.example.radiotestapp.core.Constants.IS_YOUTUBE_NEED;
 import static com.example.radiotestapp.core.Constants.NO;
-import static com.example.radiotestapp.core.Constants.UPLOAD_URL;
 import static com.example.radiotestapp.core.Constants.YES;
 import static com.example.radiotestapp.core.Constants.YOUTUBE_DEFAULT_URL;
 
@@ -148,7 +146,7 @@ public class SettingsViewModel extends ViewModel {
     public void saveSettingsNurtel() {
         App.localStorage.saveSettingsParameter(new SettingsParameter(IS_NURTEL, YES));
         saveSettings(true,YOUTUBE_DEFAULT_URL,true,
-                true,DOWNLOAD_URL,true,UPLOAD_URL);
+                true,DEFAULT_DOWNLOAD_URL,true,DEFAULT_UPLOAD_URL);
         saveTimeSettings("30","30","30","30");
     }
 }

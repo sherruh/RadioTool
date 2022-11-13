@@ -22,8 +22,8 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        logRepository = new LogRepository();
         context = getApplicationContext();
+        logRepository = new LogRepository();
         dataBase = Room
                 .databaseBuilder(this, DataBase.class,"app_database")
                 .allowMainThreadQueries()
