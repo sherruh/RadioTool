@@ -101,4 +101,8 @@
         <item name="colorAccent">@color/colorWhite</item>
     </style>
 
+    <style name="TextSizeForNormal">
+        <item name="android:textSize">10sp</item>
+    </style>
+
 </resources>

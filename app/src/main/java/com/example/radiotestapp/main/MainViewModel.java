@@ -171,6 +171,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         startThreadForRadioParamsUpdating();
         createFileForUpload();
         App.localStorage.saveSettingsParameter(new SettingsParameter(Constants.IS_ALLOWED_SAVING_LOGS,Constants.YES));
+        App.logRepository.checkUnuploadedData();
     }
 
 

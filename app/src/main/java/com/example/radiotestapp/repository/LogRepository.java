@@ -395,6 +395,7 @@ public class LogRepository {
     }
 
     public void uploadData(Callback<String> callback){
+        checkUnuploadedData();
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             uploadLogs(new Callback<String>() {
@@ -431,6 +432,15 @@ public class LogRepository {
         });
     }
 
+    public void checkUnuploadedData() {
+        List<Log> logs = App.localStorage.getUnUploadedLogs();
+        List<Event> events = App.localStorage.getUnUploadedEvents();
+        List<LogResult> logResults = App.localStorage.getUnUploadedLogResults();
+        Logger.d("Unuploaded logs " + logs.size());
+        Logger.d("Unuploaded events " + events.size());
+        Logger.d("Unuploaded logResults " + logResults.size());
+    }
+
     private void uploadLogs(Callback<String> callback){
         List<Log> unUploadedLogs = App.localStorage.getUnUploadedLogs();
         final int[] i = {-1};
@@ -441,9 +451,11 @@ public class LogRepository {
                  @Override
                  public void onSuccess(String s) {
                      App.localStorage.setLogUploaded(log.getId());
-                     i[0] = i[0] ++;
+                     i[0] = i[0] + 1;
+                     Logger.d("Unuploaded logs current number " + i[0]);
                      if (i[0] == unUploadedLogs.size() - 1){
                          callback.onSuccess(s);
+                         Logger.d("Unuploaded logs uploaded");
                      }
                  }
 
@@ -456,6 +468,7 @@ public class LogRepository {
     }
 
     private void uploadEvents(Callback<String> callback){
+        Logger.d("Unuploaded uploading events");
         List<Event> unUploadedEvents = App.localStorage.getUnUploadedEvents();
         final int[] i = {-1};
         if (unUploadedEvents.size() == 0 ) callback.onSuccess("");
@@ -464,9 +477,12 @@ public class LogRepository {
                 @Override
                 public void onSuccess(String s) {
                     App.localStorage.setEventUploaded(event.getId());
-                    i[0] = i[0] ++;
+                    i[0] = i[0] + 1;
+                    Logger.d("Unuploaded events current number " + i[0]);
+                    Logger.d("Unuploaded events current size " + unUploadedEvents.size());
                     if (i[0] == unUploadedEvents.size() - 1){
                         callback.onSuccess(s);
+                        Logger.d("Unuploaded events uploaded");
                     }
                 }
 

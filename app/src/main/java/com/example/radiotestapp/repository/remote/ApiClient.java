@@ -61,13 +61,13 @@ public class ApiClient implements IApiClient {
         logMap.put("CID", String.valueOf(log.getCellId()));//10
         logMap.put("Channel", String.valueOf(log.getChannel()));//21
         logMap.put("CQI", String.valueOf(log.getCqi()));//18
-        logMap.put("date", String.valueOf(log.getDate()));//2
+        logMap.put("Date", String.valueOf(log.getDate()));//2
         logMap.put("DlThrput", String.valueOf(log.getDlThrput()));//22
         logMap.put("ENodeB", String.valueOf(log.getENodeB()));//9
-        logMap.put("EcNO", String.valueOf(log.getEcNO()));//19
+        logMap.put("EcN0", String.valueOf(log.getEcNO()));//19
         logMap.put("latitude", String.valueOf(log.getLatitude()));//4
         logMap.put("LogId", String.valueOf(log.getLogId()));//1
-        logMap.put("logState", String.valueOf(log.getLogState()));//30
+        logMap.put("LogState", String.valueOf(log.getLogState()));//30
         logMap.put("longitude", String.valueOf(log.getLongitude()));//3
         logMap.put("MCC", String.valueOf(log.getMcc()));//6
         logMap.put("MNC", String.valueOf(log.getMnc()));//7
@@ -82,11 +82,11 @@ public class ApiClient implements IApiClient {
         logMap.put("TACLAC", String.valueOf(log.getTacLac()));//8
         logMap.put("Technology", String.valueOf(log.getTechnology()));//7
         logMap.put("UlThrput", String.valueOf(log.getUlThrput()));//23
-        logMap.put("youtubeState", String.valueOf(log.getYoutubeState()));//31
+        logMap.put("YoutubeState", String.valueOf(log.getYoutubeState()));//31
         logMap.put("YoutubeQuality", String.valueOf(log.getYoutubeResolution()));//25
-        logMap.put("Event", " ");//26
-        logMap.put("EventParameter", " ");//27
-        logMap.put("EventDescription", " ");//28
+        logMap.put("Event", "");//26
+        logMap.put("EventParameter", "");//27
+        logMap.put("EventDescription", "");//28
 
         Logger.d("ResponseServer sending " + logMap.toString());
 
@@ -118,38 +118,40 @@ public class ApiClient implements IApiClient {
     public void sendEvent(Event event, Callback<String> callback) {
         HashMap<String,String> eventMap = new HashMap<>();
 
-        eventMap.put("altitude", "");//5
-        eventMap.put("BER", "");//20
-        eventMap.put("bsic", "");//11
-        eventMap.put("CID", "");//10
-        eventMap.put("Channel", "");//21
-        eventMap.put("CQI", "");//18
+        eventMap.put("altitude", " ");//5
+        eventMap.put("BER", " ");//20
+        eventMap.put("bsic", " ");//11
+        eventMap.put("CID", " ");//10
+        eventMap.put("Channel", " ");//21
+        eventMap.put("CQI", " ");//18
         eventMap.put("Date", String.valueOf(event.getEventTime()));//2
-        eventMap.put("DlThrput", "");//22
-        eventMap.put("ENodeB", "");//9
-        eventMap.put("EcNO", "");//19
-        eventMap.put("latitude", "");//4
+        eventMap.put("DlThrput", " ");//22
+        eventMap.put("ENodeB", " ");//9
+        eventMap.put("EcN0", " ");//19
+        eventMap.put("latitude", " ");//4
         eventMap.put("LogId", String.valueOf(event.getLogId()));//1
-        eventMap.put("logState", String.valueOf(event.getState()));//30
-        eventMap.put("longitude", "");//3
-        eventMap.put("MCC", "");//6
-        eventMap.put("MNC", "");//7
-        eventMap.put("PCI", "");//13
-        eventMap.put("ping", "");//24
-        eventMap.put("PSC", "");//12
-        eventMap.put("RSCP", "");//16
-        eventMap.put("RSRP", "");//14
-        eventMap.put("RSRQ", "");//15
-        eventMap.put("RxLevel", "");//16
-        eventMap.put("SNR", "");//17
-        eventMap.put("TACLAC", "");//8
-        eventMap.put("Technology",  "");//7
-        eventMap.put("UlThrput", "");//23
-        eventMap.put("youtubeState", "");//31
-        eventMap.put("YoutubeQuality", "");//25
+        eventMap.put("LogState", String.valueOf(event.getState()));//30
+        eventMap.put("longitude", " ");//3
+        eventMap.put("MCC", " ");//6
+        eventMap.put("MNC", " ");//7
+        eventMap.put("PCI", " ");//13
+        eventMap.put("ping", " ");//24
+        eventMap.put("PSC", " ");//12
+        eventMap.put("RSCP", " ");//16
+        eventMap.put("RSRP", " ");//14
+        eventMap.put("RSRQ", " ");//15
+        eventMap.put("RxLevel", " ");//16
+        eventMap.put("SNR", " ");//17
+        eventMap.put("TACLAC", " ");//8
+        eventMap.put("Technology", " ");//7
+        eventMap.put("UlThrput", " ");//23
+        eventMap.put("YoutubeState", " ");//31
+        eventMap.put("YoutubeQuality", " ");//25
         eventMap.put("Event", event.getEvent().toString());//26
         eventMap.put("EventParameter", event.getParameter());//27
-        eventMap.put("EventDescription", event.getParameter2());//28
+        eventMap.put("EventDescription", String.valueOf(event.getParameter2()));//28
+
+        Logger.d("ResponseServer sending event " + eventMap.toString());
 
         Call<String> call = client.sendLog("UE_LOG_CD_POST",eventMap);
         call.enqueue(new retrofit2.Callback<String>() {
