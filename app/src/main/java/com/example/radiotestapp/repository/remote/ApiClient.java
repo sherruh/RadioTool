@@ -118,37 +118,37 @@ public class ApiClient implements IApiClient {
     public void sendEvent(Event event, Callback<String> callback) {
         HashMap<String,String> eventMap = new HashMap<>();
 
-        eventMap.put("altitude", " ");//5
-        eventMap.put("BER", " ");//20
-        eventMap.put("bsic", " ");//11
-        eventMap.put("CID", " ");//10
-        eventMap.put("Channel", " ");//21
-        eventMap.put("CQI", " ");//18
+        eventMap.put("altitude", "");//5
+        eventMap.put("BER", "");//20
+        eventMap.put("bsic", "");//11
+        eventMap.put("CID", "");//10
+        eventMap.put("Channel", "");//21
+        eventMap.put("CQI", "");//18
         eventMap.put("Date", String.valueOf(event.getEventTime()));//2
-        eventMap.put("DlThrput", " ");//22
-        eventMap.put("ENodeB", " ");//9
-        eventMap.put("EcN0", " ");//19
-        eventMap.put("latitude", " ");//4
+        eventMap.put("DlThrput", "");//22
+        eventMap.put("ENodeB", "");//9
+        eventMap.put("EcN0", "");//19
+        eventMap.put("latitude", "");//4
         eventMap.put("LogId", String.valueOf(event.getLogId()));//1
         eventMap.put("LogState", String.valueOf(event.getState()));//30
-        eventMap.put("longitude", " ");//3
-        eventMap.put("MCC", " ");//6
-        eventMap.put("MNC", " ");//7
-        eventMap.put("PCI", " ");//13
-        eventMap.put("ping", " ");//24
-        eventMap.put("PSC", " ");//12
-        eventMap.put("RSCP", " ");//16
-        eventMap.put("RSRP", " ");//14
-        eventMap.put("RSRQ", " ");//15
-        eventMap.put("RxLevel", " ");//16
-        eventMap.put("SNR", " ");//17
-        eventMap.put("TACLAC", " ");//8
-        eventMap.put("Technology", " ");//7
-        eventMap.put("UlThrput", " ");//23
-        eventMap.put("YoutubeState", " ");//31
-        eventMap.put("YoutubeQuality", " ");//25
-        eventMap.put("Event", event.getEvent().toString());//26
-        eventMap.put("EventParameter", event.getParameter());//27
+        eventMap.put("longitude", "");//3
+        eventMap.put("MCC", "");//6
+        eventMap.put("MNC", "");//7
+        eventMap.put("PCI", "");//13
+        eventMap.put("ping", "");//24
+        eventMap.put("PSC", "");//12
+        eventMap.put("RSCP", "");//16
+        eventMap.put("RSRP", "");//14
+        eventMap.put("RSRQ", "");//15
+        eventMap.put("RxLevel", "");//16
+        eventMap.put("SNR", "");//17
+        eventMap.put("TACLAC", "");//8
+        eventMap.put("Technology", "");//7
+        eventMap.put("UlThrput", "");//23
+        eventMap.put("YoutubeState", "");//31
+        eventMap.put("YoutubeQuality", "");//25
+        eventMap.put("Event", String.valueOf(event.getEvent()));//26
+        eventMap.put("EventParameter", String.valueOf(event.getParameter()));//27
         eventMap.put("EventDescription", String.valueOf(event.getParameter2()));//28
 
         Logger.d("ResponseServer sending event " + eventMap.toString());
