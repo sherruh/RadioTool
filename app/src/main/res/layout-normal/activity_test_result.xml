@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBlack"
+    android:background="@drawable/bg_result_selector"
     tools:context=".test_result.TestResultActivity">
 
     <View
@@ -13,7 +13,7 @@
         android:layout_width="370dp"
         android:layout_height="264dp"
         android:layout_marginTop="14dp"
-        android:background="@color/colorBlack"
+        android:background="@drawable/bg_rect_round_result"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

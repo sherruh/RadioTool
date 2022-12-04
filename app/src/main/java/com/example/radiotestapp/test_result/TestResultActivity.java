@@ -169,7 +169,7 @@ public class TestResultActivity extends AppCompatActivity {
             Logger.d("Screenshot: here");
         });
 
-        viewModel.uploadDataFailedMutableData.observe(this, s ->{
+        viewModel.uploadDataResultLiveData.observe(this, s ->{
             Toaster.showLong(this,s);
         });
     }

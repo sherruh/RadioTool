@@ -64,7 +64,8 @@ public class YoutubePlayerFragment extends Fragment {
                 mYouTubePlayer = youTubePlayer;
                 String videoId = getVideoId();
                 youTubePlayer.cueVideo(videoId,0);//VBKNoLcj8jA
-                Logger.d("YoutubePlayerPlay");/*
+                Logger.d("YoutubePlayerPlay");
+                /*
                 youTubePlayer.play();*/
             }
         });
@@ -96,6 +97,7 @@ public class YoutubePlayerFragment extends Fragment {
 
             @Override
             public void onPlaybackQualityChange(YouTubePlayer youTubePlayer, PlayerConstants.PlaybackQuality playbackQuality) {
+                Logger.d("YouQuality " + playbackQuality.toString());
                 mViewModel.youtubeQualityChanged(playbackQuality);
             }
 

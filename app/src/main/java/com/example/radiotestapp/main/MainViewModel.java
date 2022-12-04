@@ -775,9 +775,11 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
             default:
                 Toaster.showShort(mContext,"QUALITY NONE");
         }
-        if (youtubeState != null){
-            App.logRepository.setYoutubeResolution(s);
-        }
+        youtubeState = EYoutubeState.PLAYING;
+        App.logRepository.setYoutubeState(youtubeState);
+        App.logRepository.setYoutubeResolution(s);
+        Logger.d("YouQuality main viewModel " + s + " yotubestate " + youtubeState.name());
+
     }
 
     public void onExitClick() {

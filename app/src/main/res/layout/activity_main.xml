@@ -473,6 +473,7 @@
         android:background="@drawable/bg_rect_rounded"
         />
 
+
     <ProgressBar
         android:id="@+id/progress_main_activity"
         android:layout_width="50dp"

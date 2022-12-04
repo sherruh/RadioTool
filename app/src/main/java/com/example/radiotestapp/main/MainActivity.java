@@ -1,7 +1,7 @@
 package com.example.radiotestapp.main;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
+import android.content.pm.ActivityInfo;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,8 +20,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.ListPopupWindow;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;

@@ -28,12 +28,10 @@ public class YoutubePlayerListener implements YouTubePlayerListener {
 
     @Override
     public void onCurrentSecond(YouTubePlayer youTubePlayer, float v) {
-
     }
 
     @Override
     public void onError(YouTubePlayer youTubePlayer, PlayerConstants.PlayerError playerError) {
-
     }
 
     @Override

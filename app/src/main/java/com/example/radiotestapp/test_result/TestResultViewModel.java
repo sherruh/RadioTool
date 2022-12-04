@@ -64,7 +64,7 @@ public class TestResultViewModel extends ViewModel {
     public MutableLiveData<Double> downSRLiveData = new MutableLiveData<>();
     public MutableLiveData<Long> uploadThrputLiveData = new MutableLiveData<>();
     public MutableLiveData<Double> uploadSRLiveData = new MutableLiveData<>();
-    public MutableLiveData<String> uploadDataFailedMutableData = new MutableLiveData<>();
+    public MutableLiveData<String> uploadDataResultLiveData = new MutableLiveData<>();
 
     public SingleLiveEvent<Void> calculationsFinishedLiveEvent = new SingleLiveEvent<>();
 
@@ -80,12 +80,12 @@ public class TestResultViewModel extends ViewModel {
         App.logRepository.uploadUnUploadedData(new Callback<String>() {
             @Override
             public void onSuccess(String s) {
-
+                uploadDataResultLiveData.setValue(s);
             }
 
             @Override
             public void onFailure(String s) {
-                uploadDataFailedMutableData.postValue(s);
+                uploadDataResultLiveData.setValue(s);
             }
         });
     }
