@@ -388,14 +388,14 @@ public class LogRepository {
     }
 
     public void uploadUnUploadedData(Callback<String> callback) {
-        if (App.localStorage.getSettingsParameter(Constants.IS_NURTEL).getValue()
+        if (App.localStorage.getSettingsParameter(Constants.IS_NURTEL) != null &&
+                App.localStorage.getSettingsParameter(Constants.IS_NURTEL).getValue()
                 .equals(Constants.YES) && InternetConnectionChecker.isNetworkConnected(App.context)){
             uploadData(callback);
         }
     }
 
     public void uploadData(Callback<String> callback){
-        checkUnuploadedData();
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             uploadLogs(new Callback<String>() {
@@ -407,11 +407,13 @@ public class LogRepository {
                             uploadLogResults(new Callback<String>() {
                                 @Override
                                 public void onSuccess(String s) {
+                                    Logger.d("uploadDataResultLiveData " + s);
                                     callback.onSuccess("Data has been uploaded!");
                                 }
 
                                 @Override
                                 public void onFailure(String s) {
+                                    Logger.d("uploadDataResultLiveData " + s);
                                     callback.onFailure("Data Upload error");
                                 }
                             });
@@ -419,6 +421,7 @@ public class LogRepository {
 
                         @Override
                         public void onFailure(String s) {
+                            Logger.d("uploadDataResultLiveData " + s);
                             callback.onFailure("Data Upload error");
                         }
                     });
@@ -426,6 +429,7 @@ public class LogRepository {
 
                 @Override
                 public void onFailure(String s) {
+                    Logger.d("uploadDataResultLiveData " + s);
                     callback.onFailure("Data Upload error");
                 }
             });
@@ -497,20 +501,26 @@ public class LogRepository {
     private void uploadLogResults(Callback<String> callback){
         List<LogResult> logResults = App.localStorage.getUnUploadedLogResults();
         final int[] i = {-1};
-        if (logResults.size() == 0 ) callback.onSuccess("");
+        if (logResults.size() == 0 ) {
+            callback.onSuccess("");
+            Logger.d("uploadDataResultLiveData " + null);
+        }
         for (LogResult logResult : logResults){
             App.apiClient.sendLogResult(logResult, new Callback<String>() {
                 @Override
                 public void onSuccess(String s) {
                     App.localStorage.setLogResultUploaded(logResult.getId());
-                    i[0] = i[0] ++;
+                    i[0] = i[0] + 1;
+                    Logger.d("uploadDataResultLiveData s" + s);
                     if (i[0] == logResults.size() - 1){
+                        Logger.d("uploadDataResultLiveData " + logResult.isUploaded());
                         callback.onSuccess(s);
                     }
                 }
 
                 @Override
                 public void onFailure(String s) {
+                    Logger.d("uploadDataResultLiveData f" + s);
                     callback.onFailure(s);
                 }
             });

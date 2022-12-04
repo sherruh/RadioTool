@@ -171,6 +171,7 @@ public class TestResultActivity extends AppCompatActivity {
 
         viewModel.uploadDataResultLiveData.observe(this, s ->{
             Toaster.showLong(this,s);
+
         });
     }
 

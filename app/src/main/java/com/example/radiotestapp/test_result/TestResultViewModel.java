@@ -81,11 +81,13 @@ public class TestResultViewModel extends ViewModel {
             @Override
             public void onSuccess(String s) {
                 uploadDataResultLiveData.setValue(s);
+                Logger.d("uploadDataResultLiveData " + s);
             }
 
             @Override
             public void onFailure(String s) {
                 uploadDataResultLiveData.setValue(s);
+                Logger.d("uploadDataResultLiveData " + s);
             }
         });
     }
@@ -150,10 +152,9 @@ public class TestResultViewModel extends ViewModel {
             logResult.setUploadSR(String.valueOf(uploadSRLiveData.getValue()));
             logResult.setUploadThrput(String.valueOf(uploadThrputLiveData.getValue()));
             logResult.setYoutubeSR(String.valueOf(youtubeSuccessRateLiveData.getValue()));
+            logResult.setUploaded(false);
             App.localStorage.saveLogResult(logResult);
-            Logger.d("LogResult: " + logResult);
-            LogResult logResult1 = App.localStorage.getLogResultById(logId);
-            Logger.d("LogResult: " + logResult1);
+
         }catch (Exception e){}
     }
 

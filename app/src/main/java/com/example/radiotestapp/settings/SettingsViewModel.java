@@ -45,7 +45,7 @@ public class SettingsViewModel extends ViewModel {
         SettingsParameter settingsIsYoutubeDefaultUrl = App.localStorage
                 .getSettingsParameter(Constants.IS_YOUTUBE_DEFAULT);
         if (settingsIsYoutubeDefaultUrl == null){
-            isYouTubeDefaultUrlLiveData.setValue(true);
+            isYouTubeDefaultUrlLiveData.setValue(false);
         } else {
             if (settingsIsYoutubeDefaultUrl.getValue().equals(Constants.YES)){
                 isYouTubeDefaultUrlLiveData.setValue(true);
@@ -66,10 +66,10 @@ public class SettingsViewModel extends ViewModel {
 
         SettingsParameter settingsDownloadUrl = App.localStorage.getSettingsParameter(Constants.DOWNLOAD_URL);
         if (settingsDownloadUrl != null) downloadUrlLiveData.setValue(settingsDownloadUrl.getValue());
-        else {
+       /* else {
             downloadUrlLiveData.setValue(DEFAULT_DOWNLOAD_URL);
             App.localStorage.saveSettingsParameter(new SettingsParameter(Constants.DOWNLOAD_URL,DEFAULT_DOWNLOAD_URL));
-        }
+        }*/
 
         SettingsParameter settingsIsUploadNeed = App.localStorage.getSettingsParameter(Constants.IS_UPLOAD_NEED);
         if (settingsIsUploadNeed != null){
@@ -79,10 +79,10 @@ public class SettingsViewModel extends ViewModel {
 
         SettingsParameter settingsUploadUrl = App.localStorage.getSettingsParameter(Constants.UPLOAD_URL);
         if (settingsUploadUrl != null) uploadUrlLiveData.setValue(settingsUploadUrl.getValue());
-        else {
+        /*else {
             uploadUrlLiveData.setValue(DEFAULT_UPLOAD_URL);
             App.localStorage.saveSettingsParameter(new SettingsParameter(Constants.UPLOAD_URL,DEFAULT_UPLOAD_URL));
-        }
+        }*/
 
         SettingsParameter settingsInitTimeOut = App.localStorage.getSettingsParameter(Constants.INIT_TIMEOUT);
         if (settingsInitTimeOut == null) initTImeOutLiveDataLiveData.setValue(90);
@@ -111,7 +111,15 @@ public class SettingsViewModel extends ViewModel {
             int i = Integer.parseInt(settingUploadDuration.getValue());
             uploadDurationLiveData.setValue(i);
         }
+        /*checkIsFirstLaunch();*/
     }
+
+    /*private void checkIsFirstLaunch() {
+        if(App.localStorage.getSettingsParameter(IS_FIRST_LAUNCH).getValue().equals(YES)){
+            App.localStorage.saveSettingsParameter(new SettingsParameter(IS_FIRST_LAUNCH,NO));
+
+        }
+    }*/
 
     public void saveSettings(boolean checkedIsYoutubeNeed, String youtubeUrl,
                              boolean checkedIsYoutubeDefault, boolean checkedIsDownloadNeed,
