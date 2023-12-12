@@ -51,7 +51,6 @@
             app:layout_constraintTop_toBottomOf="@id/image_youtube_init_youtube_params_fragment" />
 
         <TextView
-            android:id="@+id/text_youtube_buffering_youtube_params_fragment"
             style="@style/ParamName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -79,7 +78,6 @@
             app:layout_constraintTop_toBottomOf="@id/image_youtube_buffering_youtube_params_fragment" />
 
         <TextView
-            android:id="@+id/text_youtube_throughput_youtube_params_fragment"
             style="@style/ParamName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -107,7 +105,6 @@
             app:layout_constraintTop_toBottomOf="@id/image_youtube_thrput_youtube_params_fragment" />
 
         <TextView
-            android:id="@+id/text_youtube_resolution_youtube_params_fragment"
             style="@style/ParamName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

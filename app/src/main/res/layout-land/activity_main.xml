@@ -515,7 +515,6 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
-        android:id="@+id/text_count_of_repeats_main_activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Count of repeats"
@@ -540,7 +539,6 @@
 
 
     <TextView
-        android:id="@+id/text_delay_main_activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Timer delay, s"

@@ -83,11 +83,11 @@ public class YoutubePlayerFragment extends Fragment {
                 youTubePlayerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 Logger.d("Touched width " + youTubePlayerView.getWidth());  ; //height is ready
                 Logger.d("Touched height " + youTubePlayerView.getHeight());
-                xSettings = (int)((double)location[0] + (double)youTubePlayerView.getWidth() * 0.94);
+                xSettings = (int)((double)location[0] + (double)youTubePlayerView.getWidth() * 0.8);
                 xQuality = (int)((double)location[0] + (double)youTubePlayerView.getWidth() * 0.78);
                 x1080 = (int)((double)location[0] + (double)youTubePlayerView.getWidth() * 0.78);
                 ySettings = (int)((double)location[1] + (double)youTubePlayerView.getHeight() * 0.9);
-                yQuality = (int)((double)location[1] + (double)youTubePlayerView.getHeight() * 0.78);
+                yQuality = (int)((double)location[1] + (double)youTubePlayerView.getHeight() * 0.7);
                 y1080 = (int)((double)location[1] + (double)youTubePlayerView.getHeight() * 0.43);
 
             }

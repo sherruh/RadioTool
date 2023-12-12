@@ -20,7 +20,6 @@
         />
 
     <TextView
-        android:id="@+id/tv_signal_level_activity_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/frame_radio_activity_result"
@@ -31,7 +30,6 @@
         />
 
     <TextView
-        android:id="@+id/text_log_id_result_activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@id/text_log_id_value_result_activity"
@@ -736,7 +734,6 @@
         />
 
     <TextView
-        android:id="@+id/tv_youtube_buffering_activity_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/frame_youtube_activity_result"
