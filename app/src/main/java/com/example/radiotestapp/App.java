@@ -9,10 +9,12 @@ import com.example.radiotestapp.repository.LogRepository;
 import com.example.radiotestapp.repository.local.ILocalStorage;
 import com.example.radiotestapp.repository.local.LocalStorage;
 import com.example.radiotestapp.repository.local.db.DataBase;
+import com.example.radiotestapp.repository.remote.RemoteRepository;
 
 public class App extends Application {
     public static LogRepository logRepository;
     public static ILocalStorage localStorage;
+    public static RemoteRepository remoteRepository;
     public static Context context;
     public static DataBase dataBase;
 
@@ -27,5 +29,6 @@ public class App extends Application {
                 .fallbackToDestructiveMigration()
                 .build();
         localStorage = new LocalStorage(dataBase.dao());
+        remoteRepository = new RemoteRepository();
     }
 }

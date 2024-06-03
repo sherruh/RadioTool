@@ -181,7 +181,7 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         }
         try {
             RandomAccessFile randomAccessFile = new RandomAccessFile(folder.getPath() + "/" + "1.bin","rw");
-            randomAccessFile.setLength(1024*1024*50);
+            randomAccessFile.setLength(1024*1024*500);
             randomAccessFile.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();

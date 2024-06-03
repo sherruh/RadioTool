@@ -3,7 +3,6 @@ package com.example.radiotestapp.test_result;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
@@ -11,18 +10,19 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.radiotestapp.BuildConfig;
+import com.example.radiotestapp.App;
 import com.example.radiotestapp.R;
 import com.example.radiotestapp.core.Constants;
+import com.example.radiotestapp.model.LogResult;
+import com.example.radiotestapp.repository.remote.ApiCallback;
 import com.example.radiotestapp.utils.Logger;
+import com.example.radiotestapp.utils.Toaster;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 
 public class TestResultActivity extends AppCompatActivity {
 
@@ -105,6 +105,7 @@ public class TestResultActivity extends AppCompatActivity {
         getExtras();
         initViews();
         initViewModel();
+        shareResults();
     }
 
     private void initViewModel() {
@@ -228,8 +229,9 @@ public class TestResultActivity extends AppCompatActivity {
         buttonShare = findViewById(R.id.button_share_activity_test_result);
         buttonShare.setOnClickListener( l -> {
             if (!isScreenSaved) takeScreenshot();
-            shareResultFiles();
+            shareResults();
         });
+        buttonShare.setVisibility(View.GONE);
         buttonClose = findViewById(R.id.button_close_activity_test_result);
         buttonClose.setOnClickListener( l -> {
             if (!isScreenSaved) takeScreenshot();
@@ -239,8 +241,20 @@ public class TestResultActivity extends AppCompatActivity {
         textLogId.setText(logId);
     }
 
-    private void shareResultFiles() {
-        Intent shareIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+    private void shareResults() {
+        LogResult logResult = App.localStorage.getLogResultById(logId);
+        App.remoteRepository.sendLogResult(logResult, new ApiCallback() {
+            @Override
+            public void onSuccess(String s) {
+                Toaster.showLong(TestResultActivity.this,s);
+            }
+
+            @Override
+            public void onFailure(String s) {
+                Toaster.showLong(TestResultActivity.this,s);
+            }
+        });
+        /*Intent shareIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
         ArrayList<Uri> uriList = new ArrayList<>();
         File screen = new File(screenPath);
         Uri screenUri= FileProvider.getUriForFile(
@@ -251,16 +265,16 @@ public class TestResultActivity extends AppCompatActivity {
         Uri logUri = FileProvider.getUriForFile(
                 this,
                 BuildConfig.APPLICATION_ID + "." + getLocalClassName() + ".provider",
-                log);
+                log);*/
 
-        if ( screen.exists() && log.exists()){
+        /*if ( screen.exists() && log.exists()){
             uriList.add(screenUri);
             uriList.add(logUri);
             shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uriList);
-            shareIntent.setType("*/*");
+            shareIntent.setType("*//*");
             Intent sendIntent = Intent.createChooser(shareIntent, "RadioTest");
             startActivity(sendIntent);
-        }
+        }*/
     }
 
     private void getExtras() {
