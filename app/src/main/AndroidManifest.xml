@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.radiotestapp">
+    package="com.example.radiotestapp7">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -43,7 +43,7 @@
 
         <service android:name=".services.GettingLocationService" />
         <provider
-            android:authorities="com.example.radiotestapp.test_result.TestResultActivity.provider"
+            android:authorities="com.example.radiotestapp7.test_result.TestResultActivity.provider"
             android:name="androidx.core.content.FileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
