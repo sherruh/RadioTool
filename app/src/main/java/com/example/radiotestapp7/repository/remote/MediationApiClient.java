@@ -55,7 +55,7 @@ public class MediationApiClient implements IMediationApiClient {
     @Override
     public void sendLogResult(LogResult logResult, ApiCallback callback) {
         HashMap<String,String> testResultDataMap = new HashMap<>();
-
+        Logger.d("SPEEDTEST RESULTS " + logResult.getDownThrput() + " ? " + logResult.getUploadThrput());
         testResultDataMap.put("altitude", "true");
         testResultDataMap.put("ber", "");
         testResultDataMap.put("bsic", "");

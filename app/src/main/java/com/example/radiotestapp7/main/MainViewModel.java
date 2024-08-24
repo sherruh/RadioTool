@@ -112,7 +112,8 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     public MutableLiveData<Long> initTimeLiveData = new MutableLiveData<>();
     public MutableLiveData<Long> bufferingTimeLiveData = new MutableLiveData<>();
     public MutableLiveData<String> youtubeResolutionLiveData = App.logRepository.youtubeResolutionLiveData;
-
+    public long dlStartTime, dlStartBytes, dlFinishTime, dlFinishBytes,
+        ulStartTime, ulStartBytes, ulFinishTime, ulFinishBytes;
     private Context mContext;
     private TelephonyManager telephonyManager;
     private GsmCellLocation gsmCellLocation;
@@ -155,7 +156,6 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     Timer timerYouTubeBuffering = new Timer();
     Timer timerYouTubeInitial = new Timer();
     Timer timerUpload = new Timer();
-
 
     public void onViewCreated(Context context, CustomPhoneStateListener.OnSignalStrengthChangedListener onSignalStrengthChangedListener,
                               CustomPhoneStateListener.OnCellLocationChangeListener onCellLocationChangeListener) {
@@ -239,9 +239,11 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
             public void onSuccess(List<Long> longs) {
                 isProgressStartBarShowLiveData.postValue(false);
                 Logger.d("LocalStorage1 logs " + longs);
-                Logger.d("TestResultData " + App.localStorage.getLogById((long) (longs.get(longs.size() - 1))).getLogId());
+                Logger.d("TestResultData here" + App.localStorage.getLogById((long) (longs.get(longs.size() - 1))).getUlThrputFinishBytes());
                 String logId = App.localStorage.getLogById((long) (longs.get(longs.size() - 1))).getLogId();
-                TestResultActivity.startActivity(isNeedYoutubeTest,isNeedDownloadTest,isNeedUploadTest,logId,mContext);
+                Logger.d("Letmecheck ");
+                TestResultActivity.startActivity(false,true,true,logId,dlStartTime, dlFinishTime, dlStartBytes, dlFinishBytes,
+                        ulStartTime, ulFinishTime,ulStartBytes,ulFinishBytes, mContext);
             }
 
             @Override
@@ -608,6 +610,8 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         App.logRepository.saveEvent(eventLogs.get(eventLogs.size() - 1));
         /*App.logRepository.setDlThrputStartTime(System.currentTimeMillis());
         App.logRepository.setDlThrputStartBytes(TrafficStats.getTotalRxBytes());*/
+        dlStartTime = System.currentTimeMillis();
+        dlStartBytes = TrafficStats.getTotalRxBytes();
         downloader.download(getDownloadUrl(), mContext, new Downloader.DownloadListener() {
             @Override
             public void onFailure(String message) {
@@ -671,6 +675,8 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
         });
         /*App.logRepository.setUlThrputStartTime(System.currentTimeMillis());
         App.logRepository.setUlThrputStartBytes(TrafficStats.getTotalTxBytes());*/
+        ulStartTime = System.currentTimeMillis();
+        ulStartBytes = TrafficStats.getTotalTxBytes();
         timerUpload = new Timer();
 
         uploadDuration = getUploadDuration();
@@ -709,6 +715,8 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     private void downloadTestEnded() {
         /*App.logRepository.setDlThrputFinishBytes(TrafficStats.getTotalRxBytes());
         App.logRepository.setDlThrputFinishTime(System.currentTimeMillis());*/
+        dlFinishTime = System.currentTimeMillis();
+        dlFinishBytes = TrafficStats.getTotalRxBytes();
         App.logRepository.setLogState(EState.IDLE);
         DownloadManagerDisabler.disableAllDownloadings(mContext);
         checkWhetherToStartUploadTest();
@@ -717,6 +725,8 @@ public class MainViewModel extends ViewModel implements GoogleApiClient.Connecti
     private void uploadTestEnded(){
         /*App.logRepository.setUlThrputFinishTime(System.currentTimeMillis());
         App.logRepository.setUlThrputFinishBytes(TrafficStats.getTotalTxBytes());*/
+        ulFinishBytes = TrafficStats.getTotalTxBytes();
+        ulFinishTime = System.currentTimeMillis();
         if (uploader != null) uploader.cancelUpload();
         timerUpload.cancel();
         uploadTestStopEvent.call();

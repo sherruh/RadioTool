@@ -436,9 +436,9 @@ public class TestResultViewModel extends ViewModel {
             uploadSR = 0.0;
         }
         uploadSR *= 100;
-        Logger.d("TestResultData upload avg " + calculateUploadThruput() + " " + uploadSR);
+        //Logger.d("TestResultData upload avg " + calculateUploadThruput() + " " + uploadSR);
         uploadSRLiveData.setValue(uploadSR);
-        uploadThrputLiveData.setValue(calculateUploadThruput());
+        //uploadThrputLiveData.setValue(calculateUploadThruput());
     }
 
     private long calculateUploadThruput() {
@@ -498,8 +498,8 @@ public class TestResultViewModel extends ViewModel {
             downloadSR = 0.0;
         }
         downloadSR *= 100;
-        Logger.d("TestResultData download avg " + calculateDownloadThruput() + " " + downloadSR);
-        downThrputLiveData.setValue(calculateDownloadThruput());
+        //Logger.d("TestResultData download avg " + calculateDownloadThruput() + " " + downloadSR);
+        //downThrputLiveData.setValue(calculateDownloadThruput());
         downSRLiveData.setValue(downloadSR);
     }
 

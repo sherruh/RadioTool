@@ -34,10 +34,16 @@ public class TestResultActivity extends AppCompatActivity {
     private static final String DL_FINISH_TIME = "DL_FINISH_TIME";
     private static final String DL_START_BYTES = "DL_START_BYTES";
     private static final String DL_FINISH_BYTES = "DL_FINISH_BYTES";
+    private static final String UL_START_TIME = "UL_START_TIME";
+    private static final String UL_FINISH_TIME = "UL_FINISH_TIME";
+    private static final String UL_START_BYTES = "UL_START_BYTES";
+    private static final String UL_FINISH_BYTES = "UL_FINISH_BYTES";
 
     public static void startActivity(boolean isTestedYoutube, boolean isTestedDownload,
                                      boolean isTestedUpload, String logId, long dlStartTime,
                                      long dlFinishTime, long dlStartBytes,long dlFinishBytes,
+                                     long ulStartTime,
+                                     long ulFinishTime, long ulStartBytes,long ulFinishBytes,
                                      Context context){
         Intent intent = new Intent(context, TestResultActivity.class);
         intent.putExtra(IS_TESTED_YOUTUBE_EXTRA, isTestedYoutube);
@@ -48,6 +54,10 @@ public class TestResultActivity extends AppCompatActivity {
         intent.putExtra(DL_START_BYTES,dlStartBytes);
         intent.putExtra(DL_FINISH_TIME,dlFinishTime);
         intent.putExtra(DL_FINISH_BYTES,dlFinishBytes);
+        intent.putExtra(UL_START_TIME,ulStartTime);
+        intent.putExtra(UL_START_BYTES,ulStartBytes);
+        intent.putExtra(UL_FINISH_TIME,ulFinishTime);
+        intent.putExtra(UL_FINISH_BYTES,ulFinishBytes);
         context.startActivity(intent);
     }
 
@@ -55,7 +65,8 @@ public class TestResultActivity extends AppCompatActivity {
     private boolean isTestedYoutube;
     private boolean isTestedDownload;
     private boolean isTestedUpload;
-    private long dlStartTime, dlStartBytes, dlFinishTime, dlFinishBytes;
+    private long dlStartTime, dlStartBytes, dlFinishTime, dlFinishBytes,ulStartTime, ulStartBytes,
+            ulFinishTime, ulFinishBytes, dlThrput, ulThrput;
     private String logId;
     private String screenPath;
     private String logPath;
@@ -250,10 +261,22 @@ public class TestResultActivity extends AppCompatActivity {
         });
 
         textLogId.setText(logId);
+        calculateThrputs();
+        textDownThrput.setText(String.valueOf( dlThrput));
+        textUploadThrput.setText(String.valueOf( ulThrput));
+    }
+
+    private void calculateThrputs() {
+        dlThrput = ((dlFinishBytes - dlStartBytes) * 8L) / (dlFinishTime - dlStartTime);
+        ulThrput = ((ulFinishBytes - ulStartBytes) * 8L) / (ulFinishTime - ulStartTime);
     }
 
     private void shareResults() {
         LogResult logResult = App.localStorage.getLogResultById(logId);
+        logResult.setDownThrput(String.valueOf(dlThrput));
+        logResult.setUploadThrput(String.valueOf(ulThrput));
+
+        Logger.d("SPEEDTEST RESULTS " + dlThrput + " " + ulThrput);
         App.remoteRepository.sendLogResult(logResult, new ApiCallback() {
             @Override
             public void onSuccess(String s) {
@@ -301,6 +324,10 @@ public class TestResultActivity extends AppCompatActivity {
         dlStartBytes = getIntent().getLongExtra(DL_START_BYTES,0);
         dlFinishTime = getIntent().getLongExtra(DL_FINISH_TIME,0);
         dlFinishBytes = getIntent().getLongExtra(DL_FINISH_BYTES,0);
+        ulStartTime = getIntent().getLongExtra(UL_START_TIME,0);
+        ulStartBytes = getIntent().getLongExtra(UL_START_BYTES,0);
+        ulFinishTime = getIntent().getLongExtra(UL_FINISH_TIME,0);
+        ulFinishBytes = getIntent().getLongExtra(UL_FINISH_BYTES,0);
         Logger.d("TestResultData " +logId + " " + isTestedYoutube + " " + isTestedDownload + " " + isTestedUpload);
     }
 
